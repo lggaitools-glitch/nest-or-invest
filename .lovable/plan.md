@@ -1,105 +1,91 @@
 
 
-# Navigation Dropdown Implementation Plan
+# Unified Sitewide Navigation Component
 
 ## Overview
-Replace the current plain text navigation link in the SimulatorHeader with a polished dropdown menu containing "Home" and "Simulate" options. This will provide better UX and a more professional look.
+Create a single, reusable navigation component (`SiteNavigation.tsx`) that will serve as the standard header for all current and future pages. This replaces the need for separate `Header.tsx` and `SimulatorHeader.tsx` components.
 
 ---
 
-## Current State
-The SimulatorHeader has a simple inline text link:
-```
-[Logo] [Home link]                    [Language Selector]
-```
+## Architecture
 
-## Target State
-A dropdown menu with navigation options:
-```
-[Logo]                    [Menu ▼] [Language Selector]
-                           ├─ Home
-                           └─ Simulate
+```text
+src/
+  components/
+    SiteNavigation.tsx    # NEW - Single source of truth for navigation
+    simulator/
+      Header.tsx          # DEPRECATED - Will be removed
+      SimulatorHeader.tsx # DEPRECATED - Will be removed
 ```
 
 ---
 
-## Implementation Approach
+## Component Features
 
-Use the existing `DropdownMenu` component from shadcn/ui (already available in the project) to create a clean navigation dropdown with:
-- A trigger button with "Menu" text and a chevron icon
-- Dropdown items for "Home" (links to `/`) and "Simulate" (links to `/simulate`)
-- Active state highlighting for the current page
+The unified `SiteNavigation` component will include:
+
+- **Logo** - Links to home (`/`)
+- **Navigation dropdown** - Menu with Home and Simulate options
+- **Active route highlighting** - Shows which page is currently active
+- **Language selector** - Consistent across all pages
+- **Optional badge** - Can show "Free Version" or other badges via prop
 
 ---
 
-## Translation Updates
+## Files to Create
 
-Add a new key for "Simulate" navigation label:
-
-| Key | English | Portuguese | Spanish |
-|-----|---------|------------|---------|
-| `simulate.nav.simulate` | Simulate | Simular | Simular |
-| `simulate.nav.menu` | Menu | Menu | Menú |
+### `src/components/SiteNavigation.tsx`
+A new component combining the best of both headers:
+- Dropdown menu from `SimulatorHeader`
+- Clean styling that works on both pages
+- Uses `useLocation` to highlight active route
+- Fully translated via i18n
 
 ---
 
 ## Files to Modify
 
-### 1. `src/components/simulator/SimulatorHeader.tsx`
-- Import `DropdownMenu` components from shadcn/ui
-- Import `useLocation` from react-router-dom to detect current page
-- Replace the plain nav link with a dropdown menu
-- Add "Home" and "Simulate" menu items with proper routing
-- Highlight the active page in the dropdown
+### `src/pages/Index.tsx`
+- Replace `Header` import with `SiteNavigation`
 
-### 2. `src/i18n/types.ts`
-- Add `simulate` and `menu` keys to the `SimulateTranslations.nav` interface
-
-### 3. `src/i18n/translations/en.ts`
-- Add English translations for new nav keys
-
-### 4. `src/i18n/translations/pt-BR.ts`
-- Add Portuguese translations for new nav keys
-
-### 5. `src/i18n/translations/es.ts`
-- Add Spanish translations for new nav keys
+### `src/pages/Simulate.tsx`
+- Replace `SimulatorHeader` import with `SiteNavigation`
 
 ---
 
-## Component Structure
+## Files to Delete (cleanup)
+
+### `src/components/simulator/Header.tsx`
+- No longer needed after migration
+
+### `src/components/simulator/SimulatorHeader.tsx`
+- No longer needed after migration
+
+---
+
+## Component Usage
+
+Any new page simply imports and uses the navigation:
 
 ```tsx
-<DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button variant="ghost" size="sm">
-      <Menu icon /> Menu <ChevronDown />
-    </Button>
-  </DropdownMenuTrigger>
-  <DropdownMenuContent align="end">
-    <DropdownMenuItem asChild>
-      <Link to="/">
-        <Home icon /> Home
-      </Link>
-    </DropdownMenuItem>
-    <DropdownMenuItem asChild>
-      <Link to="/simulate">
-        <Calculator icon /> Simulate
-      </Link>
-    </DropdownMenuItem>
-  </DropdownMenuContent>
-</DropdownMenu>
+import { SiteNavigation } from '@/components/SiteNavigation';
+
+const NewPage = () => (
+  <div>
+    <SiteNavigation />
+    {/* Page content */}
+  </div>
+);
 ```
 
 ---
 
-## Design Details
+## Benefits
 
-- Dropdown trigger: Ghost button with "Menu" text, menu icon, and chevron
-- Menu width: Auto-fit content
-- Alignment: Right-aligned (`align="end"`)
-- Active page: Highlighted with accent background color
-- Icons: Home icon for home, Calculator/TrendingUp for simulate
-- Mobile-friendly: Works on all screen sizes
+- Single source of truth for navigation
+- Easy to add new menu items in one place
+- Any new page automatically gets consistent navigation
+- Simpler codebase with fewer duplicate components
 
 ---
 
@@ -107,11 +93,11 @@ Add a new key for "Simulate" navigation label:
 
 | Action | File |
 |--------|------|
-| MODIFY | `src/components/simulator/SimulatorHeader.tsx` |
-| MODIFY | `src/i18n/types.ts` |
-| MODIFY | `src/i18n/translations/en.ts` |
-| MODIFY | `src/i18n/translations/pt-BR.ts` |
-| MODIFY | `src/i18n/translations/es.ts` |
+| CREATE | `src/components/SiteNavigation.tsx` |
+| MODIFY | `src/pages/Index.tsx` |
+| MODIFY | `src/pages/Simulate.tsx` |
+| DELETE | `src/components/simulator/Header.tsx` |
+| DELETE | `src/components/simulator/SimulatorHeader.tsx` |
 
-Total: 5 files modified
+Total: 1 new file, 2 modified files, 2 deleted files
 
