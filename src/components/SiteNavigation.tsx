@@ -1,4 +1,4 @@
-import { Home, TrendingUp, Menu, ChevronDown, Calculator } from 'lucide-react';
+import { Home, Menu, ChevronDown, Calculator } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { LanguageSelector } from '@/components/simulator/LanguageSelector';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import logo from '@/assets/logo.png';
 
 export function SiteNavigation() {
   const { t } = useLanguage();
@@ -21,12 +22,7 @@ export function SiteNavigation() {
       <div className="container max-w-6xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="p-2 rounded-xl bg-primary/10">
-              <div className="flex items-center">
-                <Home className="h-5 w-5 text-primary" />
-                <TrendingUp className="h-4 w-4 text-primary -ml-1" />
-              </div>
-            </div>
+            <img src={logo} alt="HomeDecision Logo" className="h-10 w-10" />
             <div>
               <h1 className="text-lg font-bold text-foreground font-display">
                 {t.header.title}
