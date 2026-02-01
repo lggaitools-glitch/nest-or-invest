@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { SimulatorHeader } from '@/components/simulator/SimulatorHeader';
+import { SiteNavigation } from '@/components/SiteNavigation';
 import { Footer } from '@/components/simulator/Footer';
 import { InputSection } from '@/components/simulator/InputSection';
 import { ResultsDisplay } from '@/components/simulator/ResultsDisplay';
@@ -51,7 +51,7 @@ const Simulate = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <SimulatorHeader />
+      <SiteNavigation />
 
       <main className="flex-1 container max-w-6xl mx-auto px-4 py-12 md:py-16">
         {/* Page Header */}

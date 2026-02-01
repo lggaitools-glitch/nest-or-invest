@@ -1,6 +1,6 @@
 import { Home, TrendingUp, Menu, ChevronDown, Calculator } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { LanguageSelector } from './LanguageSelector';
+import { LanguageSelector } from '@/components/simulator/LanguageSelector';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export function SimulatorHeader() {
+export function SiteNavigation() {
   const { t } = useLanguage();
   const location = useLocation();
 
