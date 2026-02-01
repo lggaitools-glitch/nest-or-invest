@@ -237,4 +237,13 @@ export const en: Translations = {
       cta: 'Start the rent vs buy simulation',
     },
   },
+  simulate: {
+    pageTitle: 'Rent vs Buy Simulator',
+    pageSubtitle: 'Compare renting and buying based on long-term net worth, using your own assumptions.',
+    helperText: 'Takes ~2 minutes · Educational tool · No sign-up required',
+    nav: {
+      home: 'Home',
+      howItWorks: 'How it works',
+    },
+  },
 };

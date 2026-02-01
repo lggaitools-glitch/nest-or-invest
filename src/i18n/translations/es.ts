@@ -237,4 +237,13 @@ export const es: Translations = {
       cta: 'Iniciar simulación de alquilar vs comprar',
     },
   },
+  simulate: {
+    pageTitle: 'Simulador Alquilar vs Comprar',
+    pageSubtitle: 'Compara alquilar y comprar basado en patrimonio a largo plazo, usando tus propias suposiciones.',
+    helperText: 'Toma ~2 minutos · Herramienta educativa · Sin registro',
+    nav: {
+      home: 'Inicio',
+      howItWorks: 'Cómo funciona',
+    },
+  },
 };
