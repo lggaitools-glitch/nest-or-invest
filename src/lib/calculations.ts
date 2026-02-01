@@ -217,6 +217,10 @@ export function generateInsights(
           ? 'Buying becomes better after this point.'
           : 'Renting stays better throughout.'
       }`,
+      data: {
+        year: outputs.breakEvenYear,
+        winner: outputs.winner === 'tie' ? undefined : outputs.winner,
+      },
     });
   }
 
@@ -226,12 +230,24 @@ export function generateInsights(
       id: 'winner',
       type: 'positive',
       message: `Renting could make you €${outputs.difference.toLocaleString()} wealthier over ${inputs.timeHorizonYears} years, assuming your investments grow at ${inputs.investmentReturnAnnual}% annually.`,
+      data: {
+        winner: 'rent',
+        difference: outputs.difference,
+        years: inputs.timeHorizonYears,
+        rate: inputs.investmentReturnAnnual,
+      },
     });
   } else if (outputs.winner === 'buy') {
     insights.push({
       id: 'winner',
       type: 'positive',
       message: `Buying could make you €${outputs.difference.toLocaleString()} wealthier over ${inputs.timeHorizonYears} years, assuming property appreciates at ${inputs.propertyAppreciationAnnual}% annually.`,
+      data: {
+        winner: 'buy',
+        difference: outputs.difference,
+        years: inputs.timeHorizonYears,
+        rate: inputs.propertyAppreciationAnnual,
+      },
     });
   }
 
@@ -242,6 +258,9 @@ export function generateInsights(
       id: 'sensitivity',
       type: 'neutral',
       message: `If investment returns drop below ${criticalReturn.toFixed(1)}%, buying might become the better option.`,
+      data: {
+        rate: parseFloat(criticalReturn.toFixed(1)),
+      },
     });
   }
 
@@ -252,6 +271,10 @@ export function generateInsights(
       id: 'cashflow',
       type: 'neutral',
       message: `Your mortgage payment (€${Math.round(derived.annualMortgagePayment / 12).toLocaleString()}/mo) is significantly higher than rent (€${inputs.rentMonthly.toLocaleString()}/mo), freeing up capital for investments.`,
+      data: {
+        mortgage: Math.round(derived.annualMortgagePayment / 12),
+        rent: inputs.rentMonthly,
+      },
     });
   }
 
@@ -261,16 +284,20 @@ export function generateInsights(
       id: 'longterm',
       type: 'neutral',
       message: `Over a ${inputs.timeHorizonYears}-year horizon, compound growth significantly impacts both scenarios. Small changes in assumptions can lead to large differences.`,
+      data: {
+        years: inputs.timeHorizonYears,
+      },
     });
   }
 
   return insights.slice(0, 4);
 }
 
-export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-EU', {
+export function formatCurrency(value: number, countryId: string = 'spain'): string {
+  const isBrazil = countryId === 'brazil';
+  return new Intl.NumberFormat(isBrazil ? 'pt-BR' : 'en-EU', {
     style: 'currency',
-    currency: 'EUR',
+    currency: isBrazil ? 'BRL' : 'EUR',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value);

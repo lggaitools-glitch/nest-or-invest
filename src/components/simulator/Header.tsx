@@ -1,6 +1,10 @@
 import { Home, TrendingUp } from 'lucide-react';
+import { LanguageSelector } from './LanguageSelector';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 export function Header() {
+  const { t } = useLanguage();
+
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="container max-w-6xl mx-auto px-4 py-4">
@@ -14,14 +18,15 @@ export function Header() {
             </div>
             <div>
               <h1 className="text-lg font-bold text-foreground font-display">
-                Rent vs Buy
+                {t.header.title}
               </h1>
-              <p className="text-xs text-muted-foreground">Wealth Simulator</p>
+              <p className="text-xs text-muted-foreground">{t.header.subtitle}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <LanguageSelector />
             <span className="text-xs px-2 py-1 rounded-full bg-accent text-accent-foreground font-medium">
-              Free Version
+              {t.header.freeVersion}
             </span>
           </div>
         </div>

@@ -2,13 +2,16 @@ import { formatCurrency } from '@/lib/calculations';
 import type { SimulatorOutputs } from '@/types/simulator';
 import { TrendingUp, TrendingDown, Scale, Home, Building } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface ResultsDisplayProps {
   outputs: SimulatorOutputs;
   timeHorizon: number;
+  countryId: string;
 }
 
-export function ResultsDisplay({ outputs, timeHorizon }: ResultsDisplayProps) {
+export function ResultsDisplay({ outputs, timeHorizon, countryId }: ResultsDisplayProps) {
+  const { t } = useLanguage();
   const isRentWinner = outputs.winner === 'rent';
   const isTie = outputs.winner === 'tie';
 
@@ -34,23 +37,23 @@ export function ResultsDisplay({ outputs, timeHorizon }: ResultsDisplayProps) {
             <Building className="h-6 w-6 text-success" />
           )}
           <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            After {timeHorizon} years
+            {t.results.afterYears.replace('{years}', String(timeHorizon))}
           </span>
         </div>
         
         {isTie ? (
           <p className="text-xl font-semibold text-foreground">
-            Both scenarios are roughly equal
+            {t.results.bothEqual}
           </p>
         ) : (
           <>
             <p className="text-xl font-semibold text-foreground mb-1">
-              {isRentWinner ? 'Renting' : 'Buying'} could make you
+              {isRentWinner ? t.results.rentingMakesYou : t.results.buyingMakesYou}
             </p>
             <p className="result-number text-primary animate-number">
-              {formatCurrency(outputs.difference)}
+              {formatCurrency(outputs.difference, countryId)}
             </p>
-            <p className="text-lg text-muted-foreground">wealthier</p>
+            <p className="text-lg text-muted-foreground">{t.results.wealthier}</p>
           </>
         )}
       </div>
@@ -69,11 +72,11 @@ export function ResultsDisplay({ outputs, timeHorizon }: ResultsDisplayProps) {
               <Home className="h-4 w-4 text-primary" />
             </div>
             <span className="text-sm font-medium text-muted-foreground">
-              Rent + Invest
+              {t.results.rentInvest}
             </span>
           </div>
           <p className="text-3xl font-bold text-foreground font-display">
-            {formatCurrency(outputs.netRent)}
+            {formatCurrency(outputs.netRent, countryId)}
           </p>
           <div className="flex items-center gap-1 mt-2">
             {outputs.netRent >= 0 ? (
@@ -87,7 +90,7 @@ export function ResultsDisplay({ outputs, timeHorizon }: ResultsDisplayProps) {
                 outputs.netRent >= 0 ? 'text-success' : 'text-destructive'
               )}
             >
-              Net Worth
+              {t.results.netWorth}
             </span>
           </div>
         </div>
@@ -104,11 +107,11 @@ export function ResultsDisplay({ outputs, timeHorizon }: ResultsDisplayProps) {
               <Building className="h-4 w-4 text-success" />
             </div>
             <span className="text-sm font-medium text-muted-foreground">
-              Buy + Own
+              {t.results.buyOwn}
             </span>
           </div>
           <p className="text-3xl font-bold text-foreground font-display">
-            {formatCurrency(outputs.netBuy)}
+            {formatCurrency(outputs.netBuy, countryId)}
           </p>
           <div className="flex items-center gap-1 mt-2">
             {outputs.netBuy >= 0 ? (
@@ -122,7 +125,7 @@ export function ResultsDisplay({ outputs, timeHorizon }: ResultsDisplayProps) {
                 outputs.netBuy >= 0 ? 'text-success' : 'text-destructive'
               )}
             >
-              Net Worth
+              {t.results.netWorth}
             </span>
           </div>
         </div>

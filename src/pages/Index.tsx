@@ -76,12 +76,12 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Results Section */}
           <div className="lg:col-span-7 space-y-6">
             <div className="animate-slide-up">
               <ResultsDisplay
                 outputs={outputs}
                 timeHorizon={inputs.timeHorizonYears}
+                countryId={selectedPreset}
               />
             </div>
 
@@ -90,11 +90,12 @@ const Index = () => {
                 rentData={rentScenario.yearlyData}
                 buyData={buyScenario.yearlyData}
                 breakEvenYear={outputs.breakEvenYear}
+                countryId={selectedPreset}
               />
             </div>
 
             <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <InsightCards insights={insights} />
+              <InsightCards insights={insights} countryId={selectedPreset} />
             </div>
 
             <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
