@@ -1,4 +1,4 @@
-import { Header } from '@/components/simulator/Header';
+import { SiteNavigation } from '@/components/SiteNavigation';
 import { Footer } from '@/components/simulator/Footer';
 import { HeroSection } from '@/components/landing/HeroSection';
 import { ProblemSection } from '@/components/landing/ProblemSection';
@@ -13,7 +13,7 @@ import { FinalCTASection } from '@/components/landing/FinalCTASection';
 const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col scroll-smooth">
-      <Header />
+      <SiteNavigation />
 
       {/* Landing Page Sections */}
       <HeroSection />
