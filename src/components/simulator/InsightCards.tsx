@@ -47,10 +47,15 @@ export function InsightCards({ insights, countryId }: InsightCardsProps) {
     switch (id) {
       case 'breakeven':
         const baseMsg = t.insights.breakeven.message.replace('{year}', String(data.year));
-        const suffix = data.winner === 'buy' 
-          ? t.insights.breakeven.buyingBetter 
-          : t.insights.breakeven.rentingBetter;
-        return `${baseMsg} ${suffix}`;
+        const afterWinner = data.afterWinner ?? data.winner;
+        const suffix =
+          afterWinner === 'buy'
+            ? t.insights.breakeven.buyingBetter
+            : afterWinner === 'rent'
+              ? t.insights.breakeven.rentingBecomesBetter
+              : '';
+
+        return suffix ? `${baseMsg} ${suffix}` : baseMsg;
       
       case 'winner':
         if (data.winner === 'rent') {

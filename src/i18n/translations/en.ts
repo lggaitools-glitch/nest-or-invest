@@ -62,6 +62,7 @@ export const en: Translations = {
     breakeven: {
       message: 'The scenarios break even around year {year}.',
       buyingBetter: 'Buying becomes better after this point.',
+      rentingBecomesBetter: 'Renting becomes better after this point.',
       rentingBetter: 'Renting stays better throughout.',
     },
     winnerRent:

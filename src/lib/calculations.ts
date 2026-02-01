@@ -203,23 +203,45 @@ export function calculateOutputs(
 export function generateInsights(
   inputs: SimulatorInputs,
   outputs: SimulatorOutputs,
-  derived: DerivedValues
+  derived: DerivedValues,
+  rentScenario: ScenarioRent,
+  buyScenario: ScenarioBuy
 ): Insight[] {
   const insights: Insight[] = [];
 
   // Break-even insight
   if (outputs.breakEvenYear) {
+    const y = outputs.breakEvenYear;
+    const rentAtBreakEven = rentScenario.yearlyData[y]?.rentNetWorth;
+    const buyAtBreakEven = buyScenario.yearlyData[y]?.buyNetWorth;
+
+    const diffAtBreakEven =
+      typeof rentAtBreakEven === 'number' && typeof buyAtBreakEven === 'number'
+        ? rentAtBreakEven - buyAtBreakEven
+        : null;
+
+    const afterWinner: 'rent' | 'buy' | undefined =
+      diffAtBreakEven === null || Math.abs(diffAtBreakEven) < 1e-9
+        ? undefined
+        : diffAtBreakEven > 0
+          ? 'rent'
+          : 'buy';
+
+    const afterText =
+      afterWinner === 'buy'
+        ? 'Buying becomes better after this point.'
+        : afterWinner === 'rent'
+          ? 'Renting becomes better after this point.'
+          : '';
+
     insights.push({
       id: 'breakeven',
       type: 'neutral',
-      message: `The scenarios break even around year ${outputs.breakEvenYear}. ${
-        outputs.winner === 'buy'
-          ? 'Buying becomes better after this point.'
-          : 'Renting stays better throughout.'
-      }`,
+      message: `The scenarios break even around year ${outputs.breakEvenYear}. ${afterText}`.trim(),
       data: {
         year: outputs.breakEvenYear,
         winner: outputs.winner === 'tie' ? undefined : outputs.winner,
+        afterWinner,
       },
     });
   }
