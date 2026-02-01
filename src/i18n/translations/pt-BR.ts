@@ -243,6 +243,8 @@ export const ptBR: Translations = {
     helperText: 'Leva ~2 minutos · Ferramenta educacional · Sem cadastro',
     nav: {
       home: 'Início',
+      simulate: 'Simular',
+      menu: 'Menu',
       howItWorks: 'Como funciona',
     },
   },

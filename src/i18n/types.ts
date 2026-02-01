@@ -61,6 +61,8 @@ export interface SimulateTranslations {
   helperText: string;
   nav: {
     home: string;
+    simulate: string;
+    menu: string;
     howItWorks: string;
   };
 }
