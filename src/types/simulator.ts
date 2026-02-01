@@ -57,10 +57,21 @@ export interface SimulatorOutputs {
   breakEvenYear: number | null;
 }
 
+export interface InsightData {
+  year?: number;
+  winner?: 'rent' | 'buy';
+  difference?: number;
+  years?: number;
+  rate?: number;
+  mortgage?: number;
+  rent?: number;
+}
+
 export interface Insight {
   id: string;
   type: 'positive' | 'negative' | 'neutral';
   message: string;
+  data?: InsightData;
 }
 
 export interface CountryPreset {

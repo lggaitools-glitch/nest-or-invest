@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/select';
 import { COUNTRY_PRESETS, type SimulatorInputs } from '@/types/simulator';
 import { Home, TrendingUp, Percent, Calendar, Banknote, Building } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface InputSectionProps {
   inputs: SimulatorInputs;
@@ -80,20 +81,25 @@ export function InputSection({
   onPresetChange,
   selectedPreset,
 }: InputSectionProps) {
+  const { t } = useLanguage();
+
+  // Get currency symbol based on selected preset
+  const currencySymbol = selectedPreset === 'brazil' ? 'R$' : '€';
+
   return (
     <div className="card-elevated-lg p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="section-title">Simulation Parameters</h2>
+        <h2 className="section-title">{t.inputs.title}</h2>
         <Select value={selectedPreset} onValueChange={onPresetChange}>
           <SelectTrigger className="w-40">
-            <SelectValue placeholder="Select country" />
+            <SelectValue placeholder={t.inputs.selectCountry} />
           </SelectTrigger>
           <SelectContent>
             {COUNTRY_PRESETS.map((preset) => (
               <SelectItem key={preset.id} value={preset.id}>
                 <span className="flex items-center gap-2">
                   <span>{preset.flag}</span>
-                  <span>{preset.name}</span>
+                  <span>{t.countries[preset.id as keyof typeof t.countries] || preset.name}</span>
                 </span>
               </SelectItem>
             ))}
@@ -104,68 +110,68 @@ export function InputSection({
       {/* Housing Inputs */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Housing
+          {t.inputs.housing.title}
         </h3>
         <div className="grid gap-6">
           <InputField
-            label="Property Price"
+            label={t.inputs.housing.propertyPrice}
             value={inputs.propertyPrice}
             onChange={(v) => onInputChange('propertyPrice', v)}
             min={50000}
             max={2000000}
             step={10000}
-            unit="€"
+            unit={currencySymbol}
             icon={<Building className="h-4 w-4 text-muted-foreground" />}
           />
           <InputField
-            label="Down Payment"
+            label={t.inputs.housing.downPayment}
             value={inputs.downPayment}
             onChange={(v) => onInputChange('downPayment', v)}
             min={0}
             max={inputs.propertyPrice}
             step={5000}
-            unit="€"
-            hint={`${((inputs.downPayment / inputs.propertyPrice) * 100).toFixed(0)}% of property price`}
+            unit={currencySymbol}
+            hint={`${((inputs.downPayment / inputs.propertyPrice) * 100).toFixed(0)}% ${t.inputs.housing.downPaymentHint}`}
             icon={<Banknote className="h-4 w-4 text-muted-foreground" />}
           />
           <InputField
-            label="Mortgage Rate"
+            label={t.inputs.housing.mortgageRate}
             value={inputs.mortgageRate}
             onChange={(v) => onInputChange('mortgageRate', v)}
             min={0}
             max={15}
             step={0.1}
-            unit="%"
+            unit={t.inputs.units.percent}
             icon={<Percent className="h-4 w-4 text-muted-foreground" />}
           />
           <InputField
-            label="Mortgage Term"
+            label={t.inputs.housing.mortgageTerm}
             value={inputs.mortgageYears}
             onChange={(v) => onInputChange('mortgageYears', v)}
             min={5}
             max={40}
             step={1}
-            unit="yrs"
+            unit={t.inputs.units.years}
             icon={<Calendar className="h-4 w-4 text-muted-foreground" />}
           />
           <InputField
-            label="Monthly Rent"
+            label={t.inputs.housing.monthlyRent}
             value={inputs.rentMonthly}
             onChange={(v) => onInputChange('rentMonthly', v)}
             min={200}
             max={10000}
             step={50}
-            unit="€"
+            unit={currencySymbol}
             icon={<Home className="h-4 w-4 text-muted-foreground" />}
           />
           <InputField
-            label="Annual Rent Increase"
+            label={t.inputs.housing.annualRentIncrease}
             value={inputs.rentIncreaseAnnual}
             onChange={(v) => onInputChange('rentIncreaseAnnual', v)}
             min={0}
             max={10}
             step={0.5}
-            unit="%"
+            unit={t.inputs.units.percent}
             icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
           />
         </div>
@@ -174,51 +180,51 @@ export function InputSection({
       {/* Financial Assumptions */}
       <div className="space-y-4 pt-4 border-t border-border">
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Financial Assumptions
+          {t.inputs.financial.title}
         </h3>
         <div className="grid gap-6">
           <InputField
-            label="Investment Return"
+            label={t.inputs.financial.investmentReturn}
             value={inputs.investmentReturnAnnual}
             onChange={(v) => onInputChange('investmentReturnAnnual', v)}
             min={0}
             max={15}
             step={0.5}
-            unit="%"
-            hint="Expected annual return on investments"
+            unit={t.inputs.units.percent}
+            hint={t.inputs.financial.investmentReturnHint}
             icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
           />
           <InputField
-            label="Property Appreciation"
+            label={t.inputs.financial.propertyAppreciation}
             value={inputs.propertyAppreciationAnnual}
             onChange={(v) => onInputChange('propertyAppreciationAnnual', v)}
             min={-5}
             max={10}
             step={0.5}
-            unit="%"
-            hint="Expected annual property value growth"
+            unit={t.inputs.units.percent}
+            hint={t.inputs.financial.propertyAppreciationHint}
             icon={<Building className="h-4 w-4 text-muted-foreground" />}
           />
           <InputField
-            label="Maintenance Cost"
+            label={t.inputs.financial.maintenanceCost}
             value={inputs.maintenancePercentAnnual}
             onChange={(v) => onInputChange('maintenancePercentAnnual', v)}
             min={0}
             max={5}
             step={0.25}
-            unit="%"
-            hint="Annual maintenance as % of property value"
+            unit={t.inputs.units.percent}
+            hint={t.inputs.financial.maintenanceCostHint}
             icon={<Home className="h-4 w-4 text-muted-foreground" />}
           />
           <InputField
-            label="Time Horizon"
+            label={t.inputs.financial.timeHorizon}
             value={inputs.timeHorizonYears}
             onChange={(v) => onInputChange('timeHorizonYears', v)}
             min={5}
             max={40}
             step={1}
-            unit="yrs"
-            hint="How long you plan to hold"
+            unit={t.inputs.units.years}
+            hint={t.inputs.financial.timeHorizonHint}
             icon={<Calendar className="h-4 w-4 text-muted-foreground" />}
           />
         </div>
