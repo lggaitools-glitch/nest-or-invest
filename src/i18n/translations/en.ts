@@ -243,6 +243,8 @@ export const en: Translations = {
     helperText: 'Takes ~2 minutes · Educational tool · No sign-up required',
     nav: {
       home: 'Home',
+      simulate: 'Simulate',
+      menu: 'Menu',
       howItWorks: 'How it works',
     },
   },
