@@ -1,5 +1,60 @@
 export type Language = 'en' | 'pt-BR' | 'es';
 
+export interface LandingTranslations {
+  seo: {
+    title: string;
+    description: string;
+  };
+  hero: {
+    headline: string;
+    subheadline: string;
+    cta: string;
+    ctaSecondary: string;
+  };
+  problem: {
+    headline: string;
+    intro: string;
+    fears: string[];
+    truth: string;
+    conclusion: string;
+  };
+  solution: {
+    headline: string;
+    intro: string;
+    bullets: string[];
+    assumptions: string[];
+    noBias: string[];
+  };
+  howItWorks: {
+    headline: string;
+    steps: { title: string; description: string }[];
+  };
+  visual: {
+    headline: string;
+    body: string;
+    features: string[];
+    conclusion: string;
+  };
+  trust: {
+    headline: string;
+    bullets: string[];
+    mission: string;
+  };
+  audience: {
+    headline: string;
+    personas: { icon: string; text: string }[];
+  };
+  faq: {
+    headline: string;
+    items: { q: string; a: string }[];
+  };
+  finalCta: {
+    headline: string;
+    subheadline: string;
+    cta: string;
+  };
+}
+
 export interface Translations {
   header: {
     title: string;
@@ -101,6 +156,7 @@ export interface Translations {
     builtWith: string;
     copyright: string;
     educational: string;
+    disclaimer: string;
   };
   countries: {
     spain: string;
@@ -108,4 +164,5 @@ export interface Translations {
     brazil: string;
     custom: string;
   };
+  landing: LandingTranslations;
 }
