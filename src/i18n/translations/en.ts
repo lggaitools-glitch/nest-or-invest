@@ -111,13 +111,130 @@ export const en: Translations = {
   },
   footer: {
     builtWith: 'Built with',
-    copyright: '© 2024 Rent vs Buy Simulator',
+    copyright: '© 2024 HomeDecision',
     educational: 'Educational purposes only',
+    disclaimer: 'HomeDecision is an educational tool and does not provide financial, legal, or investment advice. Results depend on user-provided assumptions and may not reflect real-world outcomes.',
   },
   countries: {
     spain: 'Spain',
     portugal: 'Portugal',
     brazil: 'Brazil',
     custom: 'Custom',
+  },
+  landing: {
+    seo: {
+      title: 'Rent or Buy? Make the Right Housing Decision | HomeDecision',
+      description: 'Compare renting vs buying with a rational wealth simulator. HomeDecision shows which option builds more net worth — based on your assumptions.',
+    },
+    hero: {
+      headline: 'Rent or buy?\nMake the decision with numbers, not emotions.',
+      subheadline: 'HomeDecision is a rational simulator that compares renting vs buying based on long-term wealth — using your assumptions, not sales promises.',
+      cta: 'Start the simulation',
+      ctaSecondary: 'No sign-up required · Free to use',
+    },
+    problem: {
+      headline: 'Buying a home is the biggest financial decision most people ever make.',
+      intro: 'Yet most decisions are driven by:',
+      fears: [
+        'Fear of "throwing money away on rent"',
+        'Pressure from family, banks, or agents',
+        'Biased calculators that assume buying is always better',
+      ],
+      truth: 'The truth is simpler — and more uncomfortable: Sometimes renting builds more wealth. Sometimes buying does. It depends on the math.',
+      conclusion: 'HomeDecision exists to show that math — clearly and honestly.',
+    },
+    solution: {
+      headline: 'A neutral rent vs buy simulator — built for clarity',
+      intro: 'HomeDecision helps you:',
+      bullets: [
+        'Compare Rent + Invest vs Buy + Invest',
+        'See your net worth over time in both scenarios',
+        'Understand when (or if) buying becomes better',
+      ],
+      assumptions: [
+        'Investment returns',
+        'Property appreciation',
+        'Rent increases',
+        'Mortgage rates',
+      ],
+      noBias: [
+        'No ads.',
+        'No commissions.',
+        'No "buy now" bias.',
+      ],
+    },
+    howItWorks: {
+      headline: 'How the simulator works',
+      steps: [
+        {
+          title: 'Your situation',
+          description: 'Enter property price, rent, mortgage terms, and how long you plan to stay.',
+        },
+        {
+          title: 'Your assumptions',
+          description: 'Choose expected investment returns, property appreciation, rent increases, and maintenance costs.',
+        },
+        {
+          title: 'Clear results',
+          description: 'See net worth for both scenarios, the difference, and which option wins.',
+        },
+      ],
+    },
+    visual: {
+      headline: 'See the full picture — not just monthly payments',
+      body: 'Most calculators focus on monthly costs. HomeDecision focuses on long-term wealth.',
+      features: [
+        'Wealth growth curves over time',
+        'Break-even points',
+        'Total rent paid vs total interest paid',
+        'Opportunity cost of each decision',
+      ],
+      conclusion: 'Because the best decision isn\'t always the most popular one.',
+    },
+    trust: {
+      headline: 'Built on transparency',
+      bullets: [
+        'All assumptions are visible and adjustable',
+        'No hidden formulas',
+        'Conservative by default',
+        'Educational — not financial advice',
+      ],
+      mission: 'We don\'t sell mortgages. We don\'t sell properties. We don\'t optimize for one outcome. Our only goal is clarity.',
+    },
+    audience: {
+      headline: 'Who HomeDecision is for',
+      personas: [
+        { icon: 'briefcase', text: 'Professionals deciding whether to buy their first home' },
+        { icon: 'users', text: 'Families planning a long-term move' },
+        { icon: 'globe', text: 'Expats comparing markets' },
+        { icon: 'bar-chart', text: 'Anyone who wants a rational answer — not opinions' },
+      ],
+    },
+    faq: {
+      headline: 'Frequently Asked Questions',
+      items: [
+        {
+          q: 'Is renting really sometimes better than buying?',
+          a: 'Yes. Depending on investment returns, rent growth, mortgage costs, and time horizon, renting can lead to higher net worth.',
+        },
+        {
+          q: 'Does HomeDecision assume I invest my money?',
+          a: 'Yes. The comparison is fair only if unused capital is invested in both scenarios.',
+        },
+        {
+          q: 'Is this financial advice?',
+          a: 'No. HomeDecision is an educational simulator designed to help you understand trade-offs.',
+        },
+        {
+          q: 'Can I change assumptions?',
+          a: 'Yes. The simulator is fully customizable.',
+        },
+      ],
+    },
+    finalCta: {
+      headline: 'Make the decision once — with confidence',
+      subheadline: 'Stop guessing. Stop arguing. Let the numbers speak.',
+      cta: 'Start the rent vs buy simulation',
+    },
   },
 };

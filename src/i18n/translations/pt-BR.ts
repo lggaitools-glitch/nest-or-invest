@@ -111,13 +111,130 @@ export const ptBR: Translations = {
   },
   footer: {
     builtWith: 'Feito com',
-    copyright: '© 2024 Simulador Alugar vs Comprar',
+    copyright: '© 2024 HomeDecision',
     educational: 'Apenas para fins educacionais',
+    disclaimer: 'HomeDecision é uma ferramenta educacional e não fornece aconselhamento financeiro, jurídico ou de investimento. Os resultados dependem das premissas fornecidas pelo usuário e podem não refletir resultados do mundo real.',
   },
   countries: {
     spain: 'Espanha',
     portugal: 'Portugal',
     brazil: 'Brasil',
     custom: 'Personalizado',
+  },
+  landing: {
+    seo: {
+      title: 'Alugar ou Comprar? Tome a Decisão Certa | HomeDecision',
+      description: 'Compare alugar vs comprar com um simulador racional de patrimônio. HomeDecision mostra qual opção constrói mais patrimônio — baseado nas suas premissas.',
+    },
+    hero: {
+      headline: 'Alugar ou comprar?\nTome a decisão com números, não emoções.',
+      subheadline: 'HomeDecision é um simulador racional que compara alugar vs comprar baseado em patrimônio de longo prazo — usando suas premissas, não promessas de vendas.',
+      cta: 'Iniciar simulação',
+      ctaSecondary: 'Sem cadastro · Grátis',
+    },
+    problem: {
+      headline: 'Comprar uma casa é a maior decisão financeira que a maioria das pessoas toma.',
+      intro: 'No entanto, a maioria das decisões são motivadas por:',
+      fears: [
+        'Medo de "jogar dinheiro fora com aluguel"',
+        'Pressão da família, bancos ou corretores',
+        'Calculadoras enviesadas que assumem que comprar é sempre melhor',
+      ],
+      truth: 'A verdade é mais simples — e mais desconfortável: Às vezes alugar constrói mais patrimônio. Às vezes comprar. Depende da matemática.',
+      conclusion: 'HomeDecision existe para mostrar essa matemática — de forma clara e honesta.',
+    },
+    solution: {
+      headline: 'Um simulador neutro de alugar vs comprar — construído para clareza',
+      intro: 'HomeDecision te ajuda a:',
+      bullets: [
+        'Comparar Alugar + Investir vs Comprar + Investir',
+        'Ver seu patrimônio ao longo do tempo em ambos os cenários',
+        'Entender quando (ou se) comprar se torna melhor',
+      ],
+      assumptions: [
+        'Retornos de investimentos',
+        'Valorização do imóvel',
+        'Reajustes de aluguel',
+        'Taxas de financiamento',
+      ],
+      noBias: [
+        'Sem anúncios.',
+        'Sem comissões.',
+        'Sem viés de "compre agora".',
+      ],
+    },
+    howItWorks: {
+      headline: 'Como o simulador funciona',
+      steps: [
+        {
+          title: 'Sua situação',
+          description: 'Insira o preço do imóvel, aluguel, condições do financiamento e por quanto tempo você planeja ficar.',
+        },
+        {
+          title: 'Suas premissas',
+          description: 'Escolha retornos esperados de investimentos, valorização do imóvel, reajustes de aluguel e custos de manutenção.',
+        },
+        {
+          title: 'Resultados claros',
+          description: 'Veja o patrimônio para ambos os cenários, a diferença, e qual opção vence.',
+        },
+      ],
+    },
+    visual: {
+      headline: 'Veja o quadro completo — não apenas pagamentos mensais',
+      body: 'A maioria das calculadoras foca em custos mensais. HomeDecision foca em patrimônio de longo prazo.',
+      features: [
+        'Curvas de crescimento de patrimônio ao longo do tempo',
+        'Pontos de equilíbrio',
+        'Total de aluguel pago vs total de juros pagos',
+        'Custo de oportunidade de cada decisão',
+      ],
+      conclusion: 'Porque a melhor decisão nem sempre é a mais popular.',
+    },
+    trust: {
+      headline: 'Construído com transparência',
+      bullets: [
+        'Todas as premissas são visíveis e ajustáveis',
+        'Sem fórmulas ocultas',
+        'Conservador por padrão',
+        'Educacional — não aconselhamento financeiro',
+      ],
+      mission: 'Não vendemos financiamentos. Não vendemos imóveis. Não otimizamos para um resultado. Nosso único objetivo é clareza.',
+    },
+    audience: {
+      headline: 'Para quem é o HomeDecision',
+      personas: [
+        { icon: 'briefcase', text: 'Profissionais decidindo se compram sua primeira casa' },
+        { icon: 'users', text: 'Famílias planejando uma mudança de longo prazo' },
+        { icon: 'globe', text: 'Expatriados comparando mercados' },
+        { icon: 'bar-chart', text: 'Qualquer um que queira uma resposta racional — não opiniões' },
+      ],
+    },
+    faq: {
+      headline: 'Perguntas Frequentes',
+      items: [
+        {
+          q: 'Alugar é realmente às vezes melhor que comprar?',
+          a: 'Sim. Dependendo dos retornos de investimento, crescimento do aluguel, custos de financiamento e horizonte de tempo, alugar pode levar a um patrimônio maior.',
+        },
+        {
+          q: 'O HomeDecision assume que eu invisto meu dinheiro?',
+          a: 'Sim. A comparação só é justa se o capital não utilizado for investido em ambos os cenários.',
+        },
+        {
+          q: 'Isso é aconselhamento financeiro?',
+          a: 'Não. HomeDecision é um simulador educacional projetado para ajudá-lo a entender trade-offs.',
+        },
+        {
+          q: 'Posso alterar as premissas?',
+          a: 'Sim. O simulador é totalmente personalizável.',
+        },
+      ],
+    },
+    finalCta: {
+      headline: 'Tome a decisão uma vez — com confiança',
+      subheadline: 'Pare de adivinhar. Pare de discutir. Deixe os números falarem.',
+      cta: 'Iniciar simulação de alugar vs comprar',
+    },
   },
 };
