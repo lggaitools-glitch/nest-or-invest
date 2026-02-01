@@ -55,6 +55,16 @@ export interface LandingTranslations {
   };
 }
 
+export interface SimulateTranslations {
+  pageTitle: string;
+  pageSubtitle: string;
+  helperText: string;
+  nav: {
+    home: string;
+    howItWorks: string;
+  };
+}
+
 export interface Translations {
   header: {
     title: string;
@@ -165,4 +175,5 @@ export interface Translations {
     custom: string;
   };
   landing: LandingTranslations;
+  simulate: SimulateTranslations;
 }

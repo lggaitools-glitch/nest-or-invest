@@ -1,12 +1,9 @@
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/i18n/LanguageContext';
 
-interface FinalCTASectionProps {
-  onStartSimulation: () => void;
-}
-
-export function FinalCTASection({ onStartSimulation }: FinalCTASectionProps) {
+export function FinalCTASection() {
   const { t } = useLanguage();
 
   return (
@@ -22,11 +19,13 @@ export function FinalCTASection({ onStartSimulation }: FinalCTASectionProps) {
         
         <Button 
           size="lg" 
-          onClick={onStartSimulation}
+          asChild
           className="text-lg px-8 py-6 h-auto group"
         >
-          {t.landing.finalCta.cta}
-          <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+          <Link to="/simulate">
+            {t.landing.finalCta.cta}
+            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </Link>
         </Button>
       </div>
     </section>

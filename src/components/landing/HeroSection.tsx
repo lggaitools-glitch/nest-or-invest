@@ -1,12 +1,9 @@
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/i18n/LanguageContext';
 
-interface HeroSectionProps {
-  onStartSimulation: () => void;
-}
-
-export function HeroSection({ onStartSimulation }: HeroSectionProps) {
+export function HeroSection() {
   const { t } = useLanguage();
 
   return (
@@ -26,11 +23,13 @@ export function HeroSection({ onStartSimulation }: HeroSectionProps) {
         <div className="flex flex-col items-center gap-4">
           <Button 
             size="lg" 
-            onClick={onStartSimulation}
+            asChild
             className="text-lg px-8 py-6 h-auto group"
           >
-            {t.landing.hero.cta}
-            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            <Link to="/simulate">
+              {t.landing.hero.cta}
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </Link>
           </Button>
           
           <p className="text-sm text-muted-foreground">
