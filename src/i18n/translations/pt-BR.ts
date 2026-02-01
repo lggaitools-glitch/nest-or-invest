@@ -62,6 +62,7 @@ export const ptBR: Translations = {
     breakeven: {
       message: 'Os cenários se equilibram por volta do ano {year}.',
       buyingBetter: 'Comprar se torna melhor após este ponto.',
+      rentingBecomesBetter: 'Alugar se torna melhor após este ponto.',
       rentingBetter: 'Alugar continua sendo melhor ao longo do tempo.',
     },
     winnerRent:

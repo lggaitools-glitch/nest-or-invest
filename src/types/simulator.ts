@@ -60,6 +60,8 @@ export interface SimulatorOutputs {
 export interface InsightData {
   year?: number;
   winner?: 'rent' | 'buy';
+  /** For break-even insights: which scenario is ahead immediately after the break-even year. */
+  afterWinner?: 'rent' | 'buy';
   difference?: number;
   years?: number;
   rate?: number;

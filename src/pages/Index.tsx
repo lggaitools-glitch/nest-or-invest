@@ -44,7 +44,7 @@ const Index = () => {
     const rentScenario = calculateRentScenario(inputs, derived);
     const buyScenario = calculateBuyScenario(inputs, derived);
     const outputs = calculateOutputs(rentScenario, buyScenario);
-    const insights = generateInsights(inputs, outputs, derived);
+    const insights = generateInsights(inputs, outputs, derived, rentScenario, buyScenario);
 
     return { derived, rentScenario, buyScenario, outputs, insights };
   }, [inputs]);

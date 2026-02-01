@@ -61,6 +61,7 @@ export interface Translations {
     breakeven: {
       message: string;
       buyingBetter: string;
+      rentingBecomesBetter: string;
       rentingBetter: string;
     };
     winnerRent: string;
