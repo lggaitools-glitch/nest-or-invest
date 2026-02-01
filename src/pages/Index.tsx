@@ -6,6 +6,7 @@ import { ResultsDisplay } from '@/components/simulator/ResultsDisplay';
 import { WealthChart } from '@/components/simulator/WealthChart';
 import { InsightCards } from '@/components/simulator/InsightCards';
 import { TransparencySection } from '@/components/simulator/TransparencySection';
+import { useLanguage } from '@/i18n/LanguageContext';
 import {
   DEFAULT_INPUTS,
   COUNTRY_PRESETS,
@@ -20,6 +21,7 @@ import {
 } from '@/lib/calculations';
 
 const Index = () => {
+  const { t } = useLanguage();
   const [inputs, setInputs] = useState<SimulatorInputs>(DEFAULT_INPUTS);
   const [selectedPreset, setSelectedPreset] = useState('spain');
 
@@ -55,11 +57,10 @@ const Index = () => {
         {/* Hero Section */}
         <div className="text-center mb-10 animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground font-display mb-3">
-            Should You Rent or Buy?
+            {t.hero.heading}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Compare your long-term wealth potential. Adjust the assumptions below
-            to see which path could make you wealthier.
+            {t.hero.description}
           </p>
         </div>
 
