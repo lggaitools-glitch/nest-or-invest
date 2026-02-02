@@ -1,4 +1,4 @@
-import { Home, Menu, ChevronDown, Calculator } from 'lucide-react';
+import { Home, Menu, ChevronDown, Calculator, FileText } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { LanguageSelector } from '@/components/simulator/LanguageSelector';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -16,6 +16,7 @@ export function SiteNavigation() {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
+  const isArticlesActive = () => location.pathname.startsWith('/articles');
 
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
@@ -57,6 +58,15 @@ export function SiteNavigation() {
                   >
                     <Calculator className="h-4 w-4" />
                     {t.simulate.nav.simulate}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link 
+                    to="/articles" 
+                    className={`flex items-center gap-2 cursor-pointer ${isArticlesActive() ? 'bg-accent' : ''}`}
+                  >
+                    <FileText className="h-4 w-4" />
+                    Insights
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
