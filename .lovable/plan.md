@@ -1,290 +1,252 @@
 
-# Spanish Articles Section Implementation Plan
+# Bilingual SEO Implementation Plan (hreflang + Canonical)
 
 ## Overview
-Create a Spanish-language editorial section at `/es/articles` that mirrors the structure, quality, and E-E-A-T standards of the English `/articles` section, treating Spanish content as first-class editorial content.
+Add hreflang annotations and proper canonical tags to enable Google to understand the relationship between English and Spanish article pages, avoiding duplicate indexing and strengthening international SEO.
 
 ---
 
 ## Architecture Approach
 
-The implementation will create parallel Spanish data structures and components that follow the same patterns as the English editorial system while maintaining full separation of content.
+The implementation creates a translation mapping system and a reusable `HreflangTags` component that can be used across all article pages.
 
 ```text
 src/
   data/
-    articleData.ts              # UPDATE - Add Spanish articles + helpers
-    topicCategories.ts          # UPDATE - Add Spanish topic categories
-    futureArticles.ts           # UPDATE - Add Spanish future articles
+    articleData.ts              # UPDATE - Add translation mapping
   components/
     articles/
-      AuthorByline.tsx          # UPDATE - Support Spanish text
-      RelatedReading.tsx        # UPDATE - Support Spanish links
-      TopicHub.tsx              # UPDATE - Support Spanish categories
-      ArticleJsonLd.tsx         # UPDATE - Support /es/ base path
+      HreflangTags.tsx          # NEW - Reusable hreflang component
+      ArticleJsonLd.tsx         # UPDATE - Remove canonical (moved to HreflangTags)
+      index.ts                  # UPDATE - Export HreflangTags
   pages/
-    ArticlesEs.tsx              # NEW - Spanish articles listing page
-    ArticleCasaVsBolsa.tsx      # NEW - Spanish article page
-  App.tsx                       # UPDATE - Add Spanish routes
+    Articles.tsx                # UPDATE - Add hreflang + canonical for index
+    ArticlesEs.tsx              # UPDATE - Add hreflang + canonical for index
+    ArticleHouseVsStocks.tsx    # UPDATE - Add HreflangTags component
+    ArticleCasaVsBolsa.tsx      # UPDATE - Add HreflangTags component
 ```
 
 ---
 
 ## Files to Create
 
-### 1. `src/pages/ArticlesEs.tsx`
-Spanish articles listing page mirroring `/articles`:
+### 1. `src/components/articles/HreflangTags.tsx`
+Reusable component that outputs hreflang and canonical link tags via Helmet:
 
-- SEO title: "Artículos sobre Vivienda y Decisiones Financieras | HomeDecision"
-- Intro text in Spanish (provided in requirements)
-- Spanish TopicHub section
-- List of published Spanish articles
-- `lang="es"` on html element via Helmet
+```typescript
+interface HreflangTagsProps {
+  // For index pages
+  type: 'index' | 'article';
+  language: 'en' | 'es';
+  
+  // For article pages only
+  enSlug?: string;
+  esSlug?: string;
+}
 
-### 2. `src/pages/ArticleCasaVsBolsa.tsx`
-Full Spanish article applying E-E-A-T framework:
+// Component logic:
+// 1. If type='index':
+//    - canonical: /articles (en) or /es/articles (es)
+//    - hreflang en => /articles
+//    - hreflang es => /es/articles
+//    - hreflang x-default => /articles
 
-- ArticleJsonLd with Spanish metadata
-- ArticleHeader with Spanish lead paragraph
-- Spanish AuthorByline text
-- Full article content (provided in requirements)
-- Spanish RelatedReading section
-- Spanish ArticleCTA linking to /simulate
-- Spanish ArticleFooter
-- `lang="es"` on html element
+// 2. If type='article':
+//    - canonical: points to self (based on language)
+//    - If both enSlug AND esSlug exist:
+//      - hreflang en => /articles/{enSlug}
+//      - hreflang es => /es/articles/{esSlug}
+//      - hreflang x-default => /articles/{enSlug}
+//    - If only one slug exists (no translation yet):
+//      - Only output canonical, no alternate hreflang
+```
+
+Output structure:
+```html
+<link rel="canonical" href="..." />
+<link rel="alternate" hreflang="en" href="..." />
+<link rel="alternate" hreflang="es" href="..." />
+<link rel="alternate" hreflang="x-default" href="..." />
+```
 
 ---
 
 ## Files to Modify
 
 ### 1. `src/data/articleData.ts`
-Add Spanish articles data structure:
+Add translation mapping to link English and Spanish article pairs:
 
 ```typescript
-export interface ArticleMetadata {
-  slug: string;
-  title: string;
-  description: string;
-  excerpt: string;
-  publishedDate: string;
-  modifiedDate: string;
-  wordCount: number;
-  category: string;
-  isPublished: boolean;
-  language: 'en' | 'es';  // NEW FIELD
+// Translation pairs: maps English slug to Spanish slug
+export const articleTranslations: Record<string, string> = {
+  'house-vs-stocks-what-the-data-really-says': 'casa-vs-bolsa-lo-que-dicen-los-datos',
+};
+
+// Helper to get the opposite language slug
+export function getTranslationSlug(slug: string, fromLanguage: 'en' | 'es'): string | undefined {
+  if (fromLanguage === 'en') {
+    return articleTranslations[slug];
+  } else {
+    // Reverse lookup
+    const entry = Object.entries(articleTranslations).find(([_, esSlug]) => esSlug === slug);
+    return entry ? entry[0] : undefined;
+  }
 }
-
-// Add Spanish article
-export const articlesEs: ArticleMetadata[] = [
-  {
-    slug: 'casa-vs-bolsa-lo-que-dicen-los-datos',
-    title: 'Casa vs Bolsa: Lo que los datos realmente dicen sobre la creación de riqueza',
-    description: '¿Comprar una vivienda o invertir en bolsa? Analizamos datos reales...',
-    excerpt: '¿Comprar una vivienda o invertir en bolsa? Datos reales y patrones...',
-    publishedDate: '2025-02-03',
-    modifiedDate: '2025-02-03',
-    wordCount: 950,
-    category: 'rent-vs-buy-fundamentals',
-    isPublished: true,
-    language: 'es',
-  },
-];
-
-// Helper functions for Spanish articles
-export function getSpanishArticleBySlug(slug: string): ArticleMetadata | undefined
-export function getPublishedSpanishArticles(): ArticleMetadata[]
-export function getSpanishCanonicalUrl(slug: string): string
 ```
 
-### 2. `src/data/topicCategories.ts`
-Add Spanish topic categories:
+### 2. `src/components/articles/ArticleJsonLd.tsx`
+Remove the canonical link (it will now be handled by HreflangTags to avoid duplication):
 
 ```typescript
-export const topicCategoriesEs: TopicCategory[] = [
-  {
-    id: 'rent-vs-buy-fundamentals',
-    name: 'Fundamentos Alquilar vs Comprar',
-    description: 'Marcos de decisión para comparar alquiler y compra.',
-    articleSlugs: ['casa-vs-bolsa-lo-que-dicen-los-datos'],
-  },
-  // ... other categories in Spanish
-];
+// Remove this line from the return:
+// <link rel="canonical" href={canonicalUrl} />
 ```
 
-### 3. `src/data/futureArticles.ts`
-Add Spanish content roadmap:
+### 3. `src/components/articles/index.ts`
+Add export for new component:
 
 ```typescript
-export const futureArticlesEs: FutureArticle[] = [
-  {
-    slug: 'alquilar-vs-comprar-marco-completo',
-    title: 'Alquilar vs Comprar: Marco Completo de Decisión',
-    category: 'rent-vs-buy-fundamentals',
-    priority: 1,
-  },
-  // ... Spanish equivalents of English roadmap
-];
+export { HreflangTags } from './HreflangTags';
 ```
 
-### 4. `src/components/articles/AuthorByline.tsx`
-Add language prop for Spanish text:
+### 4. `src/pages/Articles.tsx` (English index)
+Add hreflang tags and canonical:
 
 ```typescript
-interface AuthorBylineProps {
-  wordCount: number;
-  modifiedDate: string;
-  language?: 'en' | 'es';  // NEW
-}
-
-// Spanish text:
-// "Por HomeDecision Research Team"
-// "Revisado para mayor precisión"
-// "X min de lectura"
-// "Última actualización {date}"
-// "Acerca de HomeDecision Research Team"
-// About text in Spanish (trust-focused, not salesy)
-// "Descubre cómo funciona HomeDecision →"
+<Helmet>
+  <html lang="en" />
+  <title>...</title>
+  <meta name="description" content="..." />
+  <link rel="canonical" href="https://homedecision.app/articles" />
+  <link rel="alternate" hreflang="en" href="https://homedecision.app/articles" />
+  <link rel="alternate" hreflang="es" href="https://homedecision.app/es/articles" />
+  <link rel="alternate" hreflang="x-default" href="https://homedecision.app/articles" />
+</Helmet>
 ```
 
-### 5. `src/components/articles/RelatedReading.tsx`
-Add language prop for Spanish links and text:
+### 5. `src/pages/ArticlesEs.tsx` (Spanish index)
+Add hreflang tags and canonical:
 
 ```typescript
-interface RelatedReadingProps {
-  currentSlug: string;
-  language?: 'en' | 'es';  // NEW
-  basePath?: string;       // '/articles' or '/es/articles'
-}
-
-// Spanish text:
-// "Lecturas relacionadas"
-// "Leer artículo"
-// "Próximamente"
-// "Calcula tus números en el simulador"
-// "Probar ahora"
+<Helmet>
+  <html lang="es" />
+  <title>...</title>
+  <meta name="description" content="..." />
+  <link rel="canonical" href="https://homedecision.app/es/articles" />
+  <link rel="alternate" hreflang="en" href="https://homedecision.app/articles" />
+  <link rel="alternate" hreflang="es" href="https://homedecision.app/es/articles" />
+  <link rel="alternate" hreflang="x-default" href="https://homedecision.app/articles" />
+</Helmet>
 ```
 
-### 6. `src/components/articles/TopicHub.tsx`
-Add language prop for Spanish categories:
+### 6. `src/pages/ArticleHouseVsStocks.tsx` (English article)
+Add HreflangTags component:
 
 ```typescript
-interface TopicHubProps {
-  language?: 'en' | 'es';  // NEW
-  basePath?: string;       // '/articles' or '/es/articles'
-}
+import { HreflangTags } from '@/components/articles';
+import { getTranslationSlug } from '@/data/articleData';
 
-// Use topicCategoriesEs when language='es'
+// In component:
+const esSlug = getTranslationSlug(ARTICLE_SLUG, 'en');
+
+// In JSX:
+<Helmet>
+  <html lang="en" />
+  ...
+</Helmet>
+<HreflangTags
+  type="article"
+  language="en"
+  enSlug={ARTICLE_SLUG}
+  esSlug={esSlug}
+/>
 ```
 
-### 7. `src/components/articles/ArticleJsonLd.tsx`
-Support Spanish base URL:
+### 7. `src/pages/ArticleCasaVsBolsa.tsx` (Spanish article)
+Add HreflangTags component:
 
 ```typescript
-interface ArticleJsonLdProps {
-  // existing props...
-  language?: 'en' | 'es';  // NEW
-}
+import { HreflangTags } from '@/components/articles';
+import { getTranslationSlug } from '@/data/articleData';
 
-// When language='es', use:
-// canonicalUrl: `${BASE_URL}/es/articles/${slug}`
-// Breadcrumb: Home > Artículos > {title}
-```
+// In component:
+const enSlug = getTranslationSlug(ARTICLE_SLUG, 'es');
 
-### 8. `src/App.tsx`
-Add Spanish routes:
-
-```typescript
-import ArticlesEs from "./pages/ArticlesEs";
-import ArticleCasaVsBolsa from "./pages/ArticleCasaVsBolsa";
-
-// Add routes:
-<Route path="/es/articles" element={<ArticlesEs />} />
-<Route path="/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos" element={<ArticleCasaVsBolsa />} />
+// In JSX (already has lang="es"):
+<HreflangTags
+  type="article"
+  language="es"
+  enSlug={enSlug}
+  esSlug={ARTICLE_SLUG}
+/>
 ```
 
 ---
 
-## Spanish Article Content Structure
+## Expected Output
 
-The article at `/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos` will follow this structure:
+### For /articles (English index):
+```html
+<html lang="en">
+<head>
+  <link rel="canonical" href="https://homedecision.app/articles" />
+  <link rel="alternate" hreflang="en" href="https://homedecision.app/articles" />
+  <link rel="alternate" hreflang="es" href="https://homedecision.app/es/articles" />
+  <link rel="alternate" hreflang="x-default" href="https://homedecision.app/articles" />
+</head>
+```
 
-```text
-ArticleLayout
-  Helmet (lang="es")
-  ArticleJsonLd (Spanish metadata)
-  
-  ArticleHeader
-    H1: "Casa vs Bolsa: Lo que los datos realmente dicen..."
-    Lead: (intro paragraphs - no heading)
-    AuthorByline (Spanish)
-  
-  ArticleBody
-    H2: "Una perspectiva experta sobre la riqueza a largo plazo"
-    H2: "Los dos grandes motores de la riqueza familiar"
-      - Bullet list (Spanish)
-    H2: "Por qué la vivienda suele funcionar en la práctica"
-      - Bullet list (Spanish)
-    H2: "El gran mito: 'alquilo e invierto la diferencia'"
-    H2: "Cuándo alquilar sí tiene sentido"
-      - Bullet list (Spanish)
-    H2: "Por qué el consejo genérico no funciona"
-    H2: "El valor de la simulación personalizada"
-    H2: "Transparencia e independencia"
-      - Bullet list (Spanish)
-    H2: "Explora tu propio escenario"
-  
-  RelatedReading (Spanish)
-  ArticleCTA
-    Text: "Explora tu escenario de alquiler vs compra →"
-    Link: /simulate
-  ArticleFooter (Spanish)
+### For /es/articles (Spanish index):
+```html
+<html lang="es">
+<head>
+  <link rel="canonical" href="https://homedecision.app/es/articles" />
+  <link rel="alternate" hreflang="en" href="https://homedecision.app/articles" />
+  <link rel="alternate" hreflang="es" href="https://homedecision.app/es/articles" />
+  <link rel="alternate" hreflang="x-default" href="https://homedecision.app/articles" />
+</head>
+```
+
+### For /articles/house-vs-stocks-what-the-data-really-says:
+```html
+<html lang="en">
+<head>
+  <link rel="canonical" href="https://homedecision.app/articles/house-vs-stocks-what-the-data-really-says" />
+  <link rel="alternate" hreflang="en" href="https://homedecision.app/articles/house-vs-stocks-what-the-data-really-says" />
+  <link rel="alternate" hreflang="es" href="https://homedecision.app/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos" />
+  <link rel="alternate" hreflang="x-default" href="https://homedecision.app/articles/house-vs-stocks-what-the-data-really-says" />
+</head>
+```
+
+### For /es/articles/casa-vs-bolsa-lo-que-dicen-los-datos:
+```html
+<html lang="es">
+<head>
+  <link rel="canonical" href="https://homedecision.app/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos" />
+  <link rel="alternate" hreflang="en" href="https://homedecision.app/articles/house-vs-stocks-what-the-data-really-says" />
+  <link rel="alternate" hreflang="es" href="https://homedecision.app/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos" />
+  <link rel="alternate" hreflang="x-default" href="https://homedecision.app/articles/house-vs-stocks-what-the-data-really-says" />
+</head>
 ```
 
 ---
 
-## Spanish UI Strings
+## Future-Proofing
 
-| Component | English | Spanish |
-|-----------|---------|---------|
-| AuthorByline | By HomeDecision Research Team | Por HomeDecision Research Team |
-| AuthorByline | Reviewed for accuracy | Revisado para mayor precisión |
-| AuthorByline | X min read | X min de lectura |
-| AuthorByline | Last updated | Última actualización |
-| AuthorByline | About... | Acerca de... |
-| AuthorByline | Learn how HomeDecision works | Descubre cómo funciona HomeDecision |
-| RelatedReading | Related reading | Lecturas relacionadas |
-| RelatedReading | Read article | Leer artículo |
-| RelatedReading | Coming soon | Próximamente |
-| RelatedReading | Run your numbers... | Calcula tus números en el simulador |
-| RelatedReading | Try it now | Probar ahora |
-| TopicHub | Explore topics | Explorar temas |
-| TopicHub | X article(s) | X artículo(s) |
-| ArticleFooter | Have feedback... | ¿Tienes comentarios o detectaste un error? Escríbenos a contact@homedecision.app |
-| ArticleCTA | Explore your own... | Explora tu escenario de alquiler vs compra |
-| Breadcrumb | Articles | Artículos |
+When adding a new article pair:
 
----
+1. Add the English article to `articles` array in `articleData.ts`
+2. Add the Spanish article to `articlesEs` array
+3. Add the slug mapping to `articleTranslations`:
+   ```typescript
+   export const articleTranslations: Record<string, string> = {
+     'house-vs-stocks-what-the-data-really-says': 'casa-vs-bolsa-lo-que-dicen-los-datos',
+     'new-english-slug': 'nuevo-slug-espanol',  // New pair
+   };
+   ```
+4. Use `HreflangTags` component in the new article pages
 
-## Spanish Topic Categories
-
-| English | Spanish |
-|---------|---------|
-| Rent vs Buy Fundamentals | Fundamentos Alquilar vs Comprar |
-| Mortgages & Interest Rates | Hipotecas y Tipos de Interés |
-| Hidden Costs & Maintenance | Costes Ocultos y Mantenimiento |
-| Opportunity Cost & Investing | Coste de Oportunidad e Inversión |
-| Behavioral Finance & Decision Biases | Finanzas Conductuales y Sesgos |
-| Scenarios & Case Studies | Escenarios y Casos de Estudio |
-
----
-
-## SEO & Language Configuration
-
-For Spanish pages:
-- Add `<html lang="es">` via Helmet
-- Set canonical URL to `/es/articles/{slug}`
-- Breadcrumb schema uses Spanish labels
-- All meta descriptions in Spanish
+If a translation doesn't exist yet, the `getTranslationSlug` function returns `undefined`, and `HreflangTags` will only output the canonical (no alternate hreflang to non-existent pages).
 
 ---
 
@@ -292,26 +254,13 @@ For Spanish pages:
 
 | Action | File |
 |--------|------|
-| CREATE | `src/pages/ArticlesEs.tsx` |
-| CREATE | `src/pages/ArticleCasaVsBolsa.tsx` |
+| CREATE | `src/components/articles/HreflangTags.tsx` |
 | MODIFY | `src/data/articleData.ts` |
-| MODIFY | `src/data/topicCategories.ts` |
-| MODIFY | `src/data/futureArticles.ts` |
-| MODIFY | `src/components/articles/AuthorByline.tsx` |
-| MODIFY | `src/components/articles/RelatedReading.tsx` |
-| MODIFY | `src/components/articles/TopicHub.tsx` |
 | MODIFY | `src/components/articles/ArticleJsonLd.tsx` |
-| MODIFY | `src/App.tsx` |
+| MODIFY | `src/components/articles/index.ts` |
+| MODIFY | `src/pages/Articles.tsx` |
+| MODIFY | `src/pages/ArticlesEs.tsx` |
+| MODIFY | `src/pages/ArticleHouseVsStocks.tsx` |
+| MODIFY | `src/pages/ArticleCasaVsBolsa.tsx` |
 
-**Total: 2 new files, 8 modified files**
-
----
-
-## Design Notes
-
-- Spanish content treated as first-class, not secondary
-- No auto-translation from English
-- Same professional editorial aesthetic
-- Same E-E-A-T signals and trust framework
-- Prepared for future Spanish articles using same template
-- Clean separation between English and Spanish content
+**Total: 1 new file, 7 modified files**
