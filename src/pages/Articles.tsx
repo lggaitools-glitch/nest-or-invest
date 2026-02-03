@@ -13,10 +13,10 @@ export default function Articles() {
     <>
       <Helmet>
         <html lang="en" />
-        <title>Housing & Financial Decision Insights | HomeDecision</title>
+        <title>Rent vs Buy Insights & Data-Driven Guides | HomeDecision</title>
         <meta
           name="description"
-          content="Research-backed articles to help you make better long-term housing decisions. Understand the real trade-offs behind renting, buying, and investing."
+          content="In-depth articles analyzing rent vs buy decisions, housing vs investing, and long-term wealth strategies."
         />
         <link rel="canonical" href="https://homedecision.app/articles" />
         <meta name="robots" content="index,follow" />
@@ -24,15 +24,15 @@ export default function Articles() {
         <link rel="alternate" hrefLang="es" href="https://homedecision.app/es/articles" />
         <link rel="alternate" hrefLang="x-default" href="https://homedecision.app/articles" />
         
-        <meta property="og:title" content="Housing & Financial Decision Insights | HomeDecision" />
-        <meta property="og:description" content="Research-backed articles to help you make better long-term housing decisions." />
+        <meta property="og:title" content="Rent vs Buy Insights & Data-Driven Guides | HomeDecision" />
+        <meta property="og:description" content="In-depth articles analyzing rent vs buy decisions, housing vs investing, and long-term wealth strategies." />
         <meta property="og:url" content="https://homedecision.app/articles" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
         
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Housing & Financial Decision Insights | HomeDecision" />
-        <meta name="twitter:description" content="Research-backed articles to help you make better long-term housing decisions." />
+        <meta name="twitter:title" content="Rent vs Buy Insights & Data-Driven Guides | HomeDecision" />
+        <meta name="twitter:description" content="In-depth articles analyzing rent vs buy decisions, housing vs investing, and long-term wealth strategies." />
         <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
       </Helmet>
 

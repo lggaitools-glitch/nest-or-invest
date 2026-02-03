@@ -12,7 +12,9 @@ const NotFound = () => {
   return (
     <>
       <Helmet>
-        <meta name="robots" content="noindex,nofollow" />
+        <title>Page Not Found | HomeDecision</title>
+        <meta name="description" content="The page you're looking for doesn't exist. Return to HomeDecision to explore rent vs buy tools and insights." />
+        <meta name="robots" content="noindex,follow" />
       </Helmet>
       <div className="flex min-h-screen items-center justify-center bg-muted">
         <div className="text-center">
