@@ -102,23 +102,6 @@ export const COUNTRY_PRESETS: CountryPreset[] = [
     },
   },
   {
-    id: 'portugal',
-    name: 'Portugal',
-    flag: '🇵🇹',
-    values: {
-      propertyPrice: 300000,
-      downPayment: 60000,
-      mortgageRate: 3.8,
-      mortgageYears: 30,
-      rentMonthly: 1200,
-      rentIncreaseAnnual: 4,
-      investmentReturnAnnual: 7,
-      propertyAppreciationAnnual: 3,
-      maintenancePercentAnnual: 1,
-      timeHorizonYears: 20,
-    },
-  },
-  {
     id: 'custom',
     name: 'Custom',
     flag: '⚙️',
