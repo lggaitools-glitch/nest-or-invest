@@ -57,7 +57,7 @@ export function WealthChart({ rentData, buyData, breakEvenYear, countryId }: Wea
     return null;
   };
 
-  const currencySymbol = countryId === 'brazil' ? 'R$' : '€';
+  const currencySymbol = '€';
 
   return (
     <div className="card-elevated-lg p-6">

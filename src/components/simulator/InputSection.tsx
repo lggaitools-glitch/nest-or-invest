@@ -84,7 +84,7 @@ export function InputSection({
   const { t } = useLanguage();
 
   // Get currency symbol based on selected preset
-  const currencySymbol = selectedPreset === 'brazil' ? 'R$' : '€';
+  const currencySymbol = '€';
 
   return (
     <div className="card-elevated-lg p-6 space-y-6">

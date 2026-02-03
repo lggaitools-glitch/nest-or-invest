@@ -1,4 +1,4 @@
-export type Language = 'en' | 'pt-BR' | 'es';
+export type Language = 'en' | 'es';
 
 export interface LandingTranslations {
   seo: {
@@ -173,7 +173,6 @@ export interface Translations {
   countries: {
     spain: string;
     portugal: string;
-    brazil: string;
     custom: string;
   };
   landing: LandingTranslations;

@@ -316,10 +316,9 @@ export function generateInsights(
 }
 
 export function formatCurrency(value: number, countryId: string = 'spain'): string {
-  const isBrazil = countryId === 'brazil';
-  return new Intl.NumberFormat(isBrazil ? 'pt-BR' : 'en-EU', {
+  return new Intl.NumberFormat('en-EU', {
     style: 'currency',
-    currency: isBrazil ? 'BRL' : 'EUR',
+    currency: 'EUR',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value);
