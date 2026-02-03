@@ -1,18 +1,14 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { SiteNavigation } from '@/components/SiteNavigation';
+import { TopicHub } from '@/components/articles';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight } from 'lucide-react';
-
-const articles = [
-  {
-    slug: 'house-vs-stocks-what-the-data-really-says',
-    title: 'House vs Stocks: What the Data Really Says About Building Wealth',
-    excerpt: 'Buying a home or investing in stocks? Real-world data and behavioral insights show why the answer is more nuanced than most advice suggests.',
-  },
-];
+import { ArrowRight, Clock } from 'lucide-react';
+import { getPublishedArticles, calculateReadingTime } from '@/data/articleData';
 
 export default function Articles() {
+  const articles = getPublishedArticles();
+
   return (
     <>
       <Helmet>
@@ -40,8 +36,12 @@ export default function Articles() {
             </p>
           </header>
 
+          {/* Topic Hub */}
+          <TopicHub />
+
           {/* Articles List */}
           <section className="space-y-6">
+            <h2 className="text-xl font-bold text-foreground font-display mb-4">Latest articles</h2>
             {articles.map((article) => (
               <Link
                 key={article.slug}
@@ -57,7 +57,11 @@ export default function Articles() {
                       {article.excerpt}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex items-center gap-4">
+                    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      {calculateReadingTime(article.wordCount)} min read
+                    </span>
                     <span className="inline-flex items-center gap-2 text-primary font-medium text-sm group-hover:gap-3 transition-all">
                       Read article
                       <ArrowRight className="h-4 w-4" />
