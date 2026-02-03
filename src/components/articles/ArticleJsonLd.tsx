@@ -8,7 +8,19 @@ interface ArticleJsonLdProps {
   publishedDate: string;
   modifiedDate: string;
   imageUrl?: string;
+  language?: 'en' | 'es';
 }
+
+const breadcrumbLabels = {
+  en: {
+    home: 'Home',
+    articles: 'Articles',
+  },
+  es: {
+    home: 'Inicio',
+    articles: 'Artículos',
+  },
+};
 
 export function ArticleJsonLd({
   title,
@@ -17,8 +29,12 @@ export function ArticleJsonLd({
   publishedDate,
   modifiedDate,
   imageUrl,
+  language = 'en',
 }: ArticleJsonLdProps) {
-  const canonicalUrl = `${BASE_URL}/articles/${slug}`;
+  const basePath = language === 'es' ? '/es/articles' : '/articles';
+  const articlesPath = language === 'es' ? `${BASE_URL}/es/articles` : `${BASE_URL}/articles`;
+  const canonicalUrl = `${articlesPath}/${slug}`;
+  const labels = breadcrumbLabels[language];
 
   const articleSchema = {
     '@type': 'Article',
@@ -56,14 +72,14 @@ export function ArticleJsonLd({
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Home',
+        name: labels.home,
         item: BASE_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Articles',
-        item: `${BASE_URL}/articles`,
+        name: labels.articles,
+        item: articlesPath,
       },
       {
         '@type': 'ListItem',

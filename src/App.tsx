@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Simulate from "./pages/Simulate";
 import Articles from "./pages/Articles";
 import ArticleHouseVsStocks from "./pages/ArticleHouseVsStocks";
+import ArticlesEs from "./pages/ArticlesEs";
+import ArticleCasaVsBolsa from "./pages/ArticleCasaVsBolsa";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,9 @@ const App = () => (
             <Route path="/simulate" element={<Simulate />} />
             <Route path="/articles" element={<Articles />} />
             <Route path="/articles/house-vs-stocks-what-the-data-really-says" element={<ArticleHouseVsStocks />} />
+            {/* Spanish articles */}
+            <Route path="/es/articles" element={<ArticlesEs />} />
+            <Route path="/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos" element={<ArticleCasaVsBolsa />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

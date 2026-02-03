@@ -1,18 +1,44 @@
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { topicCategories, getCategoryArticleCount } from '@/data/topicCategories';
-import { getPublishedArticles } from '@/data/articleData';
+import { topicCategories, topicCategoriesEs, getCategoryArticleCount, getSpanishCategoryArticleCount } from '@/data/topicCategories';
+import { getPublishedArticles, getPublishedSpanishArticles } from '@/data/articleData';
 
-export function TopicHub() {
-  const publishedSlugs = getPublishedArticles().map((article) => article.slug);
+interface TopicHubProps {
+  language?: 'en' | 'es';
+  basePath?: string;
+}
+
+const translations = {
+  en: {
+    title: 'Explore topics',
+    article: 'article',
+    articles: 'articles',
+    comingSoon: 'Coming soon',
+  },
+  es: {
+    title: 'Explorar temas',
+    article: 'artículo',
+    articles: 'artículos',
+    comingSoon: 'Próximamente',
+  },
+};
+
+export function TopicHub({ language = 'en', basePath = '/articles' }: TopicHubProps) {
+  const t = translations[language];
+  const categories = language === 'es' ? topicCategoriesEs : topicCategories;
+  const publishedSlugs = language === 'es' 
+    ? getPublishedSpanishArticles().map((article) => article.slug)
+    : getPublishedArticles().map((article) => article.slug);
+  
+  const getArticleCount = language === 'es' ? getSpanishCategoryArticleCount : getCategoryArticleCount;
 
   return (
     <section className="mb-12">
-      <h2 className="text-xl font-bold text-foreground font-display mb-6">Explore topics</h2>
+      <h2 className="text-xl font-bold text-foreground font-display mb-6">{t.title}</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {topicCategories.map((category) => {
-          const articleCount = getCategoryArticleCount(category.id, publishedSlugs);
+        {categories.map((category) => {
+          const articleCount = getArticleCount(category.id, publishedSlugs);
           const hasArticles = articleCount > 0;
 
           // Find first published article in category for linking
@@ -22,7 +48,7 @@ export function TopicHub() {
 
           const CardWrapper = hasArticles && firstArticleSlug
             ? ({ children }: { children: React.ReactNode }) => (
-                <Link to={`/articles/${firstArticleSlug}`} className="block group">
+                <Link to={`${basePath}/${firstArticleSlug}`} className="block group">
                   {children}
                 </Link>
               )
@@ -54,8 +80,8 @@ export function TopicHub() {
                     }`}
                   >
                     {hasArticles
-                      ? `${articleCount} article${articleCount > 1 ? 's' : ''}`
-                      : 'Coming soon'}
+                      ? `${articleCount} ${articleCount > 1 ? t.articles : t.article}`
+                      : t.comingSoon}
                   </span>
                 </CardContent>
               </Card>
