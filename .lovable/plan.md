@@ -1,154 +1,136 @@
 
 
-# Add New Article: "Rent vs Buy in 2026: A Data-Driven Decision Guide"
+# Update Article: Match Exact PDF Content
 
-## Article Overview
-
-Based on the uploaded PDF, this is a comprehensive, data-driven guide focused on the 2026 Spanish housing market. It covers:
-- Current market conditions (mortgage rates, rent trends, price forecasts)
-- Detailed cost comparisons (rent vs mortgage payments)
-- Hidden costs for both buying and renting
-- Wealth-building considerations
-- Local Madrid/Spain market insights
-- How to use the HomeDecision simulator
-
-**Proposed URL slug:** `rent-vs-buy-2026-data-driven-decision-guide`
-
-**Full path:** `/articles/rent-vs-buy-2026-data-driven-decision-guide`
+## Issue
+The current article content has been paraphrased and summarized. You want the **exact content** from the uploaded PDF document.
 
 ---
 
-## Implementation Plan
+## Changes Required
 
-### Phase 1: Add Article Metadata
+### File: `src/pages/ArticleRentVsBuy2026.tsx`
 
-**File: `src/data/articleData.ts`**
+Replace the article body content with the exact text from the PDF. Here's what changes:
 
-Add new entry to the `articles` array:
+---
 
-```typescript
-{
-  slug: 'rent-vs-buy-2026-data-driven-decision-guide',
-  title: 'Rent vs Buy in 2026: A Data-Driven Decision Guide',
-  description: 'Navigate the 2026 housing market with real data on mortgage rates, rent trends, and Spanish market forecasts to make a smarter rent vs buy decision.',
-  excerpt: 'With mortgage rates stabilizing and rents climbing in 2026, deciding whether to rent or buy requires careful analysis. This guide synthesizes market data to help you decide.',
-  publishedDate: '2026-02-03',
-  modifiedDate: '2026-02-03',
-  wordCount: 1800,
-  category: 'rent-vs-buy-fundamentals',
-  isPublished: true,
-  language: 'en',
-}
+### Updated Lead Paragraph
+
+**Current:**
+> "With mortgage rates stabilizing and rents climbing in 2026, deciding whether to rent or buy requires careful analysis. This guide synthesizes market data and expert insights to help you navigate one of life's biggest financial decisions."
+
+**PDF Original:**
+> "In 2026 the housing market looks very different from the frenetic, pandemic-fuelled years that preceded it. Mortgage rates have come down from their 2023-24 highs, yet they remain well above the ultra-low levels many buyers remember. Rents continue to climb, driven by a shortage of available homes and the expiration of pandemic-era rental contracts. With sale and rental prices both expected to set new records, deciding whether to rent or buy requires careful analysis of current data rather than gut feelings. This guide synthesizes research from market forecasters, mortgage specialists and housing-policy experts to help you make a neutral, numbers-based decision—then points you to HomeDecision's rent-versus-buy simulator to crunch your own numbers."
+
+---
+
+### Section-by-Section Content Update
+
+| Section | Update |
+|---------|--------|
+| **Why 2026 Is a Unique Moment** | Replace with exact PDF text including specific forecasts (BBVA 5.3%, CaixaBank 6.3%), 100,000 homes/year stat, 600,000 expiring contracts, 50+ tenants per listing |
+| **Mortgage Rates Stabilise** | Update with exact figures: Euribor 2.08% mid-2025, projected 2% by 2026, 0.4% lending growth |
+| **Mortgage vs Rent: Monthly Costs** | Add exact rent data (studios €550, 1-bed €720, 2-bed €1,020, €14.40/sqm), mortgage example (€250,000 at 80% LTV, 3.5% fixed, ~€1,000/month) |
+| **Hidden Costs** | Update buying costs to exact PDF format (15% total), add renter's insurance and 2-3% vacancy rate stat |
+| **Cost of Waiting** | Use exact example: €300,000 home becoming €315,000-€318,000 next year |
+| **Building Wealth** | Add specific stat: US homeowner gained $23,500 in equity in 2024 |
+| **Lifestyle and Flexibility** | Update with exact 3 considerations from PDF |
+| **Local Considerations** | Add exact data: 15%+ YoY price growth in Madrid/Valencia, 6.3% average yield, Murcia 7.4%, outer Madrid 7%+ |
+| **Using HomeDecision's Simulator** | Replace with exact 5-step numbered list from PDF |
+| **Conclusion** | Replace with exact PDF conclusion text |
+
+---
+
+## Detailed Content Mapping
+
+### New Article Structure with Exact PDF Content:
+
+```text
+1. Lead paragraph (from PDF intro)
+
+2. H2: Why 2026 Is a Unique Moment
+   - Bullet: Prices will keep rising—just more slowly (5.3% BBVA, 6.3% CaixaBank, 100k homes/year)
+   - Bullet: Rent pressure intensifies (600k contracts expire, 6% rent growth, 50+ tenants per listing)
+
+3. H2: Mortgage rates stabilise but won't return to ultra-low levels
+   - Euribor 2.08% mid-2025, ~2% by 2026
+   - 0.4% lending growth
+   - Fixed/mixed-rate loans remain popular
+
+4. H2: Mortgage vs Rent: Monthly Costs in 2026
+   - H3: Average rents are climbing
+     - Studios: €550 (€400-€800)
+     - 1-bed: €720 (€500-€1,100)
+     - 2-bed: €1,020 (up to €1,600 in prime areas)
+     - Per sqm: €14.40, rising 10% YoY
+   - H3: Mortgage payments depend on rates and down payment
+     - Euribor toward 2%, variable mortgages 3-4%
+     - 30% income rule
+     - Example: €250k at 80% LTV, 3.5% fixed, 25 years = ~€1,000/month
+
+5. H2: Hidden Costs: Beyond the Monthly Payment
+   - H3: Buying costs (~15% of price)
+     - Transfer tax/VAT
+     - Notary and land-registry fees
+     - Valuation and bank fees
+     - Home insurance
+   - H3: Renting costs
+     - Security deposit (1-2 months)
+     - Agency fees, moving costs
+     - INE-linked rent increases
+     - Renter's insurance
+     - 2-3% vacancy rate in Madrid/Barcelona
+
+6. H2: The Cost of Waiting: Timing the Market
+   - €300k home → €315k-€318k next year at 5-6% growth
+   - 6% rent growth compounds
+   - Euribor decline won't fully offset price increases
+   - Supply shortages are structural
+
+7. H2: Building Wealth vs Paying Rent
+   - Equity accumulation with each payment
+   - 2024 stat: US homeowner gained ~$23,500 in equity
+   - Homeowner net worth vastly higher than renters
+   - Hedge against inflation
+
+8. H2: Lifestyle and Flexibility Considerations
+   - Stability vs flexibility
+   - Maintenance responsibilities
+   - Emotional factors (pride of ownership, community ties)
+
+9. H2: Local Considerations for Madrid and Spain
+   - H3: Madrid's market
+     - 15%+ YoY price growth late 2025
+     - Outer districts may offer 7%+ yields
+   - H3: Other regions and yields
+     - Spain average yield: 6.3%
+     - Murcia: 7.4%
+     - Valencia: 6%+
+     - Prime Madrid/Barcelona: 3-4%
+
+10. H2: Using HomeDecision's Rent-vs-Buy Simulator
+    - Intro paragraph about replacing guesswork with math
+    - Numbered list:
+      1. Gather local data
+      2. Estimate realistic rent increases (4-6% in Spain)
+      3. Enter financing terms (3-4% rate)
+      4. Set a time horizon
+      5. Compare scenarios with clear breakeven graph
+
+11. H2: Conclusion
+    - Exact PDF conclusion text
 ```
 
 ---
 
-### Phase 2: Create Article Page Component
+## Summary
 
-**New File: `src/pages/ArticleRentVsBuy2026.tsx`**
+| Item | Action |
+|------|--------|
+| File | `src/pages/ArticleRentVsBuy2026.tsx` |
+| Changes | Replace entire article body with exact PDF content |
+| Word count update | Update in `articleData.ts` if needed (currently 1800, PDF ~1650 words) |
 
-Following the existing article pattern, create a new page with:
-
-| Section | Content |
-|---------|---------|
-| **Title** | Rent vs Buy in 2026: A Data-Driven Decision Guide |
-| **Lead** | Summary of why 2026 is a unique moment for housing decisions |
-| **H2: Why 2026 Is a Unique Moment** | Price forecasts, rent pressure, supply shortages |
-| **H2: Mortgage Rates Stabilise** | Euribor trends, rate expectations |
-| **H2: Mortgage vs Rent: Monthly Costs** | Average rent data, mortgage payment examples |
-| **H2: Hidden Costs** | Buying costs (15% taxes/fees) and renting costs |
-| **H2: The Cost of Waiting** | Market timing considerations |
-| **H2: Building Wealth vs Paying Rent** | Equity accumulation benefits |
-| **H2: Lifestyle and Flexibility** | Non-financial considerations |
-| **H2: Local Considerations for Madrid and Spain** | Regional market insights, yields |
-| **H2: Using HomeDecision's Simulator** | How to use the tool with this data |
-| **H2: Conclusion** | Summary and call to action |
-
-**SEO Implementation:**
-- Unique `<title>`: "Rent vs Buy in 2026: A Data-Driven Decision Guide | HomeDecision"
-- Unique `<meta name="description">`: Article-specific summary (140-160 chars)
-- Self-referencing `<link rel="canonical">`
-- `<meta name="robots" content="index,follow">`
-- `hreflang` tags (en + x-default, no Spanish translation yet)
-- Open Graph and Twitter meta tags
-- JSON-LD structured data via `ArticleJsonLd`
-
----
-
-### Phase 3: Add Route to App
-
-**File: `src/App.tsx`**
-
-Add new route:
-
-```tsx
-import ArticleRentVsBuy2026 from "./pages/ArticleRentVsBuy2026";
-
-// In Routes:
-<Route 
-  path="/articles/rent-vs-buy-2026-data-driven-decision-guide" 
-  element={<ArticleRentVsBuy2026 />} 
-/>
-```
-
----
-
-### Phase 4: Update Sitemap
-
-**File: `public/sitemap.xml`**
-
-Add new entry:
-
-```xml
-<!-- English Article: Rent vs Buy 2026 Guide -->
-<url>
-  <loc>https://homedecision.app/articles/rent-vs-buy-2026-data-driven-decision-guide</loc>
-  <lastmod>2026-02-03</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.7</priority>
-</url>
-```
-
----
-
-## Files to Create/Modify
-
-| File | Action | Description |
-|------|--------|-------------|
-| `src/pages/ArticleRentVsBuy2026.tsx` | CREATE | New article page component |
-| `src/data/articleData.ts` | MODIFY | Add article metadata entry |
-| `src/App.tsx` | MODIFY | Add route for new article |
-| `public/sitemap.xml` | MODIFY | Add URL entry for SEO |
-
-**Total: 1 new file, 3 modified files**
-
----
-
-## SEO Compliance Checklist
-
-- [x] Unique title: "Rent vs Buy in 2026: A Data-Driven Decision Guide | HomeDecision"
-- [x] Unique description: ~150 characters, article-specific
-- [x] Self-referencing canonical URL
-- [x] `<meta name="robots" content="index,follow">`
-- [x] hreflang tags (en + x-default)
-- [x] Open Graph meta tags
-- [x] Twitter Card meta tags
-- [x] JSON-LD structured data (Article + BreadcrumbList)
-- [x] Semantic H1 (title) + H2/H3 hierarchy
-- [x] Internal links to /simulate and articles hub
-- [x] Added to sitemap.xml with correct priority (0.7) and changefreq (monthly)
-
----
-
-## Article Content Structure
-
-The article will follow the established editorial template using:
-- `ArticleLayout` - Page wrapper with navigation
-- `ArticleHeader` - Title, lead, byline
-- `ArticleCallout` - Key statistics and insights
-- `ArticleCTA` - Simulator call-to-action
-- `ArticleJsonLd` - Structured data
-- `HreflangTags` - Multilingual SEO
-- `RelatedReading` - Links to other articles
-- `ArticleFooter` - Contact information
+**Total: 1 file modified**
 
