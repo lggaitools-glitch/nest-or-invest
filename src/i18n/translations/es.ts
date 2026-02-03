@@ -111,7 +111,7 @@ export const es: Translations = {
   },
   footer: {
     builtWith: 'Hecho con',
-    copyright: '© 2024 HomeDecision',
+    copyright: '© 2026 HomeDecision',
     educational: 'Solo para fines educativos',
     disclaimer: 'HomeDecision es una herramienta educativa y no proporciona asesoramiento financiero, legal o de inversión. Los resultados dependen de las suposiciones proporcionadas por el usuario y pueden no reflejar resultados del mundo real.',
   },
