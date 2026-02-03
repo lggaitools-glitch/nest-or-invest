@@ -11,6 +11,7 @@ import ArticleHouseVsStocks from "./pages/ArticleHouseVsStocks";
 import ArticleRentVsBuy2026 from "./pages/ArticleRentVsBuy2026";
 import ArticlesEs from "./pages/ArticlesEs";
 import ArticleCasaVsBolsa from "./pages/ArticleCasaVsBolsa";
+import ArticleAlquilarOComprar2026 from "./pages/ArticleAlquilarOComprar2026";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             {/* Spanish articles */}
             <Route path="/es/articles" element={<ArticlesEs />} />
             <Route path="/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos" element={<ArticleCasaVsBolsa />} />
+            <Route path="/es/articles/alquilar-o-comprar-2026-guia-basada-en-datos" element={<ArticleAlquilarOComprar2026 />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

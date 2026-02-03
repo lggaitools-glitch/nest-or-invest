@@ -54,6 +54,18 @@ export const articlesEs: ArticleMetadata[] = [
     isPublished: true,
     language: 'es',
   },
+  {
+    slug: 'alquilar-o-comprar-2026-guia-basada-en-datos',
+    title: 'Alquilar o comprar en 2026: una guía de decisiones basada en datos',
+    description: 'Navega el mercado inmobiliario de 2026 con datos reales sobre tipos hipotecarios, tendencias de alquiler y previsiones del mercado español para tomar una decisión informada.',
+    excerpt: 'Con los tipos hipotecarios estabilizándose y los alquileres subiendo en 2026, decidir si alquilar o comprar exige analizar cuidadosamente los datos actuales.',
+    publishedDate: '2026-02-03',
+    modifiedDate: '2026-02-03',
+    wordCount: 1650,
+    category: 'rent-vs-buy-fundamentals',
+    isPublished: true,
+    language: 'es',
+  },
 ];
 
 // English article helpers
@@ -100,6 +112,7 @@ export function getCanonicalUrl(slug: string, language: 'en' | 'es' = 'en'): str
 // Translation pairs: maps English slug to Spanish slug
 export const articleTranslations: Record<string, string> = {
   'house-vs-stocks-what-the-data-really-says': 'casa-vs-bolsa-lo-que-dicen-los-datos',
+  'rent-vs-buy-2026-data-driven-decision-guide': 'alquilar-o-comprar-2026-guia-basada-en-datos',
 };
 
 // Helper to get the opposite language slug
