@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { SiteNavigation } from '@/components/SiteNavigation';
-import { TopicHub } from '@/components/articles';
+import { TopicHub, ArticleLanguageSwitcher } from '@/components/articles';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Clock } from 'lucide-react';
 import { getPublishedSpanishArticles, calculateReadingTime } from '@/data/articleData';
@@ -30,9 +30,16 @@ export default function ArticlesEs() {
         <main className="container max-w-4xl mx-auto px-4 py-12 md:py-16">
           {/* Page Header */}
           <header className="mb-12">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground font-display mb-6">
-              Artículos
-            </h1>
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground font-display">
+                Artículos
+              </h1>
+              <ArticleLanguageSwitcher
+                currentLanguage="es"
+                enPath="/articles"
+                esPath="/es/articles"
+              />
+            </div>
             <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
               En HomeDecision publicamos artículos basados en datos para ayudar a tomar mejores
               decisiones a largo plazo sobre alquiler, compra de vivienda e inversión. Nuestro
