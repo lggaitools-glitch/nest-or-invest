@@ -9,3 +9,5 @@ export { AuthorByline } from './AuthorByline';
 export { RelatedReading } from './RelatedReading';
 export { ArticleFooter } from './ArticleFooter';
 export { TopicHub } from './TopicHub';
+export { ArticleLanguageSwitcher } from './ArticleLanguageSwitcher';
+export { AvailableInLanguage } from './AvailableInLanguage';

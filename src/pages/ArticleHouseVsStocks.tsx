@@ -8,6 +8,8 @@ import {
   HreflangTags,
   RelatedReading,
   ArticleFooter,
+  ArticleLanguageSwitcher,
+  AvailableInLanguage,
 } from '@/components/articles';
 import { getArticleBySlug, getTranslationSlug } from '@/data/articleData';
 
@@ -21,6 +23,7 @@ export default function ArticleHouseVsStocks() {
   }
 
   const esSlug = getTranslationSlug(ARTICLE_SLUG, 'en');
+  const esPath = esSlug ? `/es/articles/${esSlug}` : undefined;
 
   return (
     <>
@@ -46,11 +49,24 @@ export default function ArticleHouseVsStocks() {
       />
 
       <ArticleLayout>
+        <div className="flex justify-end mb-4">
+          <ArticleLanguageSwitcher
+            currentLanguage="en"
+            enPath={`/articles/${ARTICLE_SLUG}`}
+            esPath={esPath}
+          />
+        </div>
+
         <ArticleHeader 
           title={articleData.title}
           lead="Understanding the real trade-offs between homeownership and stock market investing requires looking beyond simple math to how people actually build wealth over time."
           modifiedDate={articleData.modifiedDate}
           wordCount={articleData.wordCount}
+        />
+
+        <AvailableInLanguage
+          currentLanguage="en"
+          translationPath={esPath}
         />
 
         {/* Article Content */}

@@ -10,6 +10,8 @@ import {
   ArticleJsonLd,
   HreflangTags,
   RelatedReading,
+  ArticleLanguageSwitcher,
+  AvailableInLanguage,
 } from '@/components/articles';
 import { getSpanishArticleBySlug, getTranslationSlug } from '@/data/articleData';
 
@@ -23,6 +25,7 @@ export default function ArticleCasaVsBolsa() {
   }
 
   const enSlug = getTranslationSlug(ARTICLE_SLUG, 'es');
+  const enPath = enSlug ? `/articles/${enSlug}` : undefined;
 
   return (
     <>
@@ -52,14 +55,21 @@ export default function ArticleCasaVsBolsa() {
         <SiteNavigation />
 
         <article className="container max-w-3xl mx-auto px-4 py-12 md:py-16">
-          {/* Back Link */}
-          <Link
-            to="/es/articles"
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-8 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Volver a Artículos
-          </Link>
+          {/* Back Link + Language Switcher */}
+          <div className="flex items-center justify-between mb-8">
+            <Link
+              to="/es/articles"
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Volver a Artículos
+            </Link>
+            <ArticleLanguageSwitcher
+              currentLanguage="es"
+              enPath={enPath}
+              esPath={`/es/articles/${ARTICLE_SLUG}`}
+            />
+          </div>
 
           <ArticleHeader
             title={articleData.title}
@@ -67,6 +77,11 @@ export default function ArticleCasaVsBolsa() {
             modifiedDate={articleData.modifiedDate}
             wordCount={articleData.wordCount}
             language="es"
+          />
+
+          <AvailableInLanguage
+            currentLanguage="es"
+            translationPath={enPath}
           />
 
           {/* Article Body */}
