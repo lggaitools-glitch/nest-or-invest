@@ -10,7 +10,6 @@ import type { Language } from '@/i18n/types';
 
 const languages: { code: Language; flag: string; name: string }[] = [
   { code: 'en', flag: '🇬🇧', name: 'English' },
-  { code: 'pt-BR', flag: '🇧🇷', name: 'Português (BR)' },
   { code: 'es', flag: '🇪🇸', name: 'Español' },
 ];
 

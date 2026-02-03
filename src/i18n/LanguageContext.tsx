@@ -15,7 +15,7 @@ const STORAGE_KEY = 'simulator-language';
 function getInitialLanguage(): Language {
   if (typeof window === 'undefined') return 'en';
   const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored && (stored === 'en' || stored === 'pt-BR' || stored === 'es')) {
+  if (stored && (stored === 'en' || stored === 'es')) {
     return stored;
   }
   return 'en';
@@ -35,7 +35,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && (stored === 'en' || stored === 'pt-BR' || stored === 'es')) {
+    if (stored && (stored === 'en' || stored === 'es')) {
       setLanguageState(stored);
     }
   }, []);
