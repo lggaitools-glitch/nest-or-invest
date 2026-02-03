@@ -1,136 +1,212 @@
 
 
-# Update Article: Match Exact PDF Content
+# Add New Spanish Article: "Alquilar o comprar en 2026: una guía de decisiones basada en datos"
 
-## Issue
-The current article content has been paraphrased and summarized. You want the **exact content** from the uploaded PDF document.
+## Article Overview
 
----
+This is the Spanish version of the existing English article "Rent vs Buy in 2026: A Data-Driven Decision Guide". The PDF content is a native Spanish article (not a translation) focusing on the 2026 Spanish housing market with specific data on:
+- 2026 market forecasts (BBVA 5.3%, CaixaBank 6.3%)
+- Euribor projections (~2.08% mid-2025, ~2% by 2026)
+- Spanish rental data (studios €550, 1-bed €720, 2-bed €1,020)
+- Madrid-specific market insights (15%+ YoY price growth, 7%+ yields in outer districts)
+- Regional yield comparisons (Murcia 7.4%, Valencia 6%+)
 
-## Changes Required
+**Proposed URL slug:** `alquilar-o-comprar-2026-guia-basada-en-datos`
 
-### File: `src/pages/ArticleRentVsBuy2026.tsx`
-
-Replace the article body content with the exact text from the PDF. Here's what changes:
-
----
-
-### Updated Lead Paragraph
-
-**Current:**
-> "With mortgage rates stabilizing and rents climbing in 2026, deciding whether to rent or buy requires careful analysis. This guide synthesizes market data and expert insights to help you navigate one of life's biggest financial decisions."
-
-**PDF Original:**
-> "In 2026 the housing market looks very different from the frenetic, pandemic-fuelled years that preceded it. Mortgage rates have come down from their 2023-24 highs, yet they remain well above the ultra-low levels many buyers remember. Rents continue to climb, driven by a shortage of available homes and the expiration of pandemic-era rental contracts. With sale and rental prices both expected to set new records, deciding whether to rent or buy requires careful analysis of current data rather than gut feelings. This guide synthesizes research from market forecasters, mortgage specialists and housing-policy experts to help you make a neutral, numbers-based decision—then points you to HomeDecision's rent-versus-buy simulator to crunch your own numbers."
+**Full path:** `/es/articles/alquilar-o-comprar-2026-guia-basada-en-datos`
 
 ---
 
-### Section-by-Section Content Update
+## Implementation Plan
 
-| Section | Update |
-|---------|--------|
-| **Why 2026 Is a Unique Moment** | Replace with exact PDF text including specific forecasts (BBVA 5.3%, CaixaBank 6.3%), 100,000 homes/year stat, 600,000 expiring contracts, 50+ tenants per listing |
-| **Mortgage Rates Stabilise** | Update with exact figures: Euribor 2.08% mid-2025, projected 2% by 2026, 0.4% lending growth |
-| **Mortgage vs Rent: Monthly Costs** | Add exact rent data (studios €550, 1-bed €720, 2-bed €1,020, €14.40/sqm), mortgage example (€250,000 at 80% LTV, 3.5% fixed, ~€1,000/month) |
-| **Hidden Costs** | Update buying costs to exact PDF format (15% total), add renter's insurance and 2-3% vacancy rate stat |
-| **Cost of Waiting** | Use exact example: €300,000 home becoming €315,000-€318,000 next year |
-| **Building Wealth** | Add specific stat: US homeowner gained $23,500 in equity in 2024 |
-| **Lifestyle and Flexibility** | Update with exact 3 considerations from PDF |
-| **Local Considerations** | Add exact data: 15%+ YoY price growth in Madrid/Valencia, 6.3% average yield, Murcia 7.4%, outer Madrid 7%+ |
-| **Using HomeDecision's Simulator** | Replace with exact 5-step numbered list from PDF |
-| **Conclusion** | Replace with exact PDF conclusion text |
+### Phase 1: Add Article Metadata
 
----
+**File: `src/data/articleData.ts`**
 
-## Detailed Content Mapping
+Add new entry to the `articlesEs` array:
 
-### New Article Structure with Exact PDF Content:
+```typescript
+{
+  slug: 'alquilar-o-comprar-2026-guia-basada-en-datos',
+  title: 'Alquilar o comprar en 2026: una guía de decisiones basada en datos',
+  description: 'Navega el mercado inmobiliario de 2026 con datos reales sobre tipos hipotecarios, tendencias de alquiler y previsiones del mercado español para tomar una decisión informada.',
+  excerpt: 'Con los tipos hipotecarios estabilizándose y los alquileres subiendo en 2026, decidir si alquilar o comprar exige analizar cuidadosamente los datos actuales.',
+  publishedDate: '2026-02-03',
+  modifiedDate: '2026-02-03',
+  wordCount: 1650,
+  category: 'rent-vs-buy-fundamentals',
+  isPublished: true,
+  language: 'es',
+}
+```
 
-```text
-1. Lead paragraph (from PDF intro)
-
-2. H2: Why 2026 Is a Unique Moment
-   - Bullet: Prices will keep rising—just more slowly (5.3% BBVA, 6.3% CaixaBank, 100k homes/year)
-   - Bullet: Rent pressure intensifies (600k contracts expire, 6% rent growth, 50+ tenants per listing)
-
-3. H2: Mortgage rates stabilise but won't return to ultra-low levels
-   - Euribor 2.08% mid-2025, ~2% by 2026
-   - 0.4% lending growth
-   - Fixed/mixed-rate loans remain popular
-
-4. H2: Mortgage vs Rent: Monthly Costs in 2026
-   - H3: Average rents are climbing
-     - Studios: €550 (€400-€800)
-     - 1-bed: €720 (€500-€1,100)
-     - 2-bed: €1,020 (up to €1,600 in prime areas)
-     - Per sqm: €14.40, rising 10% YoY
-   - H3: Mortgage payments depend on rates and down payment
-     - Euribor toward 2%, variable mortgages 3-4%
-     - 30% income rule
-     - Example: €250k at 80% LTV, 3.5% fixed, 25 years = ~€1,000/month
-
-5. H2: Hidden Costs: Beyond the Monthly Payment
-   - H3: Buying costs (~15% of price)
-     - Transfer tax/VAT
-     - Notary and land-registry fees
-     - Valuation and bank fees
-     - Home insurance
-   - H3: Renting costs
-     - Security deposit (1-2 months)
-     - Agency fees, moving costs
-     - INE-linked rent increases
-     - Renter's insurance
-     - 2-3% vacancy rate in Madrid/Barcelona
-
-6. H2: The Cost of Waiting: Timing the Market
-   - €300k home → €315k-€318k next year at 5-6% growth
-   - 6% rent growth compounds
-   - Euribor decline won't fully offset price increases
-   - Supply shortages are structural
-
-7. H2: Building Wealth vs Paying Rent
-   - Equity accumulation with each payment
-   - 2024 stat: US homeowner gained ~$23,500 in equity
-   - Homeowner net worth vastly higher than renters
-   - Hedge against inflation
-
-8. H2: Lifestyle and Flexibility Considerations
-   - Stability vs flexibility
-   - Maintenance responsibilities
-   - Emotional factors (pride of ownership, community ties)
-
-9. H2: Local Considerations for Madrid and Spain
-   - H3: Madrid's market
-     - 15%+ YoY price growth late 2025
-     - Outer districts may offer 7%+ yields
-   - H3: Other regions and yields
-     - Spain average yield: 6.3%
-     - Murcia: 7.4%
-     - Valencia: 6%+
-     - Prime Madrid/Barcelona: 3-4%
-
-10. H2: Using HomeDecision's Rent-vs-Buy Simulator
-    - Intro paragraph about replacing guesswork with math
-    - Numbered list:
-      1. Gather local data
-      2. Estimate realistic rent increases (4-6% in Spain)
-      3. Enter financing terms (3-4% rate)
-      4. Set a time horizon
-      5. Compare scenarios with clear breakeven graph
-
-11. H2: Conclusion
-    - Exact PDF conclusion text
+Also add translation mapping in `articleTranslations`:
+```typescript
+'rent-vs-buy-2026-data-driven-decision-guide': 'alquilar-o-comprar-2026-guia-basada-en-datos',
 ```
 
 ---
 
-## Summary
+### Phase 2: Create Article Page Component
 
-| Item | Action |
-|------|--------|
-| File | `src/pages/ArticleRentVsBuy2026.tsx` |
-| Changes | Replace entire article body with exact PDF content |
-| Word count update | Update in `articleData.ts` if needed (currently 1800, PDF ~1650 words) |
+**New File: `src/pages/ArticleAlquilarOComprar2026.tsx`**
 
-**Total: 1 file modified**
+Following the existing Spanish article pattern (ArticleCasaVsBolsa.tsx), create a new page using the EXACT PDF content with:
+
+| Section | Content from PDF |
+|---------|------------------|
+| **Lead Paragraph** | "En 2026 el mercado de la vivienda se presenta muy distinto..." |
+| **H2: Por qué 2026 es un momento único** | Price forecasts, rent pressure, structural housing shortage |
+| **H2: Los tipos hipotecarios se estabilizan** | Euribor 2.08% mid-2025, projected 2% by 2026, 0.4% lending growth |
+| **H2: Hipoteca frente a alquiler: costes mensuales** | H3 for rents (studios €550, etc.) and H3 for mortgages (example: €250k at 3.5%) |
+| **H2: Costes ocultos** | Buying costs (~15%) and renting costs |
+| **H2: El coste de esperar** | €300k → €315k-€318k example |
+| **H2: Construir patrimonio frente a pagar alquiler** | Equity accumulation, US stat ($23,500 in 2024) |
+| **H2: Consideraciones de estilo de vida y flexibilidad** | 3 lifestyle factors |
+| **H2: Consideraciones locales para Madrid y España** | Madrid 15%+ YoY, Murcia 7.4% yield, etc. |
+| **H2: Cómo usar el simulador de HomeDecision** | 5-step numbered list |
+| **H2: Conclusión** | Summary paragraph |
+
+**E-E-A-T Elements included:**
+- AuthorByline with "Por HomeDecision Research Team · Revisado para mayor precisión · X min de lectura · Última actualización"
+- Expandable "Acerca de HomeDecision Research Team" box with link to /simulate
+- Footer: "¿Has detectado un error o tienes sugerencias? Escríbenos a contact@homedecision.app"
+
+**SEO Implementation:**
+- `<html lang="es">`
+- Unique `<title>`: "Alquilar o comprar en 2026: una guía de decisiones basada en datos | HomeDecision"
+- Unique `<meta name="description">`: ~150 characters in Spanish
+- Self-referencing `<link rel="canonical">` to Spanish URL
+- `<meta name="robots" content="index,follow">`
+- `hreflang` tags: es, en, x-default (linking to English counterpart)
+- Open Graph and Twitter meta tags in Spanish
+- JSON-LD structured data via `ArticleJsonLd` with `language="es"`
+
+---
+
+### Phase 3: Add Route to App
+
+**File: `src/App.tsx`**
+
+Add import and route:
+
+```tsx
+import ArticleAlquilarOComprar2026 from "./pages/ArticleAlquilarOComprar2026";
+
+// In Routes under Spanish articles section:
+<Route 
+  path="/es/articles/alquilar-o-comprar-2026-guia-basada-en-datos" 
+  element={<ArticleAlquilarOComprar2026 />} 
+/>
+```
+
+---
+
+### Phase 4: Update English Article
+
+**File: `src/pages/ArticleRentVsBuy2026.tsx`**
+
+Update `HreflangTags` to include the Spanish translation:
+
+```tsx
+<HreflangTags
+  type="article"
+  language="en"
+  enSlug={ARTICLE_SLUG}
+  esSlug="alquilar-o-comprar-2026-guia-basada-en-datos"
+/>
+```
+
+---
+
+### Phase 5: Update Sitemap
+
+**File: `public/sitemap.xml`**
+
+Add new entry:
+
+```xml
+<!-- Spanish Article: Alquilar o Comprar 2026 -->
+<url>
+  <loc>https://homedecision.app/es/articles/alquilar-o-comprar-2026-guia-basada-en-datos</loc>
+  <lastmod>2026-02-03</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.7</priority>
+</url>
+```
+
+---
+
+## Files to Create/Modify
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/pages/ArticleAlquilarOComprar2026.tsx` | CREATE | New Spanish article page with exact PDF content |
+| `src/data/articleData.ts` | MODIFY | Add metadata + translation mapping |
+| `src/App.tsx` | MODIFY | Add route for new Spanish article |
+| `src/pages/ArticleRentVsBuy2026.tsx` | MODIFY | Update HreflangTags with Spanish slug |
+| `public/sitemap.xml` | MODIFY | Add URL entry for SEO |
+
+**Total: 1 new file, 4 modified files**
+
+---
+
+## SEO Compliance Checklist
+
+- [x] `<html lang="es">`
+- [x] Unique title in Spanish: "Alquilar o comprar en 2026: una guía de decisiones basada en datos | HomeDecision"
+- [x] Unique description in Spanish (~150 characters)
+- [x] Self-referencing canonical URL to Spanish path
+- [x] `<meta name="robots" content="index,follow">`
+- [x] hreflang tags: es + en + x-default (linked to English counterpart)
+- [x] Open Graph meta tags in Spanish
+- [x] Twitter Card meta tags in Spanish
+- [x] JSON-LD structured data with `language="es"` (Article + BreadcrumbList)
+- [x] Semantic H1 (title) + H2/H3 hierarchy
+- [x] Internal links to /simulate and /es/articles
+- [x] Added to sitemap.xml with priority 0.7 and changefreq monthly
+- [x] Translation mapping added for bidirectional language switching
+
+---
+
+## E-E-A-T Compliance Checklist
+
+- [x] Byline: "Por HomeDecision Research Team · Revisado para mayor precisión · X min de lectura · Última actualización {fecha}"
+- [x] Expandable "Acerca de HomeDecision Research Team" section
+- [x] Link to simulator: "Descubre cómo funciona HomeDecision" → /simulate
+- [x] Footer feedback line: "¿Has detectado un error o tienes sugerencias? Escríbenos a contact@homedecision.app"
+
+---
+
+## Bilingual Integration
+
+- [x] Language switcher showing EN | ES with ES highlighted as active
+- [x] EN clickable (links to English counterpart)
+- [x] Translation mapping in `articleTranslations` for bidirectional linking
+- [x] English article updated with hreflang pointing to Spanish version
+
+---
+
+## Related Reading Section
+
+The RelatedReading component will automatically:
+- Show other published Spanish articles (currently: "Casa vs Bolsa")
+- Fill remaining slots with "Próximamente" placeholders
+- Always include simulator link: "Calcula tus números en el simulador → Probar ahora"
+
+---
+
+## Article Content Structure
+
+The article will use exact PDF content with these components:
+- `ArticleLayout` - Consistent page wrapper with navigation
+- `ArticleHeader` - Title, lead paragraph, AuthorByline
+- `ArticleSection` - Semantic content sections
+- `ArticleCallout` - Key statistics highlights
+- `ArticleCTA` - Simulator call-to-action at bottom
+- `ArticleJsonLd` - Structured data with Spanish breadcrumbs
+- `HreflangTags` - Bilingual SEO with translation link
+- `RelatedReading` - Links to other Spanish articles + simulator
+- `ArticleLanguageSwitcher` - EN/ES toggle in header
+- `AvailableInLanguage` - "Also available in English" notice
 
