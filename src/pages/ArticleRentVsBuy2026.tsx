@@ -44,6 +44,7 @@ export default function ArticleRentVsBuy2026() {
         type="article"
         language="en"
         enSlug={ARTICLE_SLUG}
+        esSlug="alquilar-o-comprar-2026-guia-basada-en-datos"
       />
 
       <ArticleJsonLd

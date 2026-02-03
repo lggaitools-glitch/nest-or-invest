@@ -55,4 +55,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  
+  <!-- Spanish Article: Alquilar o Comprar 2026 -->
+  <url>
+    <loc>https://homedecision.app/es/articles/alquilar-o-comprar-2026-guia-basada-en-datos</loc>
+    <lastmod>2026-02-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
