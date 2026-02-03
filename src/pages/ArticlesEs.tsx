@@ -13,10 +13,10 @@ export default function ArticlesEs() {
     <>
       <Helmet>
         <html lang="es" />
-        <title>Artículos sobre Vivienda y Decisiones Financieras | HomeDecision</title>
+        <title>Guías de Alquiler vs Compra y Estrategias de Patrimonio | HomeDecision</title>
         <meta
           name="description"
-          content="En HomeDecision publicamos artículos basados en datos para ayudar a tomar mejores decisiones a largo plazo sobre alquiler, compra de vivienda e inversión."
+          content="Artículos detallados analizando decisiones de alquiler vs compra, vivienda vs inversión, y estrategias de patrimonio a largo plazo."
         />
         <link rel="canonical" href="https://homedecision.app/es/articles" />
         <meta name="robots" content="index,follow" />
@@ -24,15 +24,15 @@ export default function ArticlesEs() {
         <link rel="alternate" hrefLang="es" href="https://homedecision.app/es/articles" />
         <link rel="alternate" hrefLang="x-default" href="https://homedecision.app/articles" />
         
-        <meta property="og:title" content="Artículos sobre Vivienda y Decisiones Financieras | HomeDecision" />
-        <meta property="og:description" content="En HomeDecision publicamos artículos basados en datos para ayudar a tomar mejores decisiones a largo plazo." />
+        <meta property="og:title" content="Guías de Alquiler vs Compra y Estrategias de Patrimonio | HomeDecision" />
+        <meta property="og:description" content="Artículos detallados analizando decisiones de alquiler vs compra, vivienda vs inversión, y estrategias de patrimonio a largo plazo." />
         <meta property="og:url" content="https://homedecision.app/es/articles" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
         
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Artículos sobre Vivienda y Decisiones Financieras | HomeDecision" />
-        <meta name="twitter:description" content="En HomeDecision publicamos artículos basados en datos para ayudar a tomar mejores decisiones a largo plazo." />
+        <meta name="twitter:title" content="Guías de Alquiler vs Compra y Estrategias de Patrimonio | HomeDecision" />
+        <meta name="twitter:description" content="Artículos detallados analizando decisiones de alquiler vs compra, vivienda vs inversión, y estrategias de patrimonio a largo plazo." />
         <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
       </Helmet>
 

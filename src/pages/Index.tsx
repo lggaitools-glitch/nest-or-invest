@@ -15,7 +15,24 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col scroll-smooth">
       <Helmet>
+        <title>Rent or Buy? Compare Housing Decisions with Data | HomeDecision</title>
+        <meta name="description" content="Compare renting vs buying using real numbers. HomeDecision helps you decide based on long-term wealth, not emotions." />
+        <link rel="canonical" href="https://homedecision.app/" />
         <meta name="robots" content="index,follow" />
+        
+        <link rel="alternate" hrefLang="en" href="https://homedecision.app/" />
+        <link rel="alternate" hrefLang="x-default" href="https://homedecision.app/" />
+        
+        <meta property="og:title" content="Rent or Buy? Compare Housing Decisions with Data | HomeDecision" />
+        <meta property="og:description" content="Compare renting vs buying using real numbers. HomeDecision helps you decide based on long-term wealth, not emotions." />
+        <meta property="og:url" content="https://homedecision.app/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Rent or Buy? Compare Housing Decisions with Data | HomeDecision" />
+        <meta name="twitter:description" content="Compare renting vs buying using real numbers. HomeDecision helps you decide based on long-term wealth, not emotions." />
+        <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
       </Helmet>
       <SiteNavigation />
 

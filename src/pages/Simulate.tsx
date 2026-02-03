@@ -53,20 +53,23 @@ const Simulate = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Helmet>
-        <title>Rent vs Buy Simulator | HomeDecision</title>
-        <meta name="description" content="Compare renting vs buying with a personalized wealth simulator. See which option builds more net worth over time based on your specific situation and assumptions." />
+        <title>Rent vs Buy Calculator - Free Wealth Simulation | HomeDecision</title>
+        <meta name="description" content="Use our free rent vs buy calculator to simulate long-term net worth and make a smarter housing decision." />
         <link rel="canonical" href="https://homedecision.app/simulate" />
         <meta name="robots" content="index,follow" />
         
-        <meta property="og:title" content="Rent vs Buy Simulator | HomeDecision" />
-        <meta property="og:description" content="Compare renting vs buying with a personalized wealth simulator. See which option builds more net worth over time." />
+        <link rel="alternate" hrefLang="en" href="https://homedecision.app/simulate" />
+        <link rel="alternate" hrefLang="x-default" href="https://homedecision.app/simulate" />
+        
+        <meta property="og:title" content="Rent vs Buy Calculator - Free Wealth Simulation | HomeDecision" />
+        <meta property="og:description" content="Use our free rent vs buy calculator to simulate long-term net worth and make a smarter housing decision." />
         <meta property="og:url" content="https://homedecision.app/simulate" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
         
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Rent vs Buy Simulator | HomeDecision" />
-        <meta name="twitter:description" content="Compare renting vs buying with a personalized wealth simulator." />
+        <meta name="twitter:title" content="Rent vs Buy Calculator - Free Wealth Simulation | HomeDecision" />
+        <meta name="twitter:description" content="Use our free rent vs buy calculator to simulate long-term net worth and make a smarter housing decision." />
         <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
       </Helmet>
       <SiteNavigation />
