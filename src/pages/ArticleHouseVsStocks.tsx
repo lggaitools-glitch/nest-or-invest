@@ -3,26 +3,43 @@ import {
   ArticleLayout, 
   ArticleHeader, 
   ArticleCallout, 
-  ArticleCTA 
+  ArticleCTA,
+  ArticleJsonLd,
+  RelatedReading,
+  ArticleFooter,
 } from '@/components/articles';
+import { getArticleBySlug } from '@/data/articleData';
+
+const ARTICLE_SLUG = 'house-vs-stocks-what-the-data-really-says';
 
 export default function ArticleHouseVsStocks() {
+  const articleData = getArticleBySlug(ARTICLE_SLUG);
+
+  if (!articleData) {
+    return null;
+  }
+
   return (
     <>
       <Helmet>
-        <title>House vs Stocks: What the Data Really Says About Building Wealth | HomeDecision</title>
-        <meta
-          name="description"
-          content="Buying a home or investing in stocks? We break down real data, long-term behavior, and expert insights to help you make smarter housing decisions."
-        />
+        <title>{articleData.title} | HomeDecision</title>
+        <meta name="description" content={articleData.description} />
       </Helmet>
+
+      <ArticleJsonLd
+        title={articleData.title}
+        description={articleData.description}
+        slug={articleData.slug}
+        publishedDate={articleData.publishedDate}
+        modifiedDate={articleData.modifiedDate}
+      />
 
       <ArticleLayout>
         <ArticleHeader 
-          title="House vs Stocks: What the Data Really Says About Building Wealth"
+          title={articleData.title}
           lead="Understanding the real trade-offs between homeownership and stock market investing requires looking beyond simple math to how people actually build wealth over time."
-          publishedDate="2025-01-15"
-          readingTime={8}
+          modifiedDate={articleData.modifiedDate}
+          wordCount={articleData.wordCount}
         />
 
         {/* Article Content */}
@@ -140,10 +157,14 @@ export default function ArticleHouseVsStocks() {
           </p>
         </div>
 
+        <RelatedReading currentSlug={ARTICLE_SLUG} />
+
         <ArticleCTA 
           ctaText="Explore your own rent vs buy scenario"
           ctaLink="/simulate"
         />
+
+        <ArticleFooter />
       </ArticleLayout>
     </>
   );
