@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { SiteNavigation } from '@/components/SiteNavigation';
 import { Footer } from '@/components/simulator/Footer';
 import { HeroSection } from '@/components/landing/HeroSection';
@@ -13,6 +14,9 @@ import { FinalCTASection } from '@/components/landing/FinalCTASection';
 const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col scroll-smooth">
+      <Helmet>
+        <meta name="robots" content="index,follow" />
+      </Helmet>
       <SiteNavigation />
 
       {/* Landing Page Sections */}

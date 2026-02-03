@@ -33,6 +33,18 @@ export default function ArticleCasaVsBolsa() {
         <html lang="es" />
         <title>{articleData.title} | HomeDecision</title>
         <meta name="description" content={articleData.description} />
+        <meta name="robots" content="index,follow" />
+        
+        <meta property="og:title" content={`${articleData.title} | HomeDecision`} />
+        <meta property="og:description" content={articleData.description} />
+        <meta property="og:url" content={`https://homedecision.app/es/articles/${ARTICLE_SLUG}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${articleData.title} | HomeDecision`} />
+        <meta name="twitter:description" content={articleData.description} />
+        <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
       </Helmet>
 
       <HreflangTags
