@@ -53,21 +53,7 @@ export default function ArticleCasaVsBolsa() {
 
           <ArticleHeader
             title={articleData.title}
-            lead={
-              <>
-                La pregunta de si es mejor comprar una vivienda o invertir en bolsa suele presentarse
-                como un simple cálculo matemático. Calculadoras online comparan rentabilidades medias
-                y costes hipotecarios y ofrecen una respuesta rápida.
-                <br /><br />
-                Pero las decisiones de vivienda no se toman en una hoja de Excel. Las toman personas,
-                con hábitos, emociones y limitaciones reales. Y los resultados a largo plazo dependen
-                tanto del comportamiento como de la rentabilidad teórica.
-                <br /><br />
-                Este artículo explora qué muestran realmente los datos y los patrones del mundo real,
-                y por qué la respuesta correcta depende menos de la teoría y más de cómo viven y
-                ahorran las personas.
-              </>
-            }
+            lead="Entender los verdaderos compromisos entre comprar vivienda e invertir en bolsa requiere ir más allá de las matemáticas simples y observar cómo las personas realmente construyen patrimonio."
             modifiedDate={articleData.modifiedDate}
             wordCount={articleData.wordCount}
             language="es"
@@ -75,6 +61,23 @@ export default function ArticleCasaVsBolsa() {
 
           {/* Article Body */}
           <div className="prose prose-lg max-w-none">
+            <h2>Introducción: Por qué el debate alquilar vs comprar es engañoso</h2>
+            <p>
+              La pregunta de si es mejor comprar una vivienda o invertir en bolsa suele presentarse
+              como un simple cálculo matemático. Calculadoras online comparan rentabilidades medias
+              y costes hipotecarios y ofrecen una respuesta rápida.
+            </p>
+            <p>
+              Pero las decisiones de vivienda no se toman en una hoja de Excel. Las toman personas,
+              con hábitos, emociones y limitaciones reales. Y los resultados a largo plazo dependen
+              tanto del comportamiento como de la rentabilidad teórica.
+            </p>
+            <p>
+              Este artículo explora qué muestran realmente los datos y los patrones del mundo real,
+              y por qué la respuesta correcta depende menos de la teoría y más de cómo viven y
+              ahorran las personas.
+            </p>
+
             <ArticleSection>
               <h2>Una perspectiva experta sobre la riqueza a largo plazo</h2>
               <p>
