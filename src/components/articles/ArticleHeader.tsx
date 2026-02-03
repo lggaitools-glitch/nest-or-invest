@@ -8,6 +8,7 @@ interface ArticleHeaderProps {
   modifiedDate?: string;
   wordCount?: number;
   showByline?: boolean;
+  language?: 'en' | 'es';
 }
 
 export function ArticleHeader({ 
@@ -16,6 +17,7 @@ export function ArticleHeader({
   modifiedDate,
   wordCount,
   showByline = true,
+  language = 'en',
 }: ArticleHeaderProps) {
   return (
     <header className="mb-8">
@@ -32,7 +34,8 @@ export function ArticleHeader({
       {showByline && modifiedDate && wordCount && (
         <AuthorByline 
           wordCount={wordCount} 
-          modifiedDate={modifiedDate} 
+          modifiedDate={modifiedDate}
+          language={language}
         />
       )}
     </header>
