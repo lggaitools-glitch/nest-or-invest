@@ -32,6 +32,14 @@
     <priority>0.7</priority>
   </url>
   
+  <!-- English Article: Rent vs Buy 2026 Guide -->
+  <url>
+    <loc>https://homedecision.app/articles/rent-vs-buy-2026-data-driven-decision-guide</loc>
+    <lastmod>2026-02-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
   <!-- Spanish Articles Hub -->
   <url>
     <loc>https://homedecision.app/es/articles</loc>
