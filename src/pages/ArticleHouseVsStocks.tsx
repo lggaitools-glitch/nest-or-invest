@@ -21,6 +21,8 @@ export default function ArticleHouseVsStocks() {
         <ArticleHeader 
           title="House vs Stocks: What the Data Really Says About Building Wealth"
           lead="Understanding the real trade-offs between homeownership and stock market investing requires looking beyond simple math to how people actually build wealth over time."
+          publishedDate="2025-01-15"
+          readingTime={8}
         />
 
         {/* Article Content */}
