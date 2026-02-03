@@ -1,51 +1,106 @@
 
-# Update robots.txt for Optimized Google Crawling
+
+# Add sitemap.xml for Google Indexing
 
 ## Overview
-Replace the current basic robots.txt with a comprehensive version that blocks low-value/private areas while remaining permissive for public content.
+Create a static XML sitemap in the public directory containing all public, indexable pages including the homepage, simulator, articles hubs, and all published articles in both English and Spanish.
 
 ---
 
-## File to Modify
+## File to Create
 
-### `public/robots.txt`
+### `public/sitemap.xml`
 
-Replace the entire contents with:
-
-```text
-User-agent: *
-Allow: /
-
-Disallow: /api/
-Disallow: /auth/
-Disallow: /login
-Disallow: /logout
-Disallow: /signup
-Disallow: /account
-Disallow: /settings
-Disallow: /admin
-Disallow: /dashboard
-Disallow: /preview
-Disallow: /draft
-Disallow: /internal
-
-Sitemap: https://homedecision.app/sitemap.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage -->
+  <url>
+    <loc>https://homedecision.app/</loc>
+    <lastmod>2025-02-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Simulator -->
+  <url>
+    <loc>https://homedecision.app/simulate</loc>
+    <lastmod>2025-02-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- English Articles Hub -->
+  <url>
+    <loc>https://homedecision.app/articles</loc>
+    <lastmod>2025-02-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- English Article: House vs Stocks -->
+  <url>
+    <loc>https://homedecision.app/articles/house-vs-stocks-what-the-data-really-says</loc>
+    <lastmod>2025-02-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Spanish Articles Hub -->
+  <url>
+    <loc>https://homedecision.app/es/articles</loc>
+    <lastmod>2025-02-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Spanish Article: Casa vs Bolsa -->
+  <url>
+    <loc>https://homedecision.app/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos</loc>
+    <lastmod>2025-02-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>
 ```
+
+---
+
+## Pages Included
+
+| URL | Priority | Change Freq | Notes |
+|-----|----------|-------------|-------|
+| `/` | 1.0 | weekly | Homepage/landing |
+| `/simulate` | 0.9 | weekly | Core tool |
+| `/articles` | 0.8 | weekly | EN articles hub |
+| `/articles/house-vs-stocks-what-the-data-really-says` | 0.7 | monthly | Published EN article |
+| `/es/articles` | 0.8 | weekly | ES articles hub |
+| `/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos` | 0.7 | monthly | Published ES article |
+
+---
+
+## Pages Not Included (Not Found in Routes)
+
+The following pages from the requirements do not exist in the current app:
+- `/pricing`
+- `/about`
+- `/contact`
+- `/privacy`
+- `/terms`
 
 ---
 
 ## Technical Notes
 
-1. **Unified User-agent**: Using a single `User-agent: *` rule covers all crawlers (Googlebot, Bingbot, social bots, etc.) with the same policy, which is cleaner than separate rules when the policy is identical.
+1. **Static Sitemap**: Since this is a Vite/React SPA without server-side generation, the sitemap is static. New articles require manual addition.
 
-2. **Query Parameter Blocking**: Standard robots.txt does not support wildcard matching for query parameters (`?utm_`, `?ref=`, etc.). Google recommends handling these via:
-   - Canonical tags (already in place via React Helmet)
-   - Google Search Console URL Parameters tool
-   - The current approach gracefully skips this limitation.
+2. **lastmod Dates**: Using article `modifiedDate` from `articleData.ts` for articles (`2025-02-03`), and current date for other pages.
 
-3. **Content Type**: Files in the `public/` directory are served as static files by Vite. The `.txt` extension will be served with `text/plain` content type by default.
+3. **Content Type**: Files in `public/` with `.xml` extension are served as `application/xml` by default.
 
-4. **Sitemap Directive**: Points to the canonical sitemap URL for discovery by search engines.
+4. **Robots.txt Integration**: The sitemap is already referenced in `robots.txt` at `https://homedecision.app/sitemap.xml`.
+
+5. **Future Extension**: When adding new articles, add a corresponding `<url>` entry to the sitemap.
 
 ---
 
@@ -53,6 +108,7 @@ Sitemap: https://homedecision.app/sitemap.xml
 
 | Action | File |
 |--------|------|
-| MODIFY | `public/robots.txt` |
+| CREATE | `public/sitemap.xml` |
 
-**Total: 1 file modified**
+**Total: 1 file created**
+
