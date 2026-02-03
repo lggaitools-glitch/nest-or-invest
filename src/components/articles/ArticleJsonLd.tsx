@@ -97,7 +97,6 @@ export function ArticleJsonLd({
   return (
     <Helmet>
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      <link rel="canonical" href={canonicalUrl} />
     </Helmet>
   );
 }

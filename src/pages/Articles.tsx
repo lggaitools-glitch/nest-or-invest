@@ -12,11 +12,16 @@ export default function Articles() {
   return (
     <>
       <Helmet>
+        <html lang="en" />
         <title>Housing & Financial Decision Insights | HomeDecision</title>
         <meta
           name="description"
           content="Research-backed articles to help you make better long-term housing decisions. Understand the real trade-offs behind renting, buying, and investing."
         />
+        <link rel="canonical" href="https://homedecision.app/articles" />
+        <link rel="alternate" hrefLang="en" href="https://homedecision.app/articles" />
+        <link rel="alternate" hrefLang="es" href="https://homedecision.app/es/articles" />
+        <link rel="alternate" hrefLang="x-default" href="https://homedecision.app/articles" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

@@ -18,6 +18,10 @@ export default function ArticlesEs() {
           name="description"
           content="En HomeDecision publicamos artículos basados en datos para ayudar a tomar mejores decisiones a largo plazo sobre alquiler, compra de vivienda e inversión."
         />
+        <link rel="canonical" href="https://homedecision.app/es/articles" />
+        <link rel="alternate" hrefLang="en" href="https://homedecision.app/articles" />
+        <link rel="alternate" hrefLang="es" href="https://homedecision.app/es/articles" />
+        <link rel="alternate" hrefLang="x-default" href="https://homedecision.app/articles" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

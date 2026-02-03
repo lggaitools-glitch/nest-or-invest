@@ -84,3 +84,18 @@ export function getCanonicalUrl(slug: string, language: 'en' | 'es' = 'en'): str
   }
   return `${BASE_URL}/articles/${slug}`;
 }
+
+// Translation pairs: maps English slug to Spanish slug
+export const articleTranslations: Record<string, string> = {
+  'house-vs-stocks-what-the-data-really-says': 'casa-vs-bolsa-lo-que-dicen-los-datos',
+};
+
+// Helper to get the opposite language slug
+export function getTranslationSlug(slug: string, fromLanguage: 'en' | 'es'): string | undefined {
+  if (fromLanguage === 'en') {
+    return articleTranslations[slug];
+  }
+  // Reverse lookup for Spanish to English
+  const entry = Object.entries(articleTranslations).find(([_, esSlug]) => esSlug === slug);
+  return entry ? entry[0] : undefined;
+}

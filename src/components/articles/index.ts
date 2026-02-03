@@ -4,6 +4,7 @@ export { ArticleSection } from './ArticleSection';
 export { ArticleCallout } from './ArticleCallout';
 export { ArticleCTA } from './ArticleCTA';
 export { ArticleJsonLd } from './ArticleJsonLd';
+export { HreflangTags } from './HreflangTags';
 export { AuthorByline } from './AuthorByline';
 export { RelatedReading } from './RelatedReading';
 export { ArticleFooter } from './ArticleFooter';

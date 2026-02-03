@@ -8,9 +8,10 @@ import {
   ArticleCallout,
   ArticleCTA,
   ArticleJsonLd,
+  HreflangTags,
   RelatedReading,
 } from '@/components/articles';
-import { getSpanishArticleBySlug } from '@/data/articleData';
+import { getSpanishArticleBySlug, getTranslationSlug } from '@/data/articleData';
 
 const ARTICLE_SLUG = 'casa-vs-bolsa-lo-que-dicen-los-datos';
 
@@ -21,6 +22,8 @@ export default function ArticleCasaVsBolsa() {
     return null;
   }
 
+  const enSlug = getTranslationSlug(ARTICLE_SLUG, 'es');
+
   return (
     <>
       <Helmet>
@@ -28,6 +31,13 @@ export default function ArticleCasaVsBolsa() {
         <title>{articleData.title} | HomeDecision</title>
         <meta name="description" content={articleData.description} />
       </Helmet>
+
+      <HreflangTags
+        type="article"
+        language="es"
+        enSlug={enSlug}
+        esSlug={ARTICLE_SLUG}
+      />
 
       <ArticleJsonLd
         title={articleData.title}
