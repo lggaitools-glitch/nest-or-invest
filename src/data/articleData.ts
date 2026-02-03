@@ -33,7 +33,7 @@ export const articles: ArticleMetadata[] = [
     excerpt: 'With mortgage rates stabilizing and rents climbing in 2026, deciding whether to rent or buy requires careful analysis. This guide synthesizes market data to help you decide.',
     publishedDate: '2026-02-03',
     modifiedDate: '2026-02-03',
-    wordCount: 1800,
+    wordCount: 1650,
     category: 'rent-vs-buy-fundamentals',
     isPublished: true,
     language: 'en',
