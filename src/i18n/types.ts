@@ -172,7 +172,6 @@ export interface Translations {
   };
   countries: {
     spain: string;
-    portugal: string;
     custom: string;
   };
   landing: LandingTranslations;

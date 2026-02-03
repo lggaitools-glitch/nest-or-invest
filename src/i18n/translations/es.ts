@@ -117,7 +117,6 @@ export const es: Translations = {
   },
   countries: {
     spain: 'España',
-    portugal: 'Portugal',
     custom: 'Personalizado',
   },
   landing: {
