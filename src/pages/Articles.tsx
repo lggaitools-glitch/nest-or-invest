@@ -19,9 +19,21 @@ export default function Articles() {
           content="Research-backed articles to help you make better long-term housing decisions. Understand the real trade-offs behind renting, buying, and investing."
         />
         <link rel="canonical" href="https://homedecision.app/articles" />
+        <meta name="robots" content="index,follow" />
         <link rel="alternate" hrefLang="en" href="https://homedecision.app/articles" />
         <link rel="alternate" hrefLang="es" href="https://homedecision.app/es/articles" />
         <link rel="alternate" hrefLang="x-default" href="https://homedecision.app/articles" />
+        
+        <meta property="og:title" content="Housing & Financial Decision Insights | HomeDecision" />
+        <meta property="og:description" content="Research-backed articles to help you make better long-term housing decisions." />
+        <meta property="og:url" content="https://homedecision.app/articles" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Housing & Financial Decision Insights | HomeDecision" />
+        <meta name="twitter:description" content="Research-backed articles to help you make better long-term housing decisions." />
+        <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

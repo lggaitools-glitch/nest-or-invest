@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { SiteNavigation } from '@/components/SiteNavigation';
 import { Footer } from '@/components/simulator/Footer';
 import { InputSection } from '@/components/simulator/InputSection';
@@ -51,6 +52,23 @@ const Simulate = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Rent vs Buy Simulator | HomeDecision</title>
+        <meta name="description" content="Compare renting vs buying with a personalized wealth simulator. See which option builds more net worth over time based on your specific situation and assumptions." />
+        <link rel="canonical" href="https://homedecision.app/simulate" />
+        <meta name="robots" content="index,follow" />
+        
+        <meta property="og:title" content="Rent vs Buy Simulator | HomeDecision" />
+        <meta property="og:description" content="Compare renting vs buying with a personalized wealth simulator. See which option builds more net worth over time." />
+        <meta property="og:url" content="https://homedecision.app/simulate" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Rent vs Buy Simulator | HomeDecision" />
+        <meta name="twitter:description" content="Compare renting vs buying with a personalized wealth simulator." />
+        <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+      </Helmet>
       <SiteNavigation />
 
       <main className="flex-1 container max-w-6xl mx-auto px-4 py-12 md:py-16">
