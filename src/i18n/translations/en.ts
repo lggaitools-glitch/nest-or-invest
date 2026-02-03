@@ -2,7 +2,7 @@ import type { Translations } from '../types';
 
 export const en: Translations = {
   header: {
-    title: 'Rent vs Buy',
+    title: 'HomeDecision',
     subtitle: 'Wealth Simulator',
     freeVersion: 'Free Version',
   },

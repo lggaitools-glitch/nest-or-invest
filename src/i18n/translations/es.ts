@@ -2,7 +2,7 @@ import type { Translations } from '../types';
 
 export const es: Translations = {
   header: {
-    title: 'Alquilar vs Comprar',
+    title: 'HomeDecision',
     subtitle: 'Simulador de Patrimonio',
     freeVersion: 'Versión Gratuita',
   },
