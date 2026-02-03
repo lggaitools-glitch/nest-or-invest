@@ -1,63 +1,51 @@
 
-
-# Remove Portugal Preset
+# Update robots.txt for Optimized Google Crawling
 
 ## Overview
-Remove Portugal from the country presets, keeping only Spain and Custom options for the simulator.
+Replace the current basic robots.txt with a comprehensive version that blocks low-value/private areas while remaining permissive for public content.
 
 ---
 
-## Files to Modify
+## File to Modify
 
-### 1. `src/types/simulator.ts`
-Remove Portugal preset from COUNTRY_PRESETS array (lines 104-120):
+### `public/robots.txt`
 
-```typescript
-export const COUNTRY_PRESETS: CountryPreset[] = [
-  {
-    id: 'spain',
-    name: 'Spain',
-    flag: '🇪🇸',
-    values: { /* Spain values */ },
-  },
-  {
-    id: 'custom',
-    name: 'Custom',
-    flag: '⚙️',
-    values: {},
-  },
-];
+Replace the entire contents with:
+
+```text
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /auth/
+Disallow: /login
+Disallow: /logout
+Disallow: /signup
+Disallow: /account
+Disallow: /settings
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /preview
+Disallow: /draft
+Disallow: /internal
+
+Sitemap: https://homedecision.app/sitemap.xml
 ```
 
-### 2. `src/i18n/types.ts`
-Remove portugal from countries interface (line 175):
+---
 
-```typescript
-countries: {
-  spain: string;
-  custom: string;
-};
-```
+## Technical Notes
 
-### 3. `src/i18n/translations/en.ts`
-Remove portugal from countries object (line 120):
+1. **Unified User-agent**: Using a single `User-agent: *` rule covers all crawlers (Googlebot, Bingbot, social bots, etc.) with the same policy, which is cleaner than separate rules when the policy is identical.
 
-```typescript
-countries: {
-  spain: 'Spain',
-  custom: 'Custom',
-},
-```
+2. **Query Parameter Blocking**: Standard robots.txt does not support wildcard matching for query parameters (`?utm_`, `?ref=`, etc.). Google recommends handling these via:
+   - Canonical tags (already in place via React Helmet)
+   - Google Search Console URL Parameters tool
+   - The current approach gracefully skips this limitation.
 
-### 4. `src/i18n/translations/es.ts`
-Remove portugal from countries object (line 120):
+3. **Content Type**: Files in the `public/` directory are served as static files by Vite. The `.txt` extension will be served with `text/plain` content type by default.
 
-```typescript
-countries: {
-  spain: 'España',
-  custom: 'Personalizado',
-},
-```
+4. **Sitemap Directive**: Points to the canonical sitemap URL for discovery by search engines.
 
 ---
 
@@ -65,17 +53,6 @@ countries: {
 
 | Action | File |
 |--------|------|
-| MODIFY | `src/types/simulator.ts` |
-| MODIFY | `src/i18n/types.ts` |
-| MODIFY | `src/i18n/translations/en.ts` |
-| MODIFY | `src/i18n/translations/es.ts` |
+| MODIFY | `public/robots.txt` |
 
-**Total: 4 files modified**
-
----
-
-## Result
-After these changes:
-- Country preset dropdown will show only Spain and Custom
-- Application fully focused on Spanish market
-
+**Total: 1 file modified**
