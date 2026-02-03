@@ -8,8 +8,10 @@ import {
   HreflangTags,
   RelatedReading,
   ArticleFooter,
+  ArticleLanguageSwitcher,
+  AvailableInLanguage,
 } from '@/components/articles';
-import { getArticleBySlug } from '@/data/articleData';
+import { getArticleBySlug, getTranslationSlug } from '@/data/articleData';
 
 const ARTICLE_SLUG = 'rent-vs-buy-2026-data-driven-decision-guide';
 
@@ -19,6 +21,9 @@ export default function ArticleRentVsBuy2026() {
   if (!articleData) {
     return null;
   }
+
+  const esSlug = getTranslationSlug(ARTICLE_SLUG, 'en');
+  const esPath = esSlug ? `/es/articles/${esSlug}` : undefined;
 
   return (
     <>
@@ -56,11 +61,24 @@ export default function ArticleRentVsBuy2026() {
       />
 
       <ArticleLayout>
+        <div className="flex justify-end mb-4">
+          <ArticleLanguageSwitcher
+            currentLanguage="en"
+            enPath={`/articles/${ARTICLE_SLUG}`}
+            esPath={esPath}
+          />
+        </div>
+
         <ArticleHeader 
           title={articleData.title}
           lead="In 2026 the housing market looks very different from the frenetic, pandemic-fuelled years that preceded it. Mortgage rates have come down from their 2023-24 highs, yet they remain well above the ultra-low levels many buyers remember. Rents continue to climb, driven by a shortage of available homes and the expiration of pandemic-era rental contracts. With sale and rental prices both expected to set new records, deciding whether to rent or buy requires careful analysis of current data rather than gut feelings. This guide synthesizes research from market forecasters, mortgage specialists and housing-policy experts to help you make a neutral, numbers-based decision—then points you to HomeDecision's rent-versus-buy simulator to crunch your own numbers."
           modifiedDate={articleData.modifiedDate}
           wordCount={articleData.wordCount}
+        />
+
+        <AvailableInLanguage
+          currentLanguage="en"
+          translationPath={esPath}
         />
 
         {/* Article Content */}
