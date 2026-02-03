@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Simulate from "./pages/Simulate";
 import Articles from "./pages/Articles";
 import ArticleHouseVsStocks from "./pages/ArticleHouseVsStocks";
+import ArticleRentVsBuy2026 from "./pages/ArticleRentVsBuy2026";
 import ArticlesEs from "./pages/ArticlesEs";
 import ArticleCasaVsBolsa from "./pages/ArticleCasaVsBolsa";
 import NotFound from "./pages/NotFound";
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/simulate" element={<Simulate />} />
             <Route path="/articles" element={<Articles />} />
             <Route path="/articles/house-vs-stocks-what-the-data-really-says" element={<ArticleHouseVsStocks />} />
+            <Route path="/articles/rent-vs-buy-2026-data-driven-decision-guide" element={<ArticleRentVsBuy2026 />} />
             {/* Spanish articles */}
             <Route path="/es/articles" element={<ArticlesEs />} />
             <Route path="/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos" element={<ArticleCasaVsBolsa />} />

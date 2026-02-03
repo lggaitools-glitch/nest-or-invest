@@ -26,6 +26,18 @@ export const articles: ArticleMetadata[] = [
     isPublished: true,
     language: 'en',
   },
+  {
+    slug: 'rent-vs-buy-2026-data-driven-decision-guide',
+    title: 'Rent vs Buy in 2026: A Data-Driven Decision Guide',
+    description: 'Navigate the 2026 housing market with real data on mortgage rates, rent trends, and Spanish market forecasts to make a smarter rent vs buy decision.',
+    excerpt: 'With mortgage rates stabilizing and rents climbing in 2026, deciding whether to rent or buy requires careful analysis. This guide synthesizes market data to help you decide.',
+    publishedDate: '2026-02-03',
+    modifiedDate: '2026-02-03',
+    wordCount: 1800,
+    category: 'rent-vs-buy-fundamentals',
+    isPublished: true,
+    language: 'en',
+  },
 ];
 
 // Spanish articles
