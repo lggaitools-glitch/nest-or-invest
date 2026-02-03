@@ -1,188 +1,249 @@
 
-# Editorial Article Template Improvement Plan
+# E-E-A-T Article Framework Implementation Plan
 
 ## Overview
-Create a reusable, professional editorial article template with proper semantic HTML hierarchy, optimized typography, and consistent styling that can be used for all current and future articles under `/articles`.
+Implement a comprehensive E-E-A-T framework for the `/articles` section including JSON-LD structured data, author bylines, reading time calculations, topic hub navigation, and related article recommendations.
 
 ---
 
-## Current Issues Identified
-
-1. **Typography plugin not configured** - `@tailwindcss/typography` is installed but not added to `tailwind.config.ts` plugins
-2. **Inline prose classes** - Article uses raw `prose` classes without plugin support
-3. **No reusable template** - Each article page duplicates layout structure
-4. **Missing intro paragraph** - No styled intro/lead paragraph after H1
-5. **Quote styling** - Key quote block uses basic italic styling
-6. **Inconsistent section spacing** - No clear visual rhythm between sections
+## Current State Analysis
+- Editorial template system exists with `ArticleLayout`, `ArticleHeader`, `ArticleSection`, `ArticleCallout`, `ArticleCTA` components
+- Single article published at `/articles/house-vs-stocks-what-the-data-really-says`
+- Basic reading time (hardcoded) and publication date already displayed
+- No structured data, author bylines, or internal linking system
 
 ---
 
-## Solution Architecture
+## Implementation Architecture
 
 ```text
 src/
   components/
     articles/
-      ArticleLayout.tsx       # NEW - Reusable article wrapper
-      ArticleHeader.tsx       # NEW - H1 + optional subtitle/intro
-      ArticleSection.tsx      # NEW - Semantic section wrapper
-      ArticleCallout.tsx      # NEW - Highlight/quote blocks
-      ArticleCTA.tsx          # NEW - Footer CTA component
+      ArticleJsonLd.tsx           # NEW - JSON-LD structured data
+      AuthorByline.tsx            # NEW - Byline + About section
+      RelatedReading.tsx          # NEW - Related articles section
+      ArticleFooter.tsx           # NEW - Feedback section
+      TopicHub.tsx                # NEW - Category cards for /articles
+      index.ts                    # UPDATE - Export new components
+  data/
+    articleData.ts                # NEW - Centralized article metadata
+    topicCategories.ts            # NEW - Topic hub data
+    futureArticles.ts             # NEW - Content roadmap (internal)
   pages/
-    Articles.tsx              # Listing page (minor updates)
-    ArticleHouseVsStocks.tsx  # Apply new template
+    Articles.tsx                  # UPDATE - Add topic hub section
+    ArticleHouseVsStocks.tsx      # UPDATE - Apply full E-E-A-T framework
 ```
 
 ---
 
 ## Files to Create
 
-### 1. `src/components/articles/ArticleLayout.tsx`
-Reusable wrapper providing:
-- Max-width container optimized for reading (max-w-prose or ~700px)
-- Consistent padding and spacing
-- Back navigation link
-- Article footer with divider
-- SEO-friendly semantic structure
+### 1. `src/data/articleData.ts`
+Centralized article metadata store containing:
+- slug, title, description, excerpt
+- publishedDate, modifiedDate
+- wordCount (for reading time calculation)
+- category/topic tags
+- canonicalUrl
 
-### 2. `src/components/articles/ArticleHeader.tsx`
-Article header component with:
-- Single H1 title with display font
-- Optional lead/intro paragraph with larger, distinguished styling
-- Clear vertical spacing
+### 2. `src/data/topicCategories.ts`
+Topic hub categories:
+- Rent vs Buy Fundamentals
+- Mortgages & Interest Rates
+- Hidden Costs & Maintenance
+- Opportunity Cost & Investing
+- Behavioral Finance & Decision Biases
+- Scenarios & Case Studies
 
-### 3. `src/components/articles/ArticleSection.tsx`
-Section wrapper ensuring:
-- Consistent spacing between major sections
-- Semantic HTML structure
+Each with short description and list of article slugs.
 
-### 4. `src/components/articles/ArticleCallout.tsx`
-Highlight block for:
-- Key insights or quotes
-- Subtle background styling (accent color)
-- Left border accent
-- Visually distinct but not promotional
+### 3. `src/data/futureArticles.ts`
+Content roadmap with planned articles:
+1. rent-vs-buy-the-complete-decision-framework
+2. hidden-costs-of-homeownership
+3. how-interest-rates-change-rent-vs-buy
+4. opportunity-cost-down-payment
+5. how-long-should-you-stay-for-buying-to-make-sense
+6. renting-is-not-wasting-money-when-its-smart
+7. behavioral-finance-why-people-dont-invest-the-difference
+8. case-study-madrid-rent-vs-buy-example
 
-### 5. `src/components/articles/ArticleCTA.tsx`
-Footer CTA section with:
-- Divider line
-- Soft call-to-action
-- Clean separation from article body
+### 4. `src/components/articles/ArticleJsonLd.tsx`
+Component that injects JSON-LD into `<head>` via react-helmet-async:
+
+**Article Schema (schema.org/Article):**
+- @type: "Article"
+- headline: H1 title
+- description: meta description
+- author: { @type: "Organization", name: "HomeDecision Research Team" }
+- publisher: { @type: "Organization", name: "HomeDecision", logo: site logo URL }
+- datePublished, dateModified
+- mainEntityOfPage: canonical URL
+- image: omitted if no hero image
+
+**BreadcrumbList Schema:**
+```json
+{
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "position": 1, "name": "Home", "item": "https://homedecision.app" },
+    { "position": 2, "name": "Articles", "item": "https://homedecision.app/articles" },
+    { "position": 3, "name": "Article Title" }
+  ]
+}
+```
+
+### 5. `src/components/articles/AuthorByline.tsx`
+Byline block with:
+- Format: "By HomeDecision Research Team · Reviewed for accuracy · X min read · Last updated Date"
+- Collapsible "About the author" section using existing Collapsible UI component
+- About text: trust-focused description (no sales language)
+- Subtle link: "Learn how HomeDecision works" pointing to /simulate
+
+### 6. `src/components/articles/RelatedReading.tsx`
+Related articles section:
+- Lists 3-6 related articles (when available)
+- Shows "Coming soon" placeholder for unpublished articles
+- Always includes: "Run your numbers in the simulator" linking to /simulate
+- Clean card-based design matching existing aesthetic
+
+### 7. `src/components/articles/ArticleFooter.tsx`
+Footer section with:
+- Feedback line: "Have feedback or spotted an issue? Email us at contact@homedecision.app"
+- Plain text, no mailto link
+
+### 8. `src/components/articles/TopicHub.tsx`
+Topic hub for /articles page:
+- Section title: "Explore topics"
+- Grid of category cards
+- Each card shows: category name, 1-sentence description, article count or "Coming soon"
+- Non-spammy, clean editorial design
 
 ---
 
 ## Files to Modify
 
-### 1. `tailwind.config.ts`
-Add typography plugin to enable proper prose styling:
-```js
-plugins: [
-  require("tailwindcss-animate"),
-  require("@tailwindcss/typography")
-]
-```
+### 1. `src/components/articles/index.ts`
+Add exports for new components:
+- ArticleJsonLd
+- AuthorByline
+- RelatedReading
+- ArticleFooter
+- TopicHub
 
-### 2. `src/index.css`
-Add custom article typography styles:
-- `.article-body` - Base article content styling
-- `.article-lead` - Lead paragraph styling
-- `.article-callout` - Callout block styling
-- Proper H2/H3 hierarchy with visual contrast
+### 2. `src/components/articles/ArticleHeader.tsx`
+Update to:
+- Calculate reading time from wordCount (220 words/minute) instead of hardcoded value
+- Accept modifiedDate prop for "Last updated"
+- Integrate AuthorByline component
 
-### 3. `src/pages/ArticleHouseVsStocks.tsx`
-Refactor to use new template components:
-- Use `ArticleLayout` wrapper
-- Use `ArticleHeader` for title
-- Add intro lead paragraph (no heading, just introductory text)
-- Use `ArticleCallout` for the key quote
-- Use `ArticleCTA` for footer
-- Maintain exact content wording
+### 3. `src/pages/Articles.tsx`
+Add:
+- TopicHub section below intro text
+- Keep existing article list
+
+### 4. `src/pages/ArticleHouseVsStocks.tsx`
+Apply full E-E-A-T framework:
+- Add ArticleJsonLd component with structured data
+- Update ArticleHeader with modifiedDate
+- Replace hardcoded readingTime with wordCount-based calculation
+- Add RelatedReading section before ArticleCTA
+- Add ArticleFooter with feedback line
 
 ---
 
-## Template Structure Applied to Article
+## Reading Time Calculation
+
+```typescript
+function calculateReadingTime(wordCount: number): number {
+  const wordsPerMinute = 220;
+  return Math.ceil(wordCount / wordsPerMinute);
+}
+```
+
+For the existing article, approximate word count: ~1,100 words = 5 min read
+
+---
+
+## Structured Data Output Example
+
+```json
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "House vs Stocks: What the Data Really Says About Building Wealth",
+      "description": "Buying a home or investing in stocks? We break down real data...",
+      "author": {
+        "@type": "Organization",
+        "name": "HomeDecision Research Team"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "HomeDecision",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://homedecision.app/favicon.png"
+        }
+      },
+      "datePublished": "2025-01-15",
+      "dateModified": "2025-02-03",
+      "mainEntityOfPage": "https://homedecision.app/articles/house-vs-stocks-what-the-data-really-says"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [...]
+    }
+  ]
+}
+```
+
+---
+
+## Author Byline Visual Structure
 
 ```text
-ArticleLayout
-  ArticleHeader
-    H1: "House vs Stocks: What the Data Really Says..."
-    Lead: (short intro paragraph - no heading)
-  
-  ArticleBody (prose styling)
-    Section: H2 "Introduction: Why the Rent vs Buy..."
-      - 3 paragraphs
-    
-    Section: H2 "An Expert Perspective..."
-      - 2 paragraphs
-    
-    Section: H2 "The Two Main Drivers..."
-      - 1 paragraph + bullet list + 1 paragraph
-    
-    Section: H2 "Why Homeownership Often Works..."
-      - 2 paragraphs + bullet list + 1 paragraph
-    
-    Section: H2 "The Myth of 'Rent and Invest...'"
-      - 3 paragraphs
-    
-    Section: H2 "When Renting Makes Sense"
-      - 1 paragraph + bullet list + 1 paragraph
-    
-    Section: H2 "Why Generic Advice Fails"
-      - 1 paragraph + bullet list + 1 paragraph
-    
-    Section: H2 "The Role of Personalized Simulation"
-      - 2 paragraphs
-      - ArticleCallout: "What happens in my situation..."
-      - 1 paragraph
-    
-    Section: H2 "Transparency and Independence"
-      - 1 paragraph + bullet list + 1 paragraph
-    
-    Section: H2 "Explore Your Own Scenario"
-      - 3 paragraphs
-  
-  ArticleCTA
-    - Divider
-    - Button: "Explore your own rent vs buy scenario"
-    - Back link to /articles
+┌─────────────────────────────────────────────────────────────┐
+│ By HomeDecision Research Team · Reviewed for accuracy       │
+│ 5 min read · Last updated February 3, 2025                  │
+├─────────────────────────────────────────────────────────────┤
+│ ▼ About HomeDecision Research Team                          │
+│   HomeDecision Research Team publishes data-driven housing  │
+│   and financial decision insights. Our goal is to clarify   │
+│   trade-offs in renting, buying, and long-term planning     │
+│   using transparent assumptions and practical reasoning.    │
+│   We do not sell real estate and we do not receive          │
+│   commissions from banks or agents.                         │
+│                                                             │
+│   Learn how HomeDecision works →                            │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Typography Styling Details
+## Topic Hub Visual Structure
 
-| Element | Style |
-|---------|-------|
-| H1 | 2.5-3rem, bold, display font, tight leading |
-| H2 | 1.5-1.75rem, semibold, display font, top margin 3rem |
-| Lead paragraph | 1.25rem, lighter weight, muted-foreground |
-| Body text | 1.125rem, 1.75 line-height, muted-foreground |
-| Lists | Proper spacing, accent bullet color |
-| Callout | Background accent, left border, padding |
-
----
-
-## Semantic HTML Structure
-
-```html
-<article>
-  <header>
-    <h1>Title</h1>
-    <p class="lead">Intro paragraph</p>
-  </header>
-  
-  <div class="article-body">
-    <section>
-      <h2>Section Title</h2>
-      <p>Content...</p>
-    </section>
-    <!-- More sections -->
-  </div>
-  
-  <footer>
-    <div class="cta">...</div>
-  </footer>
-</article>
+```text
+┌── Explore topics ──────────────────────────────────────────┐
+│                                                             │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
+│  │ Rent vs Buy     │  │ Mortgages &     │  │ Hidden      │ │
+│  │ Fundamentals    │  │ Interest Rates  │  │ Costs       │ │
+│  │ Core decision   │  │ How financing   │  │ What        │ │
+│  │ frameworks      │  │ affects choice  │  │ calculators │ │
+│  │ 1 article       │  │ Coming soon     │  │ miss        │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
+│                                                             │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
+│  │ Opportunity     │  │ Behavioral      │  │ Scenarios   │ │
+│  │ Cost & Invest   │  │ Finance         │  │ & Cases     │ │
+│  │ Trade-offs of   │  │ Why people      │  │ Real-world  │ │
+│  │ capital         │  │ don't act       │  │ examples    │ │
+│  │ Coming soon     │  │ rationally      │  │ Coming soon │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -191,13 +252,27 @@ ArticleLayout
 
 | Action | File |
 |--------|------|
-| CREATE | `src/components/articles/ArticleLayout.tsx` |
-| CREATE | `src/components/articles/ArticleHeader.tsx` |
-| CREATE | `src/components/articles/ArticleSection.tsx` |
-| CREATE | `src/components/articles/ArticleCallout.tsx` |
-| CREATE | `src/components/articles/ArticleCTA.tsx` |
-| MODIFY | `tailwind.config.ts` |
-| MODIFY | `src/index.css` |
+| CREATE | `src/data/articleData.ts` |
+| CREATE | `src/data/topicCategories.ts` |
+| CREATE | `src/data/futureArticles.ts` |
+| CREATE | `src/components/articles/ArticleJsonLd.tsx` |
+| CREATE | `src/components/articles/AuthorByline.tsx` |
+| CREATE | `src/components/articles/RelatedReading.tsx` |
+| CREATE | `src/components/articles/ArticleFooter.tsx` |
+| CREATE | `src/components/articles/TopicHub.tsx` |
+| MODIFY | `src/components/articles/index.ts` |
+| MODIFY | `src/components/articles/ArticleHeader.tsx` |
+| MODIFY | `src/pages/Articles.tsx` |
 | MODIFY | `src/pages/ArticleHouseVsStocks.tsx` |
 
-Total: 5 new files, 3 modified files
+**Total: 8 new files, 4 modified files**
+
+---
+
+## Technical Notes
+
+- JSON-LD injected via `react-helmet-async` using `<script type="application/ld+json">`
+- Collapsible "About" section uses existing `@radix-ui/react-collapsible` component
+- Base URL for canonical URLs: `https://homedecision.app`
+- Logo URL for publisher: `https://homedecision.app/favicon.png`
+- All dates use ISO format internally, formatted for display with `date-fns` (already installed)
