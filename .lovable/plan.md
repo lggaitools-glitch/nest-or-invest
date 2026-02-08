@@ -1,89 +1,41 @@
 
-# Fix Google "Discovered – currently not indexed" Issue
 
-## Problem Analysis
+# Add New English Article: "First-Time Home-Buyer Guide 2026"
 
-After analyzing the codebase, I've identified several issues that could be preventing Google from properly indexing HomeDecision pages:
+## Overview
 
-### Issue 1: Weak Internal Linking from Homepage
-The homepage currently only links to `/simulate` through CTA buttons. There are **no direct links** to:
-- `/articles` (Articles hub)
-- Latest English articles
-- `/es/articles` (Spanish articles hub)
-- Latest Spanish articles
+Create a new article page using the **exact content** from the uploaded PDF document. This article is a comprehensive step-by-step guide for first-time home buyers in 2026, covering mortgage rates, down payments, hidden costs, and specific programs in Spain and the US.
 
-Google needs clear crawl paths within 2 clicks from the homepage.
+**Proposed slug:** `first-time-home-buyer-guide-2026`
 
-### Issue 2: Footer Has No Navigation Links
-The current `Footer` component only shows a disclaimer and copyright notice. It doesn't include links to key pages, which is a missed opportunity for internal linking and crawl path reinforcement.
-
-### Issue 3: Missing Canonical Tags on Some Articles
-The `ArticleHouseVsStocks.tsx` page is missing a `<link rel="canonical">` tag in its `<Helmet>` section.
-
-### Issue 4: Client-Side Rendering Limitations
-This is a React SPA where all content is rendered via JavaScript. While Googlebot can render JavaScript, this can cause indexing delays. We cannot implement true SSR on Lovable, but we can:
-- Ensure all links use proper `<a href>` tags (already done)
-- Add more static content to `index.html` for faster initial signals
-- Ensure pages load quickly without heavy JS dependencies
+**Full URL:** `/articles/first-time-home-buyer-guide-2026`
 
 ---
 
-## Implementation Plan
+## Content Structure (from PDF)
 
-### Phase 1: Add Internal Links to Homepage
+The article contains the following sections that will be implemented verbatim:
 
-**File: `src/pages/Index.tsx`**
-
-Add a new "Featured Content" section before the footer that links to:
-- `/simulate` (already linked via CTAs)
-- `/articles` (English articles hub)
-- `/es/articles` (Spanish articles hub)
-- Latest English article
-- Latest Spanish article
-
-This ensures all key pages are reachable within 1 click from the homepage.
-
----
-
-### Phase 2: Enhance Footer with Navigation Links
-
-**File: `src/components/simulator/Footer.tsx`**
-
-Update the footer to include navigation links to:
-- Home (`/`)
-- Simulate (`/simulate`)
-- Articles (`/articles`)
-- Artículos (`/es/articles`)
-
-This creates a crawlable footer navigation that appears on all pages using this footer.
+| Section | Description |
+|---------|-------------|
+| **Lead** | "Buying your first home can feel overwhelming, but 2026 brings opportunities..." |
+| **Why 2026 is unique** | Stable rates (~6.25%), seasonal advantages, improving inventory |
+| **Step 1** | Assess finances and set a budget (affordability, down payment, credit) |
+| **Step 2** | Research the market and define priorities |
+| **Step 3** | Property search and due diligence (viewing, offers, contrato de arras) |
+| **Step 4** | Secure financing (mortgage types, hidden costs) |
+| **Step 5** | Closing (sign and register the property) |
+| **Programmes** | Spain (hipoteca joven, grants) and US (FHA, VA, USDA) |
+| **Common mistakes** | 5 mistakes to avoid |
+| **Final thoughts** | Encouragement and summary |
 
 ---
 
-### Phase 3: Fix Missing Canonical Tags
+## Category Decision
 
-**File: `src/pages/ArticleHouseVsStocks.tsx`**
+This article fits best in a **new category**: `first-time-buyers`
 
-Add the missing `<link rel="canonical">` tag:
-```tsx
-<link rel="canonical" href="https://homedecision.app/articles/house-vs-stocks-what-the-data-really-says" />
-```
-
----
-
-### Phase 4: Update Sitemap lastmod Dates
-
-**File: `public/sitemap.xml`**
-
-Update `<lastmod>` dates to reflect recent content changes:
-- Set all dates to `2026-02-08` (today) to signal freshness to Google
-
----
-
-### Phase 5: Add WebSite Schema to Homepage
-
-**File: `src/pages/Index.tsx`**
-
-Add JSON-LD structured data for WebSite schema with SiteNavigationElement to reinforce site structure for Google.
+Reasoning: The existing categories focus on rent vs buy decisions, but this article is about the **buying process itself** - step-by-step guidance for someone who has already decided to buy.
 
 ---
 
@@ -91,100 +43,195 @@ Add JSON-LD structured data for WebSite schema with SiteNavigationElement to rei
 
 | File | Action | Description |
 |------|--------|-------------|
-| `src/pages/Index.tsx` | MODIFY | Add Featured Content section + WebSite JSON-LD |
-| `src/components/simulator/Footer.tsx` | MODIFY | Add navigation links |
-| `src/pages/ArticleHouseVsStocks.tsx` | MODIFY | Add missing canonical tag |
-| `public/sitemap.xml` | MODIFY | Update lastmod dates |
+| `src/pages/ArticleFirstTimeBuyer2026.tsx` | CREATE | New article page with exact PDF content |
+| `src/data/articleData.ts` | MODIFY | Add article metadata entry |
+| `src/data/topicCategories.ts` | MODIFY | Add "first-time-buyers" category |
+| `src/App.tsx` | MODIFY | Add route for new article |
+| `public/sitemap.xml` | MODIFY | Add URL entry |
 
-**Total: 4 files modified**
+**Total: 1 new file, 4 modified files**
 
 ---
 
-## Technical Details
+## Implementation Details
 
-### New Homepage Section: Featured Content
+### 1. Article Metadata
 
-```tsx
-<section className="py-12 bg-muted/30">
-  <div className="container max-w-4xl mx-auto px-4">
-    <h2 className="text-xl font-bold text-center mb-6">Explore More</h2>
-    <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-      <Link to="/simulate">Rent vs Buy Calculator</Link>
-      <Link to="/articles">Latest Insights</Link>
-      <Link to="/articles/rent-vs-buy-2026-data-driven-decision-guide">2026 Housing Guide</Link>
-      <Link to="/es/articles">Artículos en Español</Link>
-    </div>
-  </div>
-</section>
-```
+Add to `src/data/articleData.ts`:
 
-### Enhanced Footer Links
-
-```tsx
-<nav className="flex flex-wrap justify-center gap-4 mb-4">
-  <Link to="/">Home</Link>
-  <Link to="/simulate">Simulator</Link>
-  <Link to="/articles">Articles</Link>
-  <Link to="/es/articles">Artículos</Link>
-</nav>
-```
-
-### WebSite JSON-LD Schema
-
-```json
+```typescript
 {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "HomeDecision",
-  "url": "https://homedecision.app/",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://homedecision.app/simulate"
-  }
+  slug: 'first-time-home-buyer-guide-2026',
+  title: 'First-Time Home-Buyer Guide 2026',
+  description: 'Everything first-time buyers need to know in 2026: mortgage rates around 6.25%, down payments, hidden costs, and step-by-step guidance for Spain and the US.',
+  excerpt: 'Buying your first home in 2026? This guide covers stable mortgage rates, saving strategies, hidden costs, and step-by-step advice for Spain and the US markets.',
+  publishedDate: '2026-02-08',
+  modifiedDate: '2026-02-08',
+  wordCount: 2100,
+  category: 'first-time-buyers',
+  isPublished: true,
+  language: 'en',
 }
 ```
 
+### 2. New Topic Category
+
+Add to both English and Spanish arrays in `src/data/topicCategories.ts`:
+
+**English:**
+```typescript
+{
+  id: 'first-time-buyers',
+  name: 'First-Time Buyer Guides',
+  description: 'Step-by-step guides for new homebuyers.',
+  articleSlugs: ['first-time-home-buyer-guide-2026'],
+}
+```
+
+**Spanish (placeholder):**
+```typescript
+{
+  id: 'first-time-buyers',
+  name: 'Guias para Compradores Primerizos',
+  description: 'Guias paso a paso para nuevos compradores de vivienda.',
+  articleSlugs: [],
+}
+```
+
+### 3. Route in App.tsx
+
+```tsx
+import ArticleFirstTimeBuyer2026 from "./pages/ArticleFirstTimeBuyer2026";
+
+// Add route:
+<Route 
+  path="/articles/first-time-home-buyer-guide-2026" 
+  element={<ArticleFirstTimeBuyer2026 />} 
+/>
+```
+
+### 4. Sitemap Entry
+
+```xml
+<url>
+  <loc>https://homedecision.app/articles/first-time-home-buyer-guide-2026</loc>
+  <lastmod>2026-02-08</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.7</priority>
+</url>
+```
+
 ---
 
-## SEO Compliance Checklist
+## Article Page Structure
 
-After implementation:
+Following the exact pattern from `ArticleRentVsBuy2026.tsx`:
 
-- [x] Homepage links to /simulate, /articles, /es/articles, and latest articles
-- [x] All pages reachable within 2 clicks from homepage
-- [x] Footer provides consistent navigation across all pages
-- [x] All public pages have self-referencing canonical tags
-- [x] sitemap.xml has updated lastmod dates
-- [x] JSON-LD structured data on homepage
-- [x] All links use proper `<a href>` tags (crawlable by Googlebot)
-- [x] `<meta name="robots" content="index,follow">` on all public pages
+```text
++--------------------------------------------------+
+| Helmet (SEO meta tags, OG, Twitter)              |
++--------------------------------------------------+
+| ArticleJsonLd (structured data)                  |
++--------------------------------------------------+
+| ArticleLayout                                    |
+|   +----------------------------------------------+
+|   | Language Switcher (EN active, no ES yet)    |
+|   +----------------------------------------------+
+|   | ArticleHeader (title, lead, byline)         |
+|   +----------------------------------------------+
+|   | Article Body                                 |
+|   |   - H2: Why 2026 is unique                  |
+|   |     - H3: Stable, but elevated rates        |
+|   |     - H3: Seasonal advantages               |
+|   |     - H3: Improving inventory               |
+|   |   - H2: Step 1 - Assess finances            |
+|   |     - H3: Calculate affordability           |
+|   |     - H3: Save for down payment             |
+|   |     - H3: Strengthen credit                 |
+|   |     - ArticleCallout (40% debt rule)        |
+|   |   - H2: Step 2 - Research the market        |
+|   |   - H2: Step 3 - Property search            |
+|   |     - H3: View homes                        |
+|   |     - H3: Make an offer                     |
+|   |     - ArticleCallout (arras deposit)        |
+|   |   - H2: Step 4 - Secure financing           |
+|   |     - H3: Mortgage types                    |
+|   |     - H3: Hidden costs                      |
+|   |     - ArticleCallout (10-15% extra costs)   |
+|   |   - H2: Step 5 - Closing                    |
+|   |   - H2: Programmes and incentives           |
+|   |   - H2: Avoid common mistakes               |
+|   |   - H2: Final thoughts                      |
+|   +----------------------------------------------+
+|   | RelatedReading                               |
+|   +----------------------------------------------+
+|   | ArticleCTA (simulator link)                 |
+|   +----------------------------------------------+
+|   | ArticleFooter                               |
+|   +----------------------------------------------+
++--------------------------------------------------+
+```
+
+---
+
+## Key Callouts (from PDF data)
+
+The following statistics will be highlighted using `ArticleCallout`:
+
+1. **2026 Mortgage Rates:**
+   "US: low 6% range, hovering near 6.25% | Spain: 3.17% average (October 2025)"
+
+2. **Debt-to-Income Rule:**
+   "Keep total monthly debts under 40% of net income; mortgage around one-third"
+
+3. **Earnest Money (Spain):**
+   "Sign contrato de arras with 10% deposit - lose it if you back out; seller pays double if they back out"
+
+4. **Hidden Costs:**
+   "Budget 10-15% of purchase price on top of down payment for taxes, notary, registration"
+
+---
+
+## SEO Implementation
+
+Following the established pattern:
+
+- `<html lang="en">`
+- Unique `<title>`: "First-Time Home-Buyer Guide 2026 | HomeDecision"
+- Unique `<meta name="description">`
+- `<meta name="robots" content="index,follow">`
+- Self-referencing canonical URL
+- Open Graph and Twitter meta tags
+- JSON-LD structured data via `ArticleJsonLd`
+- **No hreflang tags** (no Spanish translation yet)
+- **No AvailableInLanguage** component (no translation available)
+
+---
+
+## E-E-A-T Components
+
+- AuthorByline with reading time and last updated date
+- ArticleFooter with feedback email
+- RelatedReading linking to other published articles
+- ArticleCTA linking to the simulator
+
+---
+
+## Verbatim Content Usage
+
+The article body will use the **exact text** from the PDF, including:
+- All section headings (H2, H3)
+- All bullet points and numbered lists
+- Specific data points (rates, percentages, deposit amounts)
+- Programme names (FHA, VA, USDA, hipoteca joven)
+- Source references stripped (footnote numbers removed for cleaner display)
 
 ---
 
 ## Crawl Path Verification
 
-After changes, Google can reach all pages in 1-2 clicks:
+After implementation:
+- Homepage -> /articles -> Article (2 clicks)
+- /articles hub will automatically show the new article via `getPublishedArticles()`
+- New category "First-Time Buyer Guides" will appear in topic hubs
 
-| From | To | Clicks |
-|------|-----|--------|
-| Homepage | /simulate | 1 |
-| Homepage | /articles | 1 |
-| Homepage | /es/articles | 1 |
-| Homepage | Latest EN article | 1 |
-| /articles | Any EN article | 1 |
-| /es/articles | Any ES article | 1 |
-| Any article | /simulate | 1 |
-| Any article | /articles hub | 1 |
-| Footer (all pages) | All key pages | 1 |
-
----
-
-## Limitations
-
-Note: This is a client-side React SPA hosted on Lovable. True server-side rendering (SSR) or pre-rendering is not available. However, Googlebot can render JavaScript, and these optimizations will:
-1. Strengthen crawl signals through better internal linking
-2. Update sitemap freshness signals
-3. Add structured data for better understanding
-4. Ensure all pages have proper canonical/robots tags
-
-For critical SPAs, Google typically indexes pages within 1-2 weeks when internal linking and sitemaps are correct.
