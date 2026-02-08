@@ -1,18 +1,21 @@
-import { Home, Menu, ChevronDown, Calculator, FileText } from 'lucide-react';
+import { Home, Menu, ChevronDown, Calculator, FileText, CreditCard, Crown, LogIn } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { LanguageSelector } from '@/components/simulator/LanguageSelector';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useUser } from '@/contexts/UserContext';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import logo from '@/assets/logo.png';
 
 export function SiteNavigation() {
   const { t } = useLanguage();
+  const { isLoggedIn, isPremium, user, logout } = useUser();
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
@@ -62,6 +65,15 @@ export function SiteNavigation() {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link 
+                    to="/pricing" 
+                    className={`flex items-center gap-2 cursor-pointer ${isActive('/pricing') ? 'bg-accent' : ''}`}
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    Pricing
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link 
                     to="/articles" 
                     className={`flex items-center gap-2 cursor-pointer ${isArticlesActive() ? 'bg-accent' : ''}`}
                   >
@@ -69,9 +81,62 @@ export function SiteNavigation() {
                     Insights
                   </Link>
                 </DropdownMenuItem>
+                {isPremium && (
+                  <DropdownMenuItem asChild>
+                    <Link 
+                      to="/compare" 
+                      className={`flex items-center gap-2 cursor-pointer ${isActive('/compare') ? 'bg-accent' : ''}`}
+                    >
+                      <Crown className="h-4 w-4 text-primary" />
+                      Compare
+                    </Link>
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
+
             <LanguageSelector />
+
+            {isLoggedIn ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    {isPremium && <Crown className="h-3 w-3 text-primary" />}
+                    <span className="hidden sm:inline max-w-24 truncate">{user?.email}</span>
+                    <ChevronDown className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-popover">
+                  {isPremium && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/compare" className="flex items-center gap-2 cursor-pointer">
+                        <Crown className="h-4 w-4 text-primary" />
+                        Compare Scenarios
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {!isPremium && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/pricing" className="flex items-center gap-2 cursor-pointer">
+                        <Crown className="h-4 w-4" />
+                        Upgrade to Premium
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive">
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/auth" className="gap-2">
+                  <LogIn className="h-4 w-4" />
+                  <span className="hidden sm:inline">Sign In</span>
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>

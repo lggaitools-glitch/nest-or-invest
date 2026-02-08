@@ -246,4 +246,86 @@ export const es: Translations = {
       howItWorks: 'Cómo funciona',
     },
   },
+  pricing: {
+    seo: {
+      title: 'Precios – Compara Planes | HomeDecision',
+      description: 'Elige el plan adecuado para tu decisión de vivienda. Simulación gratuita, informes únicos o acceso Premium ilimitado.',
+    },
+    headline: 'Precios simples y transparentes',
+    subheadline: 'Elige el plan que se adapte a tus necesidades. Sin cargos ocultos.',
+    plans: {
+      free: {
+        name: 'Gratis',
+        description: 'Simulación rápida para una primera impresión',
+        features: [
+          'Simulación de un escenario',
+          'Veredicto básico (Alquilar vs Comprar)',
+          'Comparación de costos mensuales',
+          'Sin cuenta requerida',
+        ],
+        cta: 'Probar Gratis',
+      },
+      report: {
+        name: 'Informe Único',
+        description: 'Un análisis detallado para un escenario',
+        priceSubtext: 'único',
+        features: [
+          'Desglose completo de patrimonio',
+          'Gráficos y visualizaciones',
+          'Todos los insights explicados',
+          'Exportar a PDF',
+          'Enlace de acceso por 7 días',
+        ],
+        cta: 'Obtener Informe',
+      },
+      premium: {
+        name: 'Premium',
+        description: 'Exploración y comparaciones ilimitadas',
+        priceSubtext: '/mes',
+        features: [
+          'Escenarios ilimitados',
+          'Guardar y comparar propiedades',
+          'Supuestos editables',
+          'Historial guardado',
+          'Soporte prioritario',
+        ],
+        cta: 'Iniciar Premium',
+      },
+    },
+    comparison: {
+      title: 'Comparación de Funciones',
+      feature: 'Función',
+      rows: [
+        { feature: 'Ejecutar simulación', free: '1x', report: '1x (bloqueado)', premium: 'Ilimitado' },
+        { feature: 'Editar inputs', free: '✓', report: '✗', premium: '✓' },
+        { feature: 'Veredicto básico', free: '✓', report: '✓', premium: '✓' },
+        { feature: 'Gráficos completos', free: '✗', report: '✓', premium: '✓' },
+        { feature: 'Todos los insights', free: 'Solo 1', report: '✓', premium: '✓' },
+        { feature: 'Exportar PDF', free: '✗', report: '✓', premium: '✓' },
+        { feature: 'Guardar escenarios', free: '✗', report: '✗', premium: '✓' },
+        { feature: 'Comparar escenarios', free: '✗', report: '✗', premium: '✓' },
+      ],
+    },
+    faq: {
+      title: 'Preguntas Frecuentes',
+      items: [
+        {
+          q: '¿Qué pasa después de pagar por un informe?',
+          a: 'Recibirás un enlace único para ver tu informe detallado. El enlace es válido por 7 días. También puedes descargar un PDF.',
+        },
+        {
+          q: '¿Puedo editar mi informe después de comprarlo?',
+          a: 'No, los informes únicos están bloqueados. Para explorar diferentes escenarios, necesitarás Premium.',
+        },
+        {
+          q: '¿Cómo funciona la facturación Premium?',
+          a: 'Premium se factura mensualmente. Puedes cancelar en cualquier momento y mantener acceso hasta el final del período.',
+        },
+        {
+          q: '¿Es segura mi información de pago?',
+          a: 'Sí, usamos cifrado estándar de la industria y nunca almacenamos los datos de tu tarjeta.',
+        },
+      ],
+    },
+  },
 };

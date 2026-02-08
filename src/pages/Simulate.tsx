@@ -7,6 +7,8 @@ import { ResultsDisplay } from '@/components/simulator/ResultsDisplay';
 import { WealthChart } from '@/components/simulator/WealthChart';
 import { InsightCards } from '@/components/simulator/InsightCards';
 import { TransparencySection } from '@/components/simulator/TransparencySection';
+import { BlurredPreview } from '@/components/BlurredPreview';
+import { FreeSimulatorCTA } from '@/components/FreeSimulatorCTA';
 import { useLanguage } from '@/i18n/LanguageContext';
 import {
   DEFAULT_INPUTS,
@@ -110,21 +112,50 @@ const Simulate = () => {
               />
             </div>
 
+            {/* Blurred chart for free users */}
             <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <WealthChart
-                rentData={rentScenario.yearlyData}
-                buyData={buyScenario.yearlyData}
-                breakEvenYear={outputs.breakEvenYear}
-                countryId={selectedPreset}
-              />
+              <BlurredPreview
+                title="Unlock Wealth Chart"
+                description="See how your wealth grows over time in both scenarios."
+                ctaText="Get Report – €3.99"
+                ctaLink="/report"
+              >
+                <WealthChart
+                  rentData={rentScenario.yearlyData}
+                  buyData={buyScenario.yearlyData}
+                  breakEvenYear={outputs.breakEvenYear}
+                  countryId={selectedPreset}
+                />
+              </BlurredPreview>
             </div>
 
+            {/* Show only first insight, blur the rest */}
             <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <InsightCards insights={insights} countryId={selectedPreset} />
+              {insights.length > 0 && (
+                <div className="space-y-4">
+                  <InsightCards insights={[insights[0]]} countryId={selectedPreset} />
+                  {insights.length > 1 && (
+                    <BlurredPreview
+                      title="Unlock All Insights"
+                      description={`${insights.length - 1} more insights available with the full report.`}
+                      ctaText="Get Report – €3.99"
+                      ctaLink="/report"
+                      blurAmount="sm"
+                    >
+                      <InsightCards insights={insights.slice(1)} countryId={selectedPreset} />
+                    </BlurredPreview>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
               <TransparencySection />
+            </div>
+
+            {/* Upgrade CTA */}
+            <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
+              <FreeSimulatorCTA />
             </div>
           </div>
         </div>

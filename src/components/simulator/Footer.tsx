@@ -16,6 +16,12 @@ export function Footer() {
           <Link to="/simulate" className="text-muted-foreground hover:text-foreground transition-colors">
             Simulator
           </Link>
+          <Link to="/report" className="text-muted-foreground hover:text-foreground transition-colors">
+            Report (€3.99)
+          </Link>
+          <Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+            Pricing
+          </Link>
           <Link to="/articles" className="text-muted-foreground hover:text-foreground transition-colors">
             Articles
           </Link>

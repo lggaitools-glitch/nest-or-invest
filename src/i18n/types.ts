@@ -67,6 +67,37 @@ export interface SimulateTranslations {
   };
 }
 
+export interface PricingPlanTranslation {
+  name: string;
+  description: string;
+  priceSubtext?: string;
+  features: string[];
+  cta: string;
+}
+
+export interface PricingTranslations {
+  seo: {
+    title: string;
+    description: string;
+  };
+  headline: string;
+  subheadline: string;
+  plans: {
+    free: PricingPlanTranslation;
+    report: PricingPlanTranslation;
+    premium: PricingPlanTranslation;
+  };
+  comparison: {
+    title: string;
+    feature: string;
+    rows: { feature: string; free: string; report: string; premium: string }[];
+  };
+  faq: {
+    title: string;
+    items: { q: string; a: string }[];
+  };
+}
+
 export interface Translations {
   header: {
     title: string;
@@ -176,4 +207,5 @@ export interface Translations {
   };
   landing: LandingTranslations;
   simulate: SimulateTranslations;
+  pricing: PricingTranslations;
 }
