@@ -2,9 +2,12 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { LanguageProvider } from "./i18n/LanguageContext";
+import { UserProvider } from "./contexts/UserContext";
 
 createRoot(document.getElementById("root")!).render(
   <LanguageProvider>
-    <App />
+    <UserProvider>
+      <App />
+    </UserProvider>
   </LanguageProvider>
 );
