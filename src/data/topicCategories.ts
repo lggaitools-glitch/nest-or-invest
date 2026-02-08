@@ -94,7 +94,7 @@ export const topicCategoriesEs: TopicCategory[] = [
     id: 'first-time-buyers',
     name: 'Guías para Compradores Primerizos',
     description: 'Guías paso a paso para nuevos compradores de vivienda.',
-    articleSlugs: [],
+    articleSlugs: ['guia-comprar-primera-vivienda-2026'],
   },
 ];
 
