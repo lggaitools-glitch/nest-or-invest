@@ -25,17 +25,17 @@ export function SiteNavigation() {
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="container max-w-6xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img src={logo} alt="HomeDecision Logo" className="h-10 w-10" />
-            <div>
-              <h1 className="text-lg font-bold text-foreground font-display">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity min-w-0">
+            <img src={logo} alt="HomeDecision Logo" className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0" />
+            <div className="hidden sm:block min-w-0">
+              <h1 className="text-lg font-bold text-foreground font-display truncate">
                 {t.header.title}
               </h1>
-              <p className="text-xs text-muted-foreground">{t.header.subtitle}</p>
+              <p className="text-xs text-muted-foreground truncate">{t.header.subtitle}</p>
             </div>
           </Link>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 sm:gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="gap-2">
