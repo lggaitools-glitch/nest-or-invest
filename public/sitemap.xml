@@ -40,6 +40,14 @@
     <priority>0.7</priority>
   </url>
   
+  <!-- English Article: First-Time Home-Buyer Guide 2026 -->
+  <url>
+    <loc>https://homedecision.app/articles/first-time-home-buyer-guide-2026</loc>
+    <lastmod>2026-02-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
   <!-- Spanish Articles Hub -->
   <url>
     <loc>https://homedecision.app/es/articles</loc>
