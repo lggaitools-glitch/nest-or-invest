@@ -1,41 +1,33 @@
 
 
-# Add New English Article: "First-Time Home-Buyer Guide 2026"
+# Create Spanish Article: "Guía para comprar tu primera vivienda en 2026"
 
 ## Overview
 
-Create a new article page using the **exact content** from the uploaded PDF document. This article is a comprehensive step-by-step guide for first-time home buyers in 2026, covering mortgage rates, down payments, hidden costs, and specific programs in Spain and the US.
+Create the Spanish translation of the First-Time Home-Buyer Guide 2026 article using the **exact content** from the uploaded PDF (`primera_vivienda.pdf`). This article will be linked bidirectionally with its English counterpart through the translation mapping system.
 
-**Proposed slug:** `first-time-home-buyer-guide-2026`
+**Proposed slug:** `guia-comprar-primera-vivienda-2026`
 
-**Full URL:** `/articles/first-time-home-buyer-guide-2026`
+**Full URL:** `/es/articles/guia-comprar-primera-vivienda-2026`
+
+**English counterpart:** `/articles/first-time-home-buyer-guide-2026`
 
 ---
 
 ## Content Structure (from PDF)
 
-The article contains the following sections that will be implemented verbatim:
-
-| Section | Description |
-|---------|-------------|
-| **Lead** | "Buying your first home can feel overwhelming, but 2026 brings opportunities..." |
-| **Why 2026 is unique** | Stable rates (~6.25%), seasonal advantages, improving inventory |
-| **Step 1** | Assess finances and set a budget (affordability, down payment, credit) |
-| **Step 2** | Research the market and define priorities |
-| **Step 3** | Property search and due diligence (viewing, offers, contrato de arras) |
-| **Step 4** | Secure financing (mortgage types, hidden costs) |
-| **Step 5** | Closing (sign and register the property) |
-| **Programmes** | Spain (hipoteca joven, grants) and US (FHA, VA, USDA) |
-| **Common mistakes** | 5 mistakes to avoid |
-| **Final thoughts** | Encouragement and summary |
-
----
-
-## Category Decision
-
-This article fits best in a **new category**: `first-time-buyers`
-
-Reasoning: The existing categories focus on rent vs buy decisions, but this article is about the **buying process itself** - step-by-step guidance for someone who has already decided to buy.
+| Section | Spanish Title |
+|---------|---------------|
+| **Lead** | "Comprar tu primera vivienda puede resultar abrumador, pero 2026 ofrece oportunidades..." |
+| **H2: Por qué 2026 es especial** | Tipos estables (~6%), ventajas estacionales, más oferta |
+| **H2: Paso 1** | Evalúa tus finanzas y fija un presupuesto |
+| **H2: Paso 2** | Investiga el mercado y define tus prioridades |
+| **H2: Paso 3** | Inicia tu búsqueda y realiza las comprobaciones |
+| **H2: Paso 4** | Obtén financiación y formaliza la hipoteca |
+| **H2: Paso 5** | Cierre: firma y registra la vivienda |
+| **H2: Programas** | Ayudas para 2026 (hipoteca joven, FHA, VA, USDA) |
+| **H2: Errores** | Evita los errores habituales |
+| **H2: Conclusión** | Comprar tu primera vivienda en 2026 es posible... |
 
 ---
 
@@ -43,78 +35,101 @@ Reasoning: The existing categories focus on rent vs buy decisions, but this arti
 
 | File | Action | Description |
 |------|--------|-------------|
-| `src/pages/ArticleFirstTimeBuyer2026.tsx` | CREATE | New article page with exact PDF content |
-| `src/data/articleData.ts` | MODIFY | Add article metadata entry |
-| `src/data/topicCategories.ts` | MODIFY | Add "first-time-buyers" category |
-| `src/App.tsx` | MODIFY | Add route for new article |
-| `public/sitemap.xml` | MODIFY | Add URL entry |
+| `src/pages/ArticleGuiaComprarPrimeraVivienda2026.tsx` | CREATE | New Spanish article page with exact PDF content |
+| `src/data/articleData.ts` | MODIFY | Add Spanish article metadata + translation mapping |
+| `src/data/topicCategories.ts` | MODIFY | Add Spanish article slug to first-time-buyers category |
+| `src/pages/ArticleFirstTimeBuyer2026.tsx` | MODIFY | Add HreflangTags, LanguageSwitcher, AvailableInLanguage |
+| `src/App.tsx` | MODIFY | Add route for Spanish article |
+| `public/sitemap.xml` | MODIFY | Add Spanish URL entry |
 
-**Total: 1 new file, 4 modified files**
+**Total: 1 new file, 5 modified files**
 
 ---
 
-## Implementation Details
+## Technical Implementation
 
-### 1. Article Metadata
+### 1. Spanish Article Metadata
 
-Add to `src/data/articleData.ts`:
+Add to `articlesEs` array in `src/data/articleData.ts`:
 
 ```typescript
 {
-  slug: 'first-time-home-buyer-guide-2026',
-  title: 'First-Time Home-Buyer Guide 2026',
-  description: 'Everything first-time buyers need to know in 2026: mortgage rates around 6.25%, down payments, hidden costs, and step-by-step guidance for Spain and the US.',
-  excerpt: 'Buying your first home in 2026? This guide covers stable mortgage rates, saving strategies, hidden costs, and step-by-step advice for Spain and the US markets.',
+  slug: 'guia-comprar-primera-vivienda-2026',
+  title: 'Guía para comprar tu primera vivienda en 2026',
+  description: 'Todo lo que los compradores primerizos necesitan saber en 2026: tipos hipotecarios en torno al 6,25%, entrada, costes ocultos y guía paso a paso para España y EE.UU.',
+  excerpt: '¿Compras tu primera vivienda en 2026? Esta guía cubre tipos hipotecarios estables, estrategias de ahorro, costes ocultos y consejos paso a paso para España y EE.UU.',
   publishedDate: '2026-02-08',
   modifiedDate: '2026-02-08',
   wordCount: 2100,
   category: 'first-time-buyers',
   isPublished: true,
-  language: 'en',
+  language: 'es',
 }
 ```
 
-### 2. New Topic Category
+### 2. Translation Mapping
 
-Add to both English and Spanish arrays in `src/data/topicCategories.ts`:
+Add to `articleTranslations` in `src/data/articleData.ts`:
 
-**English:**
+```typescript
+'first-time-home-buyer-guide-2026': 'guia-comprar-primera-vivienda-2026',
+```
+
+### 3. Topic Category Update
+
+Add Spanish article slug to `first-time-buyers` category in `topicCategoriesEs`:
+
 ```typescript
 {
   id: 'first-time-buyers',
-  name: 'First-Time Buyer Guides',
-  description: 'Step-by-step guides for new homebuyers.',
-  articleSlugs: ['first-time-home-buyer-guide-2026'],
+  name: 'Guías para Compradores Primerizos',
+  description: 'Guías paso a paso para nuevos compradores de vivienda.',
+  articleSlugs: ['guia-comprar-primera-vivienda-2026'],
 }
 ```
 
-**Spanish (placeholder):**
-```typescript
-{
-  id: 'first-time-buyers',
-  name: 'Guias para Compradores Primerizos',
-  description: 'Guias paso a paso para nuevos compradores de vivienda.',
-  articleSlugs: [],
-}
-```
+### 4. Spanish Article Page
 
-### 3. Route in App.tsx
+Following the pattern from `ArticleAlquilarOComprar2026.tsx`:
+
+- `<html lang="es">`
+- `HreflangTags` with `enSlug` and `esSlug` for bidirectional linking
+- `ArticleJsonLd` with `language="es"`
+- `ArticleLanguageSwitcher` showing ES active, EN linked
+- `AvailableInLanguage` showing "Available in English" notice
+- `RelatedReading` with `language="es"` and `basePath="/es/articles"`
+- Spanish CTA text: "Simula tu escenario en nuestra calculadora de alquiler vs compra"
+- Back link to `/es/articles` with "Volver a Artículos"
+
+### 5. Update English Article
+
+Modify `ArticleFirstTimeBuyer2026.tsx` to add:
+
+- Import `Link`, `ArrowLeft`, `HreflangTags`, `ArticleLanguageSwitcher`, `AvailableInLanguage`
+- Import `getTranslationSlug` function
+- Add language switcher showing EN active, ES linked
+- Add `HreflangTags` component with both slugs
+- Add "Available in Spanish" notice
+- Add back link to `/articles`
+
+### 6. App Router
 
 ```tsx
-import ArticleFirstTimeBuyer2026 from "./pages/ArticleFirstTimeBuyer2026";
+import ArticleGuiaComprarPrimeraVivienda2026 from "./pages/ArticleGuiaComprarPrimeraVivienda2026";
 
-// Add route:
+// Add route in Spanish articles section:
 <Route 
-  path="/articles/first-time-home-buyer-guide-2026" 
-  element={<ArticleFirstTimeBuyer2026 />} 
+  path="/es/articles/guia-comprar-primera-vivienda-2026" 
+  element={<ArticleGuiaComprarPrimeraVivienda2026 />} 
 />
 ```
 
-### 4. Sitemap Entry
+### 7. Sitemap Entry
 
 ```xml
+<!-- Spanish Article: Guía para comprar tu primera vivienda en 2026 -->
 <url>
-  <loc>https://homedecision.app/articles/first-time-home-buyer-guide-2026</loc>
+  <loc>https://homedecision.app/es/articles/guia-comprar-primera-vivienda-2026</loc>
   <lastmod>2026-02-08</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.7</priority>
@@ -123,115 +138,79 @@ import ArticleFirstTimeBuyer2026 from "./pages/ArticleFirstTimeBuyer2026";
 
 ---
 
-## Article Page Structure
+## SEO Implementation
 
-Following the exact pattern from `ArticleRentVsBuy2026.tsx`:
+### Spanish Article
+- `<html lang="es">`
+- `<title>`: "Guía para comprar tu primera vivienda en 2026 | HomeDecision"
+- Self-referencing canonical: `/es/articles/guia-comprar-primera-vivienda-2026`
+- `<meta name="robots" content="index,follow">`
+- Hreflang tags linking to English version
 
-```text
-+--------------------------------------------------+
-| Helmet (SEO meta tags, OG, Twitter)              |
-+--------------------------------------------------+
-| ArticleJsonLd (structured data)                  |
-+--------------------------------------------------+
-| ArticleLayout                                    |
-|   +----------------------------------------------+
-|   | Language Switcher (EN active, no ES yet)    |
-|   +----------------------------------------------+
-|   | ArticleHeader (title, lead, byline)         |
-|   +----------------------------------------------+
-|   | Article Body                                 |
-|   |   - H2: Why 2026 is unique                  |
-|   |     - H3: Stable, but elevated rates        |
-|   |     - H3: Seasonal advantages               |
-|   |     - H3: Improving inventory               |
-|   |   - H2: Step 1 - Assess finances            |
-|   |     - H3: Calculate affordability           |
-|   |     - H3: Save for down payment             |
-|   |     - H3: Strengthen credit                 |
-|   |     - ArticleCallout (40% debt rule)        |
-|   |   - H2: Step 2 - Research the market        |
-|   |   - H2: Step 3 - Property search            |
-|   |     - H3: View homes                        |
-|   |     - H3: Make an offer                     |
-|   |     - ArticleCallout (arras deposit)        |
-|   |   - H2: Step 4 - Secure financing           |
-|   |     - H3: Mortgage types                    |
-|   |     - H3: Hidden costs                      |
-|   |     - ArticleCallout (10-15% extra costs)   |
-|   |   - H2: Step 5 - Closing                    |
-|   |   - H2: Programmes and incentives           |
-|   |   - H2: Avoid common mistakes               |
-|   |   - H2: Final thoughts                      |
-|   +----------------------------------------------+
-|   | RelatedReading                               |
-|   +----------------------------------------------+
-|   | ArticleCTA (simulator link)                 |
-|   +----------------------------------------------+
-|   | ArticleFooter                               |
-|   +----------------------------------------------+
-+--------------------------------------------------+
+### English Article (update)
+- Add `HreflangTags` linking to Spanish version
+- Add `ArticleLanguageSwitcher` for visible language toggle
+- Add `AvailableInLanguage` notice
+
+### Hreflang Structure (both pages)
+```html
+<link rel="alternate" hreflang="en" href="https://homedecision.app/articles/first-time-home-buyer-guide-2026" />
+<link rel="alternate" hreflang="es" href="https://homedecision.app/es/articles/guia-comprar-primera-vivienda-2026" />
+<link rel="alternate" hreflang="x-default" href="https://homedecision.app/articles/first-time-home-buyer-guide-2026" />
 ```
 
 ---
 
-## Key Callouts (from PDF data)
+## Key Callouts (Spanish content from PDF)
 
-The following statistics will be highlighted using `ArticleCallout`:
+1. **Tipos hipotecarios 2026:**
+   "EE.UU.: en torno al 6 %, cerca del 6,25 % | España: 3,17 % de media (octubre 2025)"
 
-1. **2026 Mortgage Rates:**
-   "US: low 6% range, hovering near 6.25% | Spain: 3.17% average (October 2025)"
+2. **Regla del 40%:**
+   "Las deudas mensuales no deben superar el 40 % de los ingresos netos; la cuota hipotecaria, en torno a un tercio"
 
-2. **Debt-to-Income Rule:**
-   "Keep total monthly debts under 40% of net income; mortgage around one-third"
+3. **Contrato de arras:**
+   "Firma el contrato de arras con un 10 % de señal. Si te retiras, pierdes la señal; si el vendedor se retira, te devuelve el doble"
 
-3. **Earnest Money (Spain):**
-   "Sign contrato de arras with 10% deposit - lose it if you back out; seller pays double if they back out"
-
-4. **Hidden Costs:**
-   "Budget 10-15% of purchase price on top of down payment for taxes, notary, registration"
+4. **Costes ocultos:**
+   "Presupuesta entre un 10 y un 15 % del precio de compra además de la entrada para impuestos, notaría y registro"
 
 ---
 
-## SEO Implementation
+## Article Content Structure
 
-Following the established pattern:
+The Spanish article page will include the exact PDF content:
 
-- `<html lang="en">`
-- Unique `<title>`: "First-Time Home-Buyer Guide 2026 | HomeDecision"
-- Unique `<meta name="description">`
-- `<meta name="robots" content="index,follow">`
-- Self-referencing canonical URL
-- Open Graph and Twitter meta tags
-- JSON-LD structured data via `ArticleJsonLd`
-- **No hreflang tags** (no Spanish translation yet)
-- **No AvailableInLanguage** component (no translation available)
+### Lead Paragraph (verbatim)
+"Comprar tu primera vivienda puede resultar abrumador, pero 2026 ofrece oportunidades para los compradores bien preparados. Se espera que los tipos hipotecarios se estabilicen en torno al 6 %, y algunos analistas creen que se mantendrán cerca del 6,25 % durante la mayor parte del año. En España, el tipo hipotecario medio rondaba el 3,17 % en octubre de 2025, y los compradores suelen tener que aportar entre el 10 y el 15 % del precio de compra para cubrir impuestos, notaría y registro. Tanto si buscas en Madrid como en Miami, los fundamentos son los mismos: conoce tu presupuesto, fortalece tu historial crediticio, ahorra una entrada sólida y sigue un proceso disciplinado. Esta guía resume cada paso, resalta los costes ocultos y las ayudas disponibles y ofrece consejos actualizados para que los compradores primerizos tengan éxito en 2026."
 
----
-
-## E-E-A-T Components
-
-- AuthorByline with reading time and last updated date
-- ArticleFooter with feedback email
-- RelatedReading linking to other published articles
-- ArticleCTA linking to the simulator
-
----
-
-## Verbatim Content Usage
-
-The article body will use the **exact text** from the PDF, including:
-- All section headings (H2, H3)
-- All bullet points and numbered lists
-- Specific data points (rates, percentages, deposit amounts)
-- Programme names (FHA, VA, USDA, hipoteca joven)
-- Source references stripped (footnote numbers removed for cleaner display)
+### All sections as H2/H3 following PDF structure
+- Por qué 2026 es especial para los compradores primerizos
+  - Tipos estables, pero aún elevados
+  - Ventajas estacionales
+  - Más oferta y programas de ayuda
+- Paso 1 – Evalúa tus finanzas y fija un presupuesto
+  - Calcula cuánto puedes pagar
+  - Ahorra para la entrada y los costes finales
+  - Refuerza tu crédito y consigue la preaprobación
+- Paso 2 – Investiga el mercado y define tus prioridades
+- Paso 3 – Inicia tu búsqueda y realiza las comprobaciones pertinentes
+  - Visita viviendas y haz preguntas
+  - Haz una oferta y negocia
+- Paso 4 – Obtén financiación y formaliza la hipoteca
+  - Elige el tipo de hipoteca adecuado
+  - Cuidado con los costes ocultos
+- Paso 5 – Cierre: firma y registra la vivienda
+- Programas y ayudas para 2026
+- Evita los errores habituales (bulleted list)
+- Conclusión
 
 ---
 
 ## Crawl Path Verification
 
 After implementation:
-- Homepage -> /articles -> Article (2 clicks)
-- /articles hub will automatically show the new article via `getPublishedArticles()`
-- New category "First-Time Buyer Guides" will appear in topic hubs
+- Homepage → /es/articles → Spanish article (2 clicks)
+- English article ↔ Spanish article (bidirectional via language switcher)
+- `/es/articles` hub will automatically show the new article via `getPublishedSpanishArticles()`
 
