@@ -246,4 +246,86 @@ export const en: Translations = {
       howItWorks: 'How it works',
     },
   },
+  pricing: {
+    seo: {
+      title: 'Pricing – Compare Plans | HomeDecision',
+      description: 'Choose the right plan for your housing decision. Free quick simulation, one-time reports, or unlimited Premium access.',
+    },
+    headline: 'Simple, transparent pricing',
+    subheadline: 'Choose the plan that fits your needs. No hidden fees, no surprises.',
+    plans: {
+      free: {
+        name: 'Free',
+        description: 'Quick simulation for a first glance',
+        features: [
+          'Single scenario simulation',
+          'Basic verdict (Rent vs Buy)',
+          'Monthly cost comparison',
+          'No account required',
+        ],
+        cta: 'Try Free',
+      },
+      report: {
+        name: 'One-Time Report',
+        description: 'A detailed analysis for a single scenario',
+        priceSubtext: 'once',
+        features: [
+          'Full wealth breakdown',
+          'Charts & visualizations',
+          'All insights explained',
+          'PDF export',
+          '7-day access link',
+        ],
+        cta: 'Get Report',
+      },
+      premium: {
+        name: 'Premium',
+        description: 'Unlimited exploration and comparisons',
+        priceSubtext: '/month',
+        features: [
+          'Unlimited scenarios',
+          'Save & compare properties',
+          'Editable assumptions',
+          'Saved history',
+          'Priority support',
+        ],
+        cta: 'Start Premium',
+      },
+    },
+    comparison: {
+      title: 'Feature Comparison',
+      feature: 'Feature',
+      rows: [
+        { feature: 'Run simulation', free: '1x', report: '1x (locked)', premium: 'Unlimited' },
+        { feature: 'Edit inputs', free: '✓', report: '✗', premium: '✓' },
+        { feature: 'Basic verdict', free: '✓', report: '✓', premium: '✓' },
+        { feature: 'Full charts', free: '✗', report: '✓', premium: '✓' },
+        { feature: 'All insights', free: '1 only', report: '✓', premium: '✓' },
+        { feature: 'PDF export', free: '✗', report: '✓', premium: '✓' },
+        { feature: 'Save scenarios', free: '✗', report: '✗', premium: '✓' },
+        { feature: 'Compare scenarios', free: '✗', report: '✗', premium: '✓' },
+      ],
+    },
+    faq: {
+      title: 'Frequently Asked Questions',
+      items: [
+        {
+          q: 'What happens after I pay for a report?',
+          a: 'You\'ll receive a unique link to view your detailed report. The link is valid for 7 days. You can also download a PDF.',
+        },
+        {
+          q: 'Can I edit my report after purchase?',
+          a: 'No, one-time reports are locked. To explore different scenarios, you\'ll need Premium.',
+        },
+        {
+          q: 'How does Premium billing work?',
+          a: 'Premium is billed monthly. You can cancel anytime and keep access until the end of your billing period.',
+        },
+        {
+          q: 'Is my payment information secure?',
+          a: 'Yes, we use industry-standard encryption and never store your card details on our servers.',
+        },
+      ],
+    },
+  },
 };
