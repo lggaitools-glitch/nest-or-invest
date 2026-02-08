@@ -78,6 +78,18 @@ export const articlesEs: ArticleMetadata[] = [
     isPublished: true,
     language: 'es',
   },
+  {
+    slug: 'guia-comprar-primera-vivienda-2026',
+    title: 'Guía para comprar tu primera vivienda en 2026',
+    description: 'Todo lo que los compradores primerizos necesitan saber en 2026: tipos hipotecarios en torno al 6,25 %, entrada, costes ocultos y guía paso a paso para España y EE.UU.',
+    excerpt: '¿Compras tu primera vivienda en 2026? Esta guía cubre tipos hipotecarios estables, estrategias de ahorro, costes ocultos y consejos paso a paso para España y EE.UU.',
+    publishedDate: '2026-02-08',
+    modifiedDate: '2026-02-08',
+    wordCount: 2100,
+    category: 'first-time-buyers',
+    isPublished: true,
+    language: 'es',
+  },
 ];
 
 // English article helpers
@@ -125,6 +137,7 @@ export function getCanonicalUrl(slug: string, language: 'en' | 'es' = 'en'): str
 export const articleTranslations: Record<string, string> = {
   'house-vs-stocks-what-the-data-really-says': 'casa-vs-bolsa-lo-que-dicen-los-datos',
   'rent-vs-buy-2026-data-driven-decision-guide': 'alquilar-o-comprar-2026-guia-basada-en-datos',
+  'first-time-home-buyer-guide-2026': 'guia-comprar-primera-vivienda-2026',
 };
 
 // Helper to get the opposite language slug

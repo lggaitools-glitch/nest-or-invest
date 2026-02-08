@@ -71,4 +71,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  
+  <!-- Spanish Article: Guía para comprar tu primera vivienda en 2026 -->
+  <url>
+    <loc>https://homedecision.app/es/articles/guia-comprar-primera-vivienda-2026</loc>
+    <lastmod>2026-02-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>

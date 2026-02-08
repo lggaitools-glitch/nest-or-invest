@@ -1,23 +1,32 @@
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { 
   ArticleLayout, 
   ArticleHeader, 
   ArticleCallout, 
   ArticleCTA,
   ArticleJsonLd,
+  HreflangTags,
+  ArticleLanguageSwitcher,
+  AvailableInLanguage,
   RelatedReading,
   ArticleFooter,
 } from '@/components/articles';
-import { getArticleBySlug } from '@/data/articleData';
+import { getArticleBySlug, getTranslationSlug } from '@/data/articleData';
 
 const ARTICLE_SLUG = 'first-time-home-buyer-guide-2026';
 
 export default function ArticleFirstTimeBuyer2026() {
   const articleData = getArticleBySlug(ARTICLE_SLUG);
+  const esSlug = getTranslationSlug(ARTICLE_SLUG, 'en');
 
   if (!articleData) {
     return null;
   }
+
+  const enPath = `/articles/${ARTICLE_SLUG}`;
+  const esPath = esSlug ? `/es/articles/${esSlug}` : undefined;
 
   return (
     <>
@@ -26,7 +35,6 @@ export default function ArticleFirstTimeBuyer2026() {
         <title>{articleData.title} | HomeDecision</title>
         <meta name="description" content={articleData.description} />
         <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={`https://homedecision.app/articles/${ARTICLE_SLUG}`} />
         
         <meta property="og:title" content={`${articleData.title} | HomeDecision`} />
         <meta property="og:description" content={articleData.description} />
@@ -40,6 +48,13 @@ export default function ArticleFirstTimeBuyer2026() {
         <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
       </Helmet>
 
+      <HreflangTags
+        type="article"
+        language="en"
+        enSlug={ARTICLE_SLUG}
+        esSlug={esSlug}
+      />
+
       <ArticleJsonLd
         title={articleData.title}
         description={articleData.description}
@@ -49,6 +64,25 @@ export default function ArticleFirstTimeBuyer2026() {
       />
 
       <ArticleLayout>
+        <div className="flex items-center justify-between mb-6">
+          <Link 
+            to="/articles" 
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Articles
+          </Link>
+          <ArticleLanguageSwitcher
+            currentLanguage="en"
+            enPath={enPath}
+            esPath={esPath}
+          />
+        </div>
+
+        <AvailableInLanguage
+          currentLanguage="en"
+          translationPath={esPath}
+        />
         <ArticleHeader 
           title={articleData.title}
           lead="Buying your first home can feel overwhelming, but 2026 brings opportunities for well‑prepared buyers. Mortgage rates are expected to stabilize in the low 6% range, and some analysts think they will hover near 6.25% throughout most of the year. In Spain, the average mortgage rate was about 3.17% in October 2025, and buyers typically need to bring 10–15% of the purchase price for taxes, notary and registration fees. Whether you're shopping in Madrid or Miami, the fundamentals remain the same: know your budget, build your credit, save a solid down payment, and follow a disciplined process. This guide outlines each step, highlights hidden costs and incentives, and provides up‑to‑date tips to help first‑time buyers succeed in 2026."
