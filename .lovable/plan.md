@@ -1,370 +1,368 @@
 
 
-# HomeDecision Hybrid Monetization Implementation
+# Simplify Free Experience & Differentiate Paid Tiers
 
 ## Overview
 
-This plan restructures HomeDecision.app from a free-only tool into a hybrid monetization model with three tiers: Free, One-time Report (€3.99), and Premium Subscription (€6.99/month).
+This plan restructures the `/simulate` page from a semi-featured experience with blurred previews into a truly minimal "quick estimate" tool. The goal is to make the Free tier feel helpful but intentionally incomplete, while making the €3.99 report feel significantly richer.
 
 ---
 
-## Architecture Overview
+## Current State vs Target State
 
-```text
-+--------------------------------------------------+
-|                   PUBLIC ROUTES                   |
-+--------------------------------------------------+
-| /           → Landing page (existing)             |
-| /simulate   → Free quick simulation               |
-| /report     → One-time report purchase flow       |
-| /pricing    → Plan comparison                     |
-| /r/:id      → Unique report viewer (guest access) |
-+--------------------------------------------------+
-
-+--------------------------------------------------+
-|               AUTHENTICATED ROUTES                |
-+--------------------------------------------------+
-| /compare    → Premium scenario comparison         |
-| /auth       → Login/signup flow                   |
-+--------------------------------------------------+
-```
+| Feature | Current Free | Target Free | €3.99 Report | Premium |
+|---------|-------------|-------------|--------------|---------|
+| **Inputs** | 10 fields + presets | 4 fields only | 10 fields (locked after) | 10 fields (editable) |
+| **Time horizon** | Up to 40 years | Max 10 years | Full range | Full range |
+| **Verdict** | Detailed winner + amounts | Simple badge only | Full verdict | Full verdict |
+| **Net worth values** | Shown for both | Hidden | Shown | Shown |
+| **Charts** | Blurred preview | Removed entirely | Full charts | Full charts |
+| **Insights** | 1 visible + blurred | Removed entirely | All insights | All insights |
+| **Break-even** | Shown | Removed | Shown | Shown |
+| **Transparency section** | Shown | Removed | Shown | Shown |
+| **PDF export** | No | No | Yes | Yes |
+| **Layout** | Report-style sections | Calculator-style | Report-style | Report-style |
 
 ---
 
-## Implementation Phases
-
-### Phase 1: Core Types and State Management
-
-**New File: `src/types/monetization.ts`**
-
-Define types for the monetization system:
-- `UserPlan`: 'free' | 'report_owner' | 'premium'
-- `Report`: id, inputs, outputs, createdAt, expiresAt
-- `Scenario`: id, name, inputs, outputs, createdAt (for Premium)
-- `PricingPlan`: id, name, price, features, type
-
-**New File: `src/contexts/UserContext.tsx`**
-
-Create a context for user state that tracks:
-- Current user (null for guests)
-- Active subscription status
-- Purchased reports (stored in localStorage for now)
-
----
-
-### Phase 2: Free Simulation Page — `/simulate`
-
-**Modify: `src/pages/Simulate.tsx`**
-
-Transform into the free entry experience:
-
-**Features to keep:**
-- All editable inputs (rent, price, rate, years)
-- Country presets
-- Real-time calculations
-
-**Features to show (limited):**
-- Winner verdict (Rent vs Buy)
-- Basic monthly cost comparison
-- Simple net worth difference
-
-**Features to hide:**
-- Detailed charts (show blurred preview)
-- Insight cards (show 1 insight, blur rest)
-- Transparency section (keep visible - builds trust)
-
-**New CTA Section at bottom:**
-```text
-+----------------------------------------------+
-| 📊 Want the Full Picture?                    |
-+----------------------------------------------+
-| ┌────────────────────┐ ┌──────────────────┐  |
-| │ One-Time Report    │ │ Compare Scenarios│  |
-| │ €3.99              │ │ €6.99/month      │  |
-| │ • Full breakdown   │ │ • Unlimited      │  |
-| │ • PDF export       │ │ • Save & compare │  |
-| │ • Charts & graphs  │ │ • Full features  │  |
-| │ [Get Report]       │ │ [Go Premium]     │  |
-| └────────────────────┘ └──────────────────┘  |
-+----------------------------------------------+
-```
-
----
-
-### Phase 3: One-Time Report Page — `/report`
-
-**New File: `src/pages/Report.tsx`**
-
-A dedicated flow for one-time report purchase:
-
-**Step 1: Input Collection**
-- Reuse `InputSection` component
-- Add email field for report delivery
-- Preview of what they'll get
-
-**Step 2: Payment (Mocked)**
-- Display price: €3.99
-- Mock payment button
-- On "payment success": generate unique report ID
-
-**Step 3: Report Generated**
-- Redirect to `/r/{reportId}`
-- Show success message with link
-- Email notification (placeholder text)
-
-**Report Features:**
-- Full breakdown (same depth as current simulate)
-- All charts visible
-- All insights visible
-- PDF export button
-- "Report locked" badge
-
-**Restrictions (clearly communicated):**
-- Inputs are read-only after generation
-- Cannot edit assumptions
-- Cannot compare scenarios
-- Link expires in 7 days
-
-**Upgrade messaging:**
-```text
-"This report shows one scenario. To explore alternatives 
-and compare properties, upgrade to Premium."
-```
-
----
-
-### Phase 4: Report Viewer Page — `/r/:id`
-
-**New File: `src/pages/ReportViewer.tsx`**
-
-Guest-accessible page to view a purchased report:
-
-- Retrieve report from localStorage by ID
-- Display full report content
-- Show "locked" badge on inputs
-- Include PDF export button
-- Display expiration countdown
-- Show upgrade CTA at bottom
-
-If report not found or expired:
-- Show friendly error
-- Offer to create new report
-
----
-
-### Phase 5: Premium Compare Page — `/compare`
-
-**New File: `src/pages/Compare.tsx`**
-
-The flagship Premium experience:
-
-**Features:**
-- Scenario manager sidebar
-- Create new scenario
-- Duplicate existing scenario
-- Compare up to 4 scenarios side-by-side
-- Editable assumptions on each
-- Comparison charts (overlay multiple scenarios)
-- Saved history (localStorage for now)
-
-**Layout:**
-```text
-+--------------------------------------------------+
-| SCENARIOS           │ COMPARISON VIEW            |
-+---------------------+----------------------------+
-| [+ New Scenario]    │ ┌──────┬──────┬──────┐    |
-|                     │ │ Apt A│ Apt B│ Apt C│    |
-| ○ Madrid Apartment  │ ├──────┼──────┼──────┤    |
-| ● Barcelona Flat    │ │ ...  │ ...  │ ...  │    |
-| ○ Valencia House    │ └──────┴──────┴──────┘    |
-|                     │                            |
-| [Edit] [Duplicate]  │ 📊 Comparison Chart        |
-|                     │ [unified wealth over time] |
-+--------------------------------------------------+
-```
-
-**Gate:** Redirect to `/auth?redirect=/compare` if not logged in with Premium.
-
----
-
-### Phase 6: Pricing Page — `/pricing`
-
-**New File: `src/pages/Pricing.tsx`**
-
-Clear plan comparison with:
-
-**Three-column layout:**
-
-| Free | One-Time Report | Premium |
-|------|-----------------|---------|
-| €0 | €3.99 (once) | €6.99/month |
-| Quick simulation | Full detailed report | Unlimited scenarios |
-| Single scenario | PDF export | Compare properties |
-| Basic verdict | Charts & insights | Saved history |
-| No saving | One-time access | Editable assumptions |
-| | 7-day link | Priority support |
-| [Try Free] | [Get Report] | [Start Premium] |
-
-**Design requirements:**
-- Make Premium clearly the best value
-- One-Time Report for "just need one answer" users
-- No feature overlap between tiers
-- FAQ section below plans
-
----
-
-### Phase 7: Authentication — `/auth`
-
-**New File: `src/pages/Auth.tsx`**
-
-Login/Signup page for Premium access:
-
-- Email/password form
-- Tab toggle: Login | Sign Up
-- "Forgot password" link
-- Social login buttons (disabled state for v1)
-- Redirect handling via query param
-
-**Note:** Full Supabase integration will be needed later. For now, create the UI with mock auth state stored in localStorage.
-
----
-
-### Phase 8: Navigation Updates
-
-**Modify: `src/components/SiteNavigation.tsx`**
-
-Update navigation menu:
-- Home (existing)
-- Try Free → /simulate
-- Pricing → /pricing
-- [Login] button (top right, when not logged in)
-- [Account] dropdown (when logged in)
-
-**Modify: `src/components/simulator/Footer.tsx`**
-
-Add footer links:
-- Simulate (Free)
-- Reports (€3.99)
-- Premium
-- Pricing
-
----
-
-### Phase 9: Translations
-
-**Modify: `src/i18n/translations/en.ts` and `src/i18n/translations/es.ts`**
-
-Add new translation keys for:
-- Pricing page content
-- Report page content
-- Premium features
-- CTA messaging
-- Error states
-
----
-
-## File Changes Summary
+## Files to Create/Modify
 
 | File | Action | Description |
 |------|--------|-------------|
-| `src/types/monetization.ts` | CREATE | Monetization types |
-| `src/contexts/UserContext.tsx` | CREATE | User/subscription context |
-| `src/pages/Simulate.tsx` | MODIFY | Add restrictions + CTAs |
-| `src/pages/Report.tsx` | CREATE | Report purchase flow |
-| `src/pages/ReportViewer.tsx` | CREATE | Guest report viewer |
-| `src/pages/Compare.tsx` | CREATE | Premium comparison |
-| `src/pages/Pricing.tsx` | CREATE | Pricing page |
-| `src/pages/Auth.tsx` | CREATE | Login/signup page |
-| `src/components/SiteNavigation.tsx` | MODIFY | Update nav links |
-| `src/components/simulator/Footer.tsx` | MODIFY | Add footer links |
-| `src/components/FreeSimulatorCTA.tsx` | CREATE | Upgrade CTA component |
-| `src/components/BlurredPreview.tsx` | CREATE | Blur overlay for locked content |
-| `src/components/PricingCard.tsx` | CREATE | Reusable pricing card |
-| `src/App.tsx` | MODIFY | Add new routes |
-| `src/i18n/translations/en.ts` | MODIFY | Add translations |
+| `src/components/simulator/FreeInputSection.tsx` | CREATE | Minimal 4-input calculator component |
+| `src/components/simulator/FreeResultBadge.tsx` | CREATE | Simple directional verdict badge |
+| `src/pages/Simulate.tsx` | MODIFY | Completely redesign as minimal calculator |
+| `src/i18n/translations/en.ts` | MODIFY | Add new free estimate translations |
 | `src/i18n/translations/es.ts` | MODIFY | Add Spanish translations |
-| `public/sitemap.xml` | MODIFY | Add new URLs |
+| `src/i18n/types.ts` | MODIFY | Add new translation types |
 
-**Total: 9 new files, 7 modified files**
-
----
-
-## Technical Decisions
-
-### Data Persistence (Mocked for v1)
-
-For this initial implementation without Supabase:
-
-- **Reports:** Stored in localStorage with unique UUID
-- **Scenarios:** Stored in localStorage per "user"
-- **User state:** Mocked in localStorage
-- **Payment:** Mock confirmation stored in localStorage
-
-This allows full UI/UX development and testing before integrating real backends.
-
-### Report ID Format
-
-Generate UUID-like IDs: `rpt_${timestamp}_${random}`
-
-Example: `rpt_1707321600_a7f3b2`
-
-### URL Structure
-
-- `/simulate` - Free experience
-- `/report` - Purchase flow
-- `/r/:reportId` - View purchased report
-- `/compare` - Premium (requires auth)
-- `/pricing` - Plan comparison
-- `/auth` - Login/signup
+**Total: 2 new files, 4 modified files**
 
 ---
 
-## Upgrade CTA Placement Strategy
+## Implementation Details
 
-CTAs appear at natural decision points:
+### 1. New Component: FreeInputSection
 
-1. **After Free simulation result** - "Want the full breakdown?"
-2. **On blurred chart** - "Unlock this chart for €3.99"
-3. **On blurred insights** - "See all insights with Premium"
-4. **Report page footer** - "Compare more properties with Premium"
-5. **Header** - Subtle "Upgrade" link when free user
+A simplified input component with only 4 fields:
 
-**Not random.** Always contextual and helpful.
+```text
++----------------------------------+
+| FREE QUICK ESTIMATE              |
++----------------------------------+
+| Monthly Rent        [€1,000    ] |
+| Property Price      [€250,000  ] |
+| Interest Rate       [3.5%      ] |
+| Time Horizon        [5-10 yrs  ] | ← Max 10 years
++----------------------------------+
+```
+
+**Design:**
+- Clean, compact calculator style
+- No country presets (simplification)
+- No sliders (just inputs)
+- No "Financial Assumptions" section
+- Time horizon dropdown: 5, 7, or 10 years only
+
+**Hidden assumptions (fixed):**
+- Down payment: 20% of property price (auto-calculated)
+- Mortgage term: 25 years (standard)
+- Rent increase: 2% (conservative)
+- Investment return: 6% (conservative)
+- Property appreciation: 2% (conservative)
+- Maintenance: 1% (standard)
+
+### 2. New Component: FreeResultBadge
+
+A simple directional indicator that replaces the detailed `ResultsDisplay`:
+
+```text
++------------------------------------------+
+|    🏠  BUYING MAY BE CHEAPER             |
+|    based on a 10-year estimate           |
++------------------------------------------+
+|                                          |
+|  Estimated Monthly Cost                  |
+|  ┌──────────────┬──────────────┐        |
+|  │   Renting    │    Buying    │        |
+|  │   €1,000/mo  │   €1,150/mo  │        |
+|  └──────────────┴──────────────┘        |
+|                                          |
+|  ⚠️ This is a simplified estimate based  |
+|     on limited assumptions.              |
++------------------------------------------+
+```
+
+**Key elements:**
+- Directional badge: "Buying may be cheaper" OR "Renting may be safer"
+- Rounded monthly cost comparison ONLY
+- No net worth values
+- No exact differences
+- Prominent disclaimer
+
+**Logic for verdict:**
+- If buying cheaper: "Buying may be cheaper"
+- If renting cheaper: "Renting may be safer" (softer language)
+- If close: "It depends on your situation"
+
+### 3. Redesigned /simulate Page
+
+Complete redesign with calculator-style layout:
+
+```text
++--------------------------------------------------+
+| NAVIGATION                                        |
++--------------------------------------------------+
+|                                                   |
+|          Free Quick Estimate                      |
+|    Get a directional signal in 30 seconds         |
+|                                                   |
+|  +------------------------------------------+    |
+|  |           [FreeInputSection]              |    |
+|  +------------------------------------------+    |
+|                                                   |
+|  +------------------------------------------+    |
+|  |           [FreeResultBadge]               |    |
+|  +------------------------------------------+    |
+|                                                   |
+|  +------------------------------------------+    |
+|  | Want the Complete Analysis?               |    |
+|  |                                           |    |
+|  | ┌─────────────────┐ ┌─────────────────┐  |    |
+|  | │ Decision Report │ │ Premium Compare │  |    |
+|  | │ €3.99 one-time  │ │ €6.99/month     │  |    |
+|  | │ [Get Report]    │ │ [Go Premium]    │  |    |
+|  | └─────────────────┘ └─────────────────┘  |    |
+|  +------------------------------------------+    |
+|                                                   |
++--------------------------------------------------+
+| FOOTER                                            |
++--------------------------------------------------+
+```
+
+**Removed from Free:**
+- ~~Blurred WealthChart~~
+- ~~InsightCards (even partial)~~
+- ~~TransparencySection~~
+- ~~Break-even year~~
+- ~~Detailed net worth values~~
+- ~~Country presets~~
+- ~~Advanced inputs (investment return, appreciation, etc.)~~
+
+### 4. Updated CTA Section
+
+The upgrade CTA becomes more prominent and clearer:
+
+```text
++--------------------------------------------------+
+| 📊 Get the Complete Analysis                      |
++--------------------------------------------------+
+| ┌─────────────────────┐ ┌─────────────────────┐  |
+| │ ONE-TIME REPORT     │ │ PREMIUM             │  |
+| │ €3.99               │ │ €6.99/month         │  |
+| │                     │ │                     │  |
+| │ ✓ Full cost over    │ │ ✓ Everything in     │  |
+| │   time              │ │   Report            │  |
+| │ ✓ Break-even year   │ │ ✓ Unlimited         │  |
+| │ ✓ Charts & graphs   │ │   scenarios         │  |
+| │ ✓ Risk analysis     │ │ ✓ Save & compare    │  |
+| │ ✓ PDF export        │ │ ✓ Edit assumptions  │  |
+| │                     │ │                     │  |
+| │ [Get Decision       │ │ [Compare Scenarios] │  |
+| │  Report →]          │ │                     │  |
+| └─────────────────────┘ └─────────────────────┘  |
++--------------------------------------------------+
+```
 
 ---
 
-## Feature Non-Overlap Matrix
+## Translation Updates
 
-| Feature | Free | Report | Premium |
-|---------|------|--------|---------|
-| Run simulation | 1x | 1x locked | Unlimited |
-| Edit inputs | Yes | No | Yes |
-| Basic verdict | Yes | Yes | Yes |
-| Full charts | No | Yes | Yes |
-| All insights | 1 only | Yes | Yes |
+### New Translation Keys (English)
+
+```typescript
+freeEstimate: {
+  pageTitle: 'Free Quick Estimate',
+  pageSubtitle: 'Get a directional signal in 30 seconds',
+  inputs: {
+    monthlyRent: 'Monthly Rent',
+    propertyPrice: 'Property Price',
+    interestRate: 'Interest Rate',
+    timeHorizon: 'Time Horizon',
+    years: 'years',
+  },
+  result: {
+    buyingCheaper: 'Buying may be cheaper',
+    rentingSafer: 'Renting may be safer',
+    itDepends: 'It depends on your situation',
+    basedOn: 'based on a {years}-year estimate',
+    estimatedMonthly: 'Estimated Monthly Cost',
+    renting: 'Renting',
+    buying: 'Buying',
+    perMonth: '/mo',
+  },
+  disclaimer: 'This is a simplified estimate based on limited assumptions. For a complete analysis, get the full report.',
+  cta: {
+    title: 'Get the Complete Analysis',
+    reportTitle: 'One-Time Decision Report',
+    reportPrice: '€3.99',
+    reportFeatures: [
+      'Full cost over time',
+      'Break-even analysis',
+      'Charts & graphs',
+      'Risk analysis',
+      'PDF export',
+    ],
+    reportBtn: 'Get Decision Report',
+    premiumTitle: 'Compare Scenarios',
+    premiumPrice: '€6.99/month',
+    premiumFeatures: [
+      'Everything in Report',
+      'Unlimited scenarios',
+      'Save & compare',
+      'Edit assumptions',
+    ],
+    premiumBtn: 'Go Premium',
+  },
+},
+```
+
+### Spanish Translations
+
+```typescript
+freeEstimate: {
+  pageTitle: 'Estimación Rápida Gratuita',
+  pageSubtitle: 'Obtén una señal direccional en 30 segundos',
+  inputs: {
+    monthlyRent: 'Alquiler Mensual',
+    propertyPrice: 'Precio de la Vivienda',
+    interestRate: 'Tipo de Interés',
+    timeHorizon: 'Horizonte Temporal',
+    years: 'años',
+  },
+  result: {
+    buyingCheaper: 'Comprar puede ser más barato',
+    rentingSafer: 'Alquilar puede ser más seguro',
+    itDepends: 'Depende de tu situación',
+    basedOn: 'basado en una estimación a {years} años',
+    estimatedMonthly: 'Coste Mensual Estimado',
+    renting: 'Alquilar',
+    buying: 'Comprar',
+    perMonth: '/mes',
+  },
+  disclaimer: 'Esta es una estimación simplificada basada en suposiciones limitadas. Para un análisis completo, obtén el informe completo.',
+  cta: {
+    title: 'Obtén el Análisis Completo',
+    reportTitle: 'Informe de Decisión Único',
+    reportPrice: '€3.99',
+    reportFeatures: [
+      'Coste total en el tiempo',
+      'Análisis de punto de equilibrio',
+      'Gráficos y tablas',
+      'Análisis de riesgo',
+      'Exportar PDF',
+    ],
+    reportBtn: 'Obtener Informe',
+    premiumTitle: 'Compara Escenarios',
+    premiumPrice: '€6.99/mes',
+    premiumFeatures: [
+      'Todo lo del Informe',
+      'Escenarios ilimitados',
+      'Guardar y comparar',
+      'Editar supuestos',
+    ],
+    premiumBtn: 'Ir a Premium',
+  },
+},
+```
+
+---
+
+## Calculation Logic for Free Estimate
+
+The free estimate uses simplified calculations with fixed assumptions:
+
+```typescript
+// Fixed assumptions for free estimate
+const FREE_ASSUMPTIONS = {
+  downPaymentPercent: 20,
+  mortgageYears: 25,
+  rentIncreaseAnnual: 2,
+  investmentReturnAnnual: 6,
+  propertyAppreciationAnnual: 2,
+  maintenancePercentAnnual: 1,
+};
+
+// Calculate monthly costs only (simplified)
+function calculateFreeEstimate(inputs: FreeInputs) {
+  const downPayment = inputs.propertyPrice * 0.2;
+  const loanAmount = inputs.propertyPrice - downPayment;
+  
+  // Monthly mortgage payment (PMT formula)
+  const monthlyMortgage = calculatePMT(inputs.interestRate, 25, loanAmount);
+  
+  // Monthly maintenance cost
+  const monthlyMaintenance = (inputs.propertyPrice * 0.01) / 12;
+  
+  // Total monthly buying cost
+  const monthlyBuying = monthlyMortgage + monthlyMaintenance;
+  
+  // Compare
+  const verdict = monthlyBuying < inputs.rentMonthly * 1.1 
+    ? 'buying' 
+    : monthlyBuying > inputs.rentMonthly * 1.3 
+      ? 'renting' 
+      : 'depends';
+  
+  return {
+    monthlyRent: inputs.rentMonthly,
+    monthlyBuying: Math.round(monthlyBuying),
+    verdict,
+  };
+}
+```
+
+---
+
+## Feature Differentiation Matrix (Final)
+
+| Feature | Free Estimate | €3.99 Report | Premium |
+|---------|---------------|--------------|---------|
+| Inputs | 4 basic fields | 10 fields (locked) | 10 fields (editable) |
+| Time horizon | 5-10 years | 5-40 years | 5-40 years |
+| Country presets | No | Yes | Yes |
+| Verdict type | Directional badge | Full verdict + amount | Full verdict |
+| Monthly cost | Yes (rounded) | Yes | Yes |
+| Total cost over time | No | Yes | Yes |
+| Net worth comparison | No | Yes | Yes |
+| Break-even year | No | Yes | Yes |
+| Wealth chart | No | Yes | Yes |
+| Insights/analysis | No | Yes | Yes |
+| Risk analysis | No | Yes | Yes |
 | PDF export | No | Yes | Yes |
 | Save scenarios | No | No | Yes |
 | Compare scenarios | No | No | Yes |
-| Editable assumptions | Limited | Locked | Full |
+| Edit after generation | N/A | No | Yes |
 
 ---
 
-## Consistent Language
+## SEO & Meta Updates
 
-Throughout the app, use:
-- "One-time report" (not "per simulation report")
-- "Compare scenarios" for Premium features
-- "Quick simulation" for free tier
-- "Premium" (not "Pro" or "Plus")
-- "€3.99 once" / "€6.99/month"
+Update meta description for `/simulate`:
+
+```html
+<title>Free Rent vs Buy Estimate | HomeDecision</title>
+<meta name="description" content="Get a quick directional signal on whether to rent or buy. Free 30-second estimate — no sign-up required." />
+```
 
 ---
 
-## Next Steps After This Implementation
+## Implementation Order
 
-1. **Enable Supabase** - Real user authentication
-2. **Enable Stripe** - Real payment processing
-3. **PDF Generation** - Actual PDF export
-4. **Email Delivery** - Send report links
-5. **Analytics** - Track conversion funnels
+1. **Create FreeInputSection component** - Minimal 4-input calculator
+2. **Create FreeResultBadge component** - Simple verdict display
+3. **Update translation files** - Add all new keys
+4. **Redesign Simulate.tsx** - Replace with minimal calculator layout
+5. **Update FreeSimulatorCTA** - Clearer differentiation messaging
+6. **Test flow** - Verify the experience feels intentionally limited
 
