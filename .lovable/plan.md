@@ -1,216 +1,370 @@
 
 
-# Create Spanish Article: "Guía para comprar tu primera vivienda en 2026"
+# HomeDecision Hybrid Monetization Implementation
 
 ## Overview
 
-Create the Spanish translation of the First-Time Home-Buyer Guide 2026 article using the **exact content** from the uploaded PDF (`primera_vivienda.pdf`). This article will be linked bidirectionally with its English counterpart through the translation mapping system.
-
-**Proposed slug:** `guia-comprar-primera-vivienda-2026`
-
-**Full URL:** `/es/articles/guia-comprar-primera-vivienda-2026`
-
-**English counterpart:** `/articles/first-time-home-buyer-guide-2026`
+This plan restructures HomeDecision.app from a free-only tool into a hybrid monetization model with three tiers: Free, One-time Report (€3.99), and Premium Subscription (€6.99/month).
 
 ---
 
-## Content Structure (from PDF)
+## Architecture Overview
 
-| Section | Spanish Title |
-|---------|---------------|
-| **Lead** | "Comprar tu primera vivienda puede resultar abrumador, pero 2026 ofrece oportunidades..." |
-| **H2: Por qué 2026 es especial** | Tipos estables (~6%), ventajas estacionales, más oferta |
-| **H2: Paso 1** | Evalúa tus finanzas y fija un presupuesto |
-| **H2: Paso 2** | Investiga el mercado y define tus prioridades |
-| **H2: Paso 3** | Inicia tu búsqueda y realiza las comprobaciones |
-| **H2: Paso 4** | Obtén financiación y formaliza la hipoteca |
-| **H2: Paso 5** | Cierre: firma y registra la vivienda |
-| **H2: Programas** | Ayudas para 2026 (hipoteca joven, FHA, VA, USDA) |
-| **H2: Errores** | Evita los errores habituales |
-| **H2: Conclusión** | Comprar tu primera vivienda en 2026 es posible... |
+```text
++--------------------------------------------------+
+|                   PUBLIC ROUTES                   |
++--------------------------------------------------+
+| /           → Landing page (existing)             |
+| /simulate   → Free quick simulation               |
+| /report     → One-time report purchase flow       |
+| /pricing    → Plan comparison                     |
+| /r/:id      → Unique report viewer (guest access) |
++--------------------------------------------------+
+
++--------------------------------------------------+
+|               AUTHENTICATED ROUTES                |
++--------------------------------------------------+
+| /compare    → Premium scenario comparison         |
+| /auth       → Login/signup flow                   |
++--------------------------------------------------+
+```
 
 ---
 
-## Files to Create/Modify
+## Implementation Phases
+
+### Phase 1: Core Types and State Management
+
+**New File: `src/types/monetization.ts`**
+
+Define types for the monetization system:
+- `UserPlan`: 'free' | 'report_owner' | 'premium'
+- `Report`: id, inputs, outputs, createdAt, expiresAt
+- `Scenario`: id, name, inputs, outputs, createdAt (for Premium)
+- `PricingPlan`: id, name, price, features, type
+
+**New File: `src/contexts/UserContext.tsx`**
+
+Create a context for user state that tracks:
+- Current user (null for guests)
+- Active subscription status
+- Purchased reports (stored in localStorage for now)
+
+---
+
+### Phase 2: Free Simulation Page — `/simulate`
+
+**Modify: `src/pages/Simulate.tsx`**
+
+Transform into the free entry experience:
+
+**Features to keep:**
+- All editable inputs (rent, price, rate, years)
+- Country presets
+- Real-time calculations
+
+**Features to show (limited):**
+- Winner verdict (Rent vs Buy)
+- Basic monthly cost comparison
+- Simple net worth difference
+
+**Features to hide:**
+- Detailed charts (show blurred preview)
+- Insight cards (show 1 insight, blur rest)
+- Transparency section (keep visible - builds trust)
+
+**New CTA Section at bottom:**
+```text
++----------------------------------------------+
+| 📊 Want the Full Picture?                    |
++----------------------------------------------+
+| ┌────────────────────┐ ┌──────────────────┐  |
+| │ One-Time Report    │ │ Compare Scenarios│  |
+| │ €3.99              │ │ €6.99/month      │  |
+| │ • Full breakdown   │ │ • Unlimited      │  |
+| │ • PDF export       │ │ • Save & compare │  |
+| │ • Charts & graphs  │ │ • Full features  │  |
+| │ [Get Report]       │ │ [Go Premium]     │  |
+| └────────────────────┘ └──────────────────┘  |
++----------------------------------------------+
+```
+
+---
+
+### Phase 3: One-Time Report Page — `/report`
+
+**New File: `src/pages/Report.tsx`**
+
+A dedicated flow for one-time report purchase:
+
+**Step 1: Input Collection**
+- Reuse `InputSection` component
+- Add email field for report delivery
+- Preview of what they'll get
+
+**Step 2: Payment (Mocked)**
+- Display price: €3.99
+- Mock payment button
+- On "payment success": generate unique report ID
+
+**Step 3: Report Generated**
+- Redirect to `/r/{reportId}`
+- Show success message with link
+- Email notification (placeholder text)
+
+**Report Features:**
+- Full breakdown (same depth as current simulate)
+- All charts visible
+- All insights visible
+- PDF export button
+- "Report locked" badge
+
+**Restrictions (clearly communicated):**
+- Inputs are read-only after generation
+- Cannot edit assumptions
+- Cannot compare scenarios
+- Link expires in 7 days
+
+**Upgrade messaging:**
+```text
+"This report shows one scenario. To explore alternatives 
+and compare properties, upgrade to Premium."
+```
+
+---
+
+### Phase 4: Report Viewer Page — `/r/:id`
+
+**New File: `src/pages/ReportViewer.tsx`**
+
+Guest-accessible page to view a purchased report:
+
+- Retrieve report from localStorage by ID
+- Display full report content
+- Show "locked" badge on inputs
+- Include PDF export button
+- Display expiration countdown
+- Show upgrade CTA at bottom
+
+If report not found or expired:
+- Show friendly error
+- Offer to create new report
+
+---
+
+### Phase 5: Premium Compare Page — `/compare`
+
+**New File: `src/pages/Compare.tsx`**
+
+The flagship Premium experience:
+
+**Features:**
+- Scenario manager sidebar
+- Create new scenario
+- Duplicate existing scenario
+- Compare up to 4 scenarios side-by-side
+- Editable assumptions on each
+- Comparison charts (overlay multiple scenarios)
+- Saved history (localStorage for now)
+
+**Layout:**
+```text
++--------------------------------------------------+
+| SCENARIOS           │ COMPARISON VIEW            |
++---------------------+----------------------------+
+| [+ New Scenario]    │ ┌──────┬──────┬──────┐    |
+|                     │ │ Apt A│ Apt B│ Apt C│    |
+| ○ Madrid Apartment  │ ├──────┼──────┼──────┤    |
+| ● Barcelona Flat    │ │ ...  │ ...  │ ...  │    |
+| ○ Valencia House    │ └──────┴──────┴──────┘    |
+|                     │                            |
+| [Edit] [Duplicate]  │ 📊 Comparison Chart        |
+|                     │ [unified wealth over time] |
++--------------------------------------------------+
+```
+
+**Gate:** Redirect to `/auth?redirect=/compare` if not logged in with Premium.
+
+---
+
+### Phase 6: Pricing Page — `/pricing`
+
+**New File: `src/pages/Pricing.tsx`**
+
+Clear plan comparison with:
+
+**Three-column layout:**
+
+| Free | One-Time Report | Premium |
+|------|-----------------|---------|
+| €0 | €3.99 (once) | €6.99/month |
+| Quick simulation | Full detailed report | Unlimited scenarios |
+| Single scenario | PDF export | Compare properties |
+| Basic verdict | Charts & insights | Saved history |
+| No saving | One-time access | Editable assumptions |
+| | 7-day link | Priority support |
+| [Try Free] | [Get Report] | [Start Premium] |
+
+**Design requirements:**
+- Make Premium clearly the best value
+- One-Time Report for "just need one answer" users
+- No feature overlap between tiers
+- FAQ section below plans
+
+---
+
+### Phase 7: Authentication — `/auth`
+
+**New File: `src/pages/Auth.tsx`**
+
+Login/Signup page for Premium access:
+
+- Email/password form
+- Tab toggle: Login | Sign Up
+- "Forgot password" link
+- Social login buttons (disabled state for v1)
+- Redirect handling via query param
+
+**Note:** Full Supabase integration will be needed later. For now, create the UI with mock auth state stored in localStorage.
+
+---
+
+### Phase 8: Navigation Updates
+
+**Modify: `src/components/SiteNavigation.tsx`**
+
+Update navigation menu:
+- Home (existing)
+- Try Free → /simulate
+- Pricing → /pricing
+- [Login] button (top right, when not logged in)
+- [Account] dropdown (when logged in)
+
+**Modify: `src/components/simulator/Footer.tsx`**
+
+Add footer links:
+- Simulate (Free)
+- Reports (€3.99)
+- Premium
+- Pricing
+
+---
+
+### Phase 9: Translations
+
+**Modify: `src/i18n/translations/en.ts` and `src/i18n/translations/es.ts`**
+
+Add new translation keys for:
+- Pricing page content
+- Report page content
+- Premium features
+- CTA messaging
+- Error states
+
+---
+
+## File Changes Summary
 
 | File | Action | Description |
 |------|--------|-------------|
-| `src/pages/ArticleGuiaComprarPrimeraVivienda2026.tsx` | CREATE | New Spanish article page with exact PDF content |
-| `src/data/articleData.ts` | MODIFY | Add Spanish article metadata + translation mapping |
-| `src/data/topicCategories.ts` | MODIFY | Add Spanish article slug to first-time-buyers category |
-| `src/pages/ArticleFirstTimeBuyer2026.tsx` | MODIFY | Add HreflangTags, LanguageSwitcher, AvailableInLanguage |
-| `src/App.tsx` | MODIFY | Add route for Spanish article |
-| `public/sitemap.xml` | MODIFY | Add Spanish URL entry |
+| `src/types/monetization.ts` | CREATE | Monetization types |
+| `src/contexts/UserContext.tsx` | CREATE | User/subscription context |
+| `src/pages/Simulate.tsx` | MODIFY | Add restrictions + CTAs |
+| `src/pages/Report.tsx` | CREATE | Report purchase flow |
+| `src/pages/ReportViewer.tsx` | CREATE | Guest report viewer |
+| `src/pages/Compare.tsx` | CREATE | Premium comparison |
+| `src/pages/Pricing.tsx` | CREATE | Pricing page |
+| `src/pages/Auth.tsx` | CREATE | Login/signup page |
+| `src/components/SiteNavigation.tsx` | MODIFY | Update nav links |
+| `src/components/simulator/Footer.tsx` | MODIFY | Add footer links |
+| `src/components/FreeSimulatorCTA.tsx` | CREATE | Upgrade CTA component |
+| `src/components/BlurredPreview.tsx` | CREATE | Blur overlay for locked content |
+| `src/components/PricingCard.tsx` | CREATE | Reusable pricing card |
+| `src/App.tsx` | MODIFY | Add new routes |
+| `src/i18n/translations/en.ts` | MODIFY | Add translations |
+| `src/i18n/translations/es.ts` | MODIFY | Add Spanish translations |
+| `public/sitemap.xml` | MODIFY | Add new URLs |
 
-**Total: 1 new file, 5 modified files**
-
----
-
-## Technical Implementation
-
-### 1. Spanish Article Metadata
-
-Add to `articlesEs` array in `src/data/articleData.ts`:
-
-```typescript
-{
-  slug: 'guia-comprar-primera-vivienda-2026',
-  title: 'Guía para comprar tu primera vivienda en 2026',
-  description: 'Todo lo que los compradores primerizos necesitan saber en 2026: tipos hipotecarios en torno al 6,25%, entrada, costes ocultos y guía paso a paso para España y EE.UU.',
-  excerpt: '¿Compras tu primera vivienda en 2026? Esta guía cubre tipos hipotecarios estables, estrategias de ahorro, costes ocultos y consejos paso a paso para España y EE.UU.',
-  publishedDate: '2026-02-08',
-  modifiedDate: '2026-02-08',
-  wordCount: 2100,
-  category: 'first-time-buyers',
-  isPublished: true,
-  language: 'es',
-}
-```
-
-### 2. Translation Mapping
-
-Add to `articleTranslations` in `src/data/articleData.ts`:
-
-```typescript
-'first-time-home-buyer-guide-2026': 'guia-comprar-primera-vivienda-2026',
-```
-
-### 3. Topic Category Update
-
-Add Spanish article slug to `first-time-buyers` category in `topicCategoriesEs`:
-
-```typescript
-{
-  id: 'first-time-buyers',
-  name: 'Guías para Compradores Primerizos',
-  description: 'Guías paso a paso para nuevos compradores de vivienda.',
-  articleSlugs: ['guia-comprar-primera-vivienda-2026'],
-}
-```
-
-### 4. Spanish Article Page
-
-Following the pattern from `ArticleAlquilarOComprar2026.tsx`:
-
-- `<html lang="es">`
-- `HreflangTags` with `enSlug` and `esSlug` for bidirectional linking
-- `ArticleJsonLd` with `language="es"`
-- `ArticleLanguageSwitcher` showing ES active, EN linked
-- `AvailableInLanguage` showing "Available in English" notice
-- `RelatedReading` with `language="es"` and `basePath="/es/articles"`
-- Spanish CTA text: "Simula tu escenario en nuestra calculadora de alquiler vs compra"
-- Back link to `/es/articles` with "Volver a Artículos"
-
-### 5. Update English Article
-
-Modify `ArticleFirstTimeBuyer2026.tsx` to add:
-
-- Import `Link`, `ArrowLeft`, `HreflangTags`, `ArticleLanguageSwitcher`, `AvailableInLanguage`
-- Import `getTranslationSlug` function
-- Add language switcher showing EN active, ES linked
-- Add `HreflangTags` component with both slugs
-- Add "Available in Spanish" notice
-- Add back link to `/articles`
-
-### 6. App Router
-
-```tsx
-import ArticleGuiaComprarPrimeraVivienda2026 from "./pages/ArticleGuiaComprarPrimeraVivienda2026";
-
-// Add route in Spanish articles section:
-<Route 
-  path="/es/articles/guia-comprar-primera-vivienda-2026" 
-  element={<ArticleGuiaComprarPrimeraVivienda2026 />} 
-/>
-```
-
-### 7. Sitemap Entry
-
-```xml
-<!-- Spanish Article: Guía para comprar tu primera vivienda en 2026 -->
-<url>
-  <loc>https://homedecision.app/es/articles/guia-comprar-primera-vivienda-2026</loc>
-  <lastmod>2026-02-08</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.7</priority>
-</url>
-```
+**Total: 9 new files, 7 modified files**
 
 ---
 
-## SEO Implementation
+## Technical Decisions
 
-### Spanish Article
-- `<html lang="es">`
-- `<title>`: "Guía para comprar tu primera vivienda en 2026 | HomeDecision"
-- Self-referencing canonical: `/es/articles/guia-comprar-primera-vivienda-2026`
-- `<meta name="robots" content="index,follow">`
-- Hreflang tags linking to English version
+### Data Persistence (Mocked for v1)
 
-### English Article (update)
-- Add `HreflangTags` linking to Spanish version
-- Add `ArticleLanguageSwitcher` for visible language toggle
-- Add `AvailableInLanguage` notice
+For this initial implementation without Supabase:
 
-### Hreflang Structure (both pages)
-```html
-<link rel="alternate" hreflang="en" href="https://homedecision.app/articles/first-time-home-buyer-guide-2026" />
-<link rel="alternate" hreflang="es" href="https://homedecision.app/es/articles/guia-comprar-primera-vivienda-2026" />
-<link rel="alternate" hreflang="x-default" href="https://homedecision.app/articles/first-time-home-buyer-guide-2026" />
-```
+- **Reports:** Stored in localStorage with unique UUID
+- **Scenarios:** Stored in localStorage per "user"
+- **User state:** Mocked in localStorage
+- **Payment:** Mock confirmation stored in localStorage
 
----
+This allows full UI/UX development and testing before integrating real backends.
 
-## Key Callouts (Spanish content from PDF)
+### Report ID Format
 
-1. **Tipos hipotecarios 2026:**
-   "EE.UU.: en torno al 6 %, cerca del 6,25 % | España: 3,17 % de media (octubre 2025)"
+Generate UUID-like IDs: `rpt_${timestamp}_${random}`
 
-2. **Regla del 40%:**
-   "Las deudas mensuales no deben superar el 40 % de los ingresos netos; la cuota hipotecaria, en torno a un tercio"
+Example: `rpt_1707321600_a7f3b2`
 
-3. **Contrato de arras:**
-   "Firma el contrato de arras con un 10 % de señal. Si te retiras, pierdes la señal; si el vendedor se retira, te devuelve el doble"
+### URL Structure
 
-4. **Costes ocultos:**
-   "Presupuesta entre un 10 y un 15 % del precio de compra además de la entrada para impuestos, notaría y registro"
+- `/simulate` - Free experience
+- `/report` - Purchase flow
+- `/r/:reportId` - View purchased report
+- `/compare` - Premium (requires auth)
+- `/pricing` - Plan comparison
+- `/auth` - Login/signup
 
 ---
 
-## Article Content Structure
+## Upgrade CTA Placement Strategy
 
-The Spanish article page will include the exact PDF content:
+CTAs appear at natural decision points:
 
-### Lead Paragraph (verbatim)
-"Comprar tu primera vivienda puede resultar abrumador, pero 2026 ofrece oportunidades para los compradores bien preparados. Se espera que los tipos hipotecarios se estabilicen en torno al 6 %, y algunos analistas creen que se mantendrán cerca del 6,25 % durante la mayor parte del año. En España, el tipo hipotecario medio rondaba el 3,17 % en octubre de 2025, y los compradores suelen tener que aportar entre el 10 y el 15 % del precio de compra para cubrir impuestos, notaría y registro. Tanto si buscas en Madrid como en Miami, los fundamentos son los mismos: conoce tu presupuesto, fortalece tu historial crediticio, ahorra una entrada sólida y sigue un proceso disciplinado. Esta guía resume cada paso, resalta los costes ocultos y las ayudas disponibles y ofrece consejos actualizados para que los compradores primerizos tengan éxito en 2026."
+1. **After Free simulation result** - "Want the full breakdown?"
+2. **On blurred chart** - "Unlock this chart for €3.99"
+3. **On blurred insights** - "See all insights with Premium"
+4. **Report page footer** - "Compare more properties with Premium"
+5. **Header** - Subtle "Upgrade" link when free user
 
-### All sections as H2/H3 following PDF structure
-- Por qué 2026 es especial para los compradores primerizos
-  - Tipos estables, pero aún elevados
-  - Ventajas estacionales
-  - Más oferta y programas de ayuda
-- Paso 1 – Evalúa tus finanzas y fija un presupuesto
-  - Calcula cuánto puedes pagar
-  - Ahorra para la entrada y los costes finales
-  - Refuerza tu crédito y consigue la preaprobación
-- Paso 2 – Investiga el mercado y define tus prioridades
-- Paso 3 – Inicia tu búsqueda y realiza las comprobaciones pertinentes
-  - Visita viviendas y haz preguntas
-  - Haz una oferta y negocia
-- Paso 4 – Obtén financiación y formaliza la hipoteca
-  - Elige el tipo de hipoteca adecuado
-  - Cuidado con los costes ocultos
-- Paso 5 – Cierre: firma y registra la vivienda
-- Programas y ayudas para 2026
-- Evita los errores habituales (bulleted list)
-- Conclusión
+**Not random.** Always contextual and helpful.
 
 ---
 
-## Crawl Path Verification
+## Feature Non-Overlap Matrix
 
-After implementation:
-- Homepage → /es/articles → Spanish article (2 clicks)
-- English article ↔ Spanish article (bidirectional via language switcher)
-- `/es/articles` hub will automatically show the new article via `getPublishedSpanishArticles()`
+| Feature | Free | Report | Premium |
+|---------|------|--------|---------|
+| Run simulation | 1x | 1x locked | Unlimited |
+| Edit inputs | Yes | No | Yes |
+| Basic verdict | Yes | Yes | Yes |
+| Full charts | No | Yes | Yes |
+| All insights | 1 only | Yes | Yes |
+| PDF export | No | Yes | Yes |
+| Save scenarios | No | No | Yes |
+| Compare scenarios | No | No | Yes |
+| Editable assumptions | Limited | Locked | Full |
+
+---
+
+## Consistent Language
+
+Throughout the app, use:
+- "One-time report" (not "per simulation report")
+- "Compare scenarios" for Premium features
+- "Quick simulation" for free tier
+- "Premium" (not "Pro" or "Plus")
+- "€3.99 once" / "€6.99/month"
+
+---
+
+## Next Steps After This Implementation
+
+1. **Enable Supabase** - Real user authentication
+2. **Enable Stripe** - Real payment processing
+3. **PDF Generation** - Actual PDF export
+4. **Email Delivery** - Send report links
+5. **Analytics** - Track conversion funnels
 
