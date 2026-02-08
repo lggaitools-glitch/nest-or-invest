@@ -98,6 +98,41 @@ export interface PricingTranslations {
   };
 }
 
+export interface FreeEstimateTranslations {
+  pageTitle: string;
+  pageSubtitle: string;
+  inputs: {
+    title: string;
+    monthlyRent: string;
+    propertyPrice: string;
+    interestRate: string;
+    timeHorizon: string;
+    years: string;
+  };
+  result: {
+    buyingCheaper: string;
+    rentingSafer: string;
+    itDepends: string;
+    basedOn: string;
+    estimatedMonthly: string;
+    renting: string;
+    buying: string;
+    perMonth: string;
+  };
+  disclaimer: string;
+  cta: {
+    title: string;
+    reportTitle: string;
+    reportPrice: string;
+    reportFeatures: string[];
+    reportBtn: string;
+    premiumTitle: string;
+    premiumPrice: string;
+    premiumFeatures: string[];
+    premiumBtn: string;
+  };
+}
+
 export interface Translations {
   header: {
     title: string;
@@ -208,4 +243,5 @@ export interface Translations {
   landing: LandingTranslations;
   simulate: SimulateTranslations;
   pricing: PricingTranslations;
+  freeEstimate: FreeEstimateTranslations;
 }
