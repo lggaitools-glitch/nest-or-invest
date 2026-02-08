@@ -9,6 +9,7 @@ import Simulate from "./pages/Simulate";
 import Articles from "./pages/Articles";
 import ArticleHouseVsStocks from "./pages/ArticleHouseVsStocks";
 import ArticleRentVsBuy2026 from "./pages/ArticleRentVsBuy2026";
+import ArticleFirstTimeBuyer2026 from "./pages/ArticleFirstTimeBuyer2026";
 import ArticlesEs from "./pages/ArticlesEs";
 import ArticleCasaVsBolsa from "./pages/ArticleCasaVsBolsa";
 import ArticleAlquilarOComprar2026 from "./pages/ArticleAlquilarOComprar2026";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/articles" element={<Articles />} />
             <Route path="/articles/house-vs-stocks-what-the-data-really-says" element={<ArticleHouseVsStocks />} />
             <Route path="/articles/rent-vs-buy-2026-data-driven-decision-guide" element={<ArticleRentVsBuy2026 />} />
+            <Route path="/articles/first-time-home-buyer-guide-2026" element={<ArticleFirstTimeBuyer2026 />} />
             {/* Spanish articles */}
             <Route path="/es/articles" element={<ArticlesEs />} />
             <Route path="/es/articles/casa-vs-bolsa-lo-que-dicen-los-datos" element={<ArticleCasaVsBolsa />} />

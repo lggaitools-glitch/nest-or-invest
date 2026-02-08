@@ -44,6 +44,12 @@ export const topicCategories: TopicCategory[] = [
     description: 'Real-world examples and location-specific analysis.',
     articleSlugs: [],
   },
+  {
+    id: 'first-time-buyers',
+    name: 'First-Time Buyer Guides',
+    description: 'Step-by-step guides for new homebuyers.',
+    articleSlugs: ['first-time-home-buyer-guide-2026'],
+  },
 ];
 
 // Spanish topic categories
@@ -82,6 +88,12 @@ export const topicCategoriesEs: TopicCategory[] = [
     id: 'scenarios-case-studies',
     name: 'Escenarios y Casos de Estudio',
     description: 'Ejemplos reales y análisis específicos por ubicación.',
+    articleSlugs: [],
+  },
+  {
+    id: 'first-time-buyers',
+    name: 'Guías para Compradores Primerizos',
+    description: 'Guías paso a paso para nuevos compradores de vivienda.',
     articleSlugs: [],
   },
 ];

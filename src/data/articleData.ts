@@ -38,6 +38,18 @@ export const articles: ArticleMetadata[] = [
     isPublished: true,
     language: 'en',
   },
+  {
+    slug: 'first-time-home-buyer-guide-2026',
+    title: 'First-Time Home-Buyer Guide 2026',
+    description: 'Everything first-time buyers need to know in 2026: mortgage rates around 6.25%, down payments, hidden costs, and step-by-step guidance for Spain and the US.',
+    excerpt: 'Buying your first home in 2026? This guide covers stable mortgage rates, saving strategies, hidden costs, and step-by-step advice for Spain and the US markets.',
+    publishedDate: '2026-02-08',
+    modifiedDate: '2026-02-08',
+    wordCount: 2100,
+    category: 'first-time-buyers',
+    isPublished: true,
+    language: 'en',
+  },
 ];
 
 // Spanish articles
