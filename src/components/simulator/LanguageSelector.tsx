@@ -18,7 +18,7 @@ export function LanguageSelector() {
 
   return (
     <Select value={language} onValueChange={(val) => setLanguage(val as Language)}>
-      <SelectTrigger className="w-[140px] h-8 text-sm">
+      <SelectTrigger className="w-auto sm:w-[140px] h-8 text-sm px-2 sm:px-3">
         <SelectValue>
           <span className="flex items-center gap-2">
             <span>{languages.find((l) => l.code === language)?.flag}</span>
