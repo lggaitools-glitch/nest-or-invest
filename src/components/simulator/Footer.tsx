@@ -1,4 +1,5 @@
 import { Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 export function Footer() {
@@ -7,6 +8,22 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-card/50 mt-12">
       <div className="container max-w-6xl mx-auto px-4 py-6">
+        {/* Navigation Links for SEO */}
+        <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-6 text-sm">
+          <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+            Home
+          </Link>
+          <Link to="/simulate" className="text-muted-foreground hover:text-foreground transition-colors">
+            Simulator
+          </Link>
+          <Link to="/articles" className="text-muted-foreground hover:text-foreground transition-colors">
+            Articles
+          </Link>
+          <Link to="/es/articles" className="text-muted-foreground hover:text-foreground transition-colors">
+            Artículos
+          </Link>
+        </nav>
+
         {/* Legal Disclaimer */}
         <p className="text-xs text-muted-foreground text-center mb-6 max-w-3xl mx-auto">
           {t.footer.disclaimer}

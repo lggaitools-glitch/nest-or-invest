@@ -32,6 +32,7 @@ export default function ArticleHouseVsStocks() {
         <title>{articleData.title} | HomeDecision</title>
         <meta name="description" content={articleData.description} />
         <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={`https://homedecision.app/articles/${ARTICLE_SLUG}`} />
         
         <meta property="og:title" content={`${articleData.title} | HomeDecision`} />
         <meta property="og:description" content={articleData.description} />
