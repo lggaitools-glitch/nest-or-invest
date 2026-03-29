@@ -9,6 +9,9 @@ const FREE_ASSUMPTIONS = {
   investmentReturnAnnual: 6,
   propertyAppreciationAnnual: 2,
   maintenancePercentAnnual: 1,
+  closingCostsPercent: 10,
+  propertyTaxAnnual: 800,
+  communityFeesMonthly: 50,
 };
 
 export interface FreeEstimateResult {
@@ -23,11 +26,11 @@ export interface FreeEstimateResult {
 function calculatePMT(annualRate: number, years: number, principal: number): number {
   const monthlyRate = annualRate / 100 / 12;
   const totalPayments = years * 12;
-  
+
   if (monthlyRate === 0) {
     return principal / totalPayments;
   }
-  
+
   return (
     (principal * monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) /
     (Math.pow(1 + monthlyRate, totalPayments) - 1)
@@ -35,41 +38,78 @@ function calculatePMT(annualRate: number, years: number, principal: number): num
 }
 
 /**
- * Calculate free estimate with simplified assumptions
+ * Remaining loan balance after n months
+ */
+function remainingBalance(principal: number, annualRate: number, totalYears: number, monthsPaid: number): number {
+  if (annualRate === 0) {
+    const totalMonths = totalYears * 12;
+    return principal * Math.max(0, 1 - monthsPaid / totalMonths);
+  }
+  const r = annualRate / 100 / 12;
+  const N = totalYears * 12;
+  const n = Math.min(monthsPaid, N);
+  if (n >= N) return 0;
+  return principal * (Math.pow(1 + r, N) - Math.pow(1 + r, n)) / (Math.pow(1 + r, N) - 1);
+}
+
+/**
+ * Calculate free estimate using actual net worth comparison over the time horizon
  */
 export function calculateFreeEstimate(inputs: FreeInputs): FreeEstimateResult {
-  const { rentMonthly, propertyPrice, interestRate } = inputs;
-  
-  // Calculate down payment and loan amount
+  const { rentMonthly, propertyPrice, interestRate, timeHorizonYears } = inputs;
+
   const downPayment = propertyPrice * (FREE_ASSUMPTIONS.downPaymentPercent / 100);
   const loanAmount = propertyPrice - downPayment;
-  
-  // Monthly mortgage payment
-  const monthlyMortgage = calculatePMT(
-    interestRate,
-    FREE_ASSUMPTIONS.mortgageYears,
-    loanAmount
-  );
-  
-  // Monthly maintenance cost
+  const monthlyMortgage = calculatePMT(interestRate, FREE_ASSUMPTIONS.mortgageYears, loanAmount);
   const monthlyMaintenance = (propertyPrice * FREE_ASSUMPTIONS.maintenancePercentAnnual / 100) / 12;
-  
-  // Total monthly buying cost (mortgage + maintenance)
   const monthlyBuying = Math.round(monthlyMortgage + monthlyMaintenance);
-  
-  // Determine verdict based on monthly cost comparison
-  // Buying is considered "cheaper" if it's within 10% of rent
-  // Renting is considered "safer" if buying is more than 30% higher
+
+  // --- Calculate net worth over timeHorizon for both scenarios ---
+  const investmentRate = FREE_ASSUMPTIONS.investmentReturnAnnual / 100;
+  const closingCosts = propertyPrice * (FREE_ASSUMPTIONS.closingCostsPercent / 100);
+  const annualMortgage = monthlyMortgage * 12;
+  const annualMaintenance = propertyPrice * FREE_ASSUMPTIONS.maintenancePercentAnnual / 100;
+  const annualPropertyTax = FREE_ASSUMPTIONS.propertyTaxAnnual;
+  const annualCommunityFees = FREE_ASSUMPTIONS.communityFeesMonthly * 12;
+  const annualRent = rentMonthly * 12;
+
+  // Rent scenario: invest the down payment, invest the surplus each year
+  let investmentValue = downPayment;
+  for (let year = 1; year <= timeHorizonYears; year++) {
+    const rentThisYear = annualRent * Math.pow(1 + FREE_ASSUMPTIONS.rentIncreaseAnnual / 100, year - 1);
+    const buyerAnnualCost =
+      (year <= FREE_ASSUMPTIONS.mortgageYears ? annualMortgage : 0) +
+      annualMaintenance + annualPropertyTax + annualCommunityFees;
+    const surplus = Math.max(0, buyerAnnualCost - rentThisYear);
+    investmentValue = (investmentValue + surplus) * (1 + investmentRate);
+  }
+  const rentNetWorth = investmentValue;
+
+  // Buy scenario: equity minus cash outflows
+  const propertyValueFinal = propertyPrice * Math.pow(1 + FREE_ASSUMPTIONS.propertyAppreciationAnnual / 100, timeHorizonYears);
+  const monthsPaid = Math.min(timeHorizonYears, FREE_ASSUMPTIONS.mortgageYears) * 12;
+  const loanBalance = remainingBalance(loanAmount, interestRate, FREE_ASSUMPTIONS.mortgageYears, monthsPaid);
+  const equity = propertyValueFinal - loanBalance;
+  const totalCashOutflows =
+    closingCosts +
+    annualMaintenance * timeHorizonYears +
+    annualPropertyTax * timeHorizonYears +
+    annualCommunityFees * timeHorizonYears;
+  const buyNetWorth = equity - totalCashOutflows;
+
+  // Determine verdict based on actual net worth comparison
+  const difference = rentNetWorth - buyNetWorth;
+  const threshold = propertyPrice * 0.02; // 2% of property price as significance threshold
+
   let verdict: FreeVerdict;
-  
-  if (monthlyBuying < rentMonthly * 1.1) {
+  if (difference < -threshold) {
     verdict = 'buying';
-  } else if (monthlyBuying > rentMonthly * 1.3) {
+  } else if (difference > threshold) {
     verdict = 'renting';
   } else {
     verdict = 'depends';
   }
-  
+
   return {
     monthlyRent: rentMonthly,
     monthlyBuying,

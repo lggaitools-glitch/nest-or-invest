@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useUser } from '@/contexts/UserContext';
-import { CreditCard, Check, FileText, Lock, ArrowRight } from 'lucide-react';
+import { CreditCard, Check, FileText, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import {
   DEFAULT_INPUTS,
   COUNTRY_PRESETS,
@@ -22,6 +22,7 @@ import {
   calculateOutputs,
 } from '@/lib/calculations';
 import { generateReportId, calculateReportExpiration, type Report as ReportType } from '@/types/monetization';
+import { redirectToReportCheckout } from '@/lib/stripe';
 
 type Step = 'input' | 'payment' | 'success';
 
@@ -64,27 +65,50 @@ const Report = () => {
     setStep('payment');
   };
 
-  const handleMockPayment = async () => {
+  const [paymentError, setPaymentError] = useState('');
+
+  const handlePayment = async () => {
     setIsProcessing(true);
+    setPaymentError('');
 
-    // Simulate payment processing
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Generate report
     const reportId = generateReportId();
-    const report: ReportType = {
-      id: reportId,
-      email,
-      inputs,
-      outputs,
-      createdAt: new Date().toISOString(),
-      expiresAt: calculateReportExpiration(),
-    };
 
-    addReport(report);
-    setGeneratedReportId(reportId);
-    setIsProcessing(false);
-    setStep('success');
+    try {
+      // Save report data locally before redirecting (will be confirmed on success page)
+      const report: ReportType = {
+        id: reportId,
+        email,
+        inputs,
+        outputs,
+        createdAt: new Date().toISOString(),
+        expiresAt: calculateReportExpiration(),
+      };
+      // Store pending report in sessionStorage so success page can retrieve it
+      sessionStorage.setItem('pending_report', JSON.stringify(report));
+
+      await redirectToReportCheckout({
+        email,
+        reportId,
+        inputs: inputs as unknown as Record<string, unknown>,
+      });
+    } catch (err) {
+      // Stripe not configured — fall back to demo mode
+      console.warn('Stripe checkout failed, using demo mode:', err);
+
+      const report: ReportType = {
+        id: reportId,
+        email,
+        inputs,
+        outputs,
+        createdAt: new Date().toISOString(),
+        expiresAt: calculateReportExpiration(),
+      };
+      addReport(report);
+      setGeneratedReportId(reportId);
+      setStep('success');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const content = {
@@ -232,7 +256,7 @@ const Report = () => {
               </div>
 
               <Button
-                onClick={handleMockPayment}
+                onClick={handlePayment}
                 disabled={isProcessing}
                 className="w-full mb-4"
                 size="lg"
@@ -249,6 +273,13 @@ const Report = () => {
                   </>
                 )}
               </Button>
+
+              {paymentError && (
+                <p className="text-sm text-destructive flex items-center justify-center gap-1 mb-2">
+                  <AlertCircle className="h-4 w-4" />
+                  {paymentError}
+                </p>
+              )}
 
               <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
                 <Lock className="h-3 w-3" />

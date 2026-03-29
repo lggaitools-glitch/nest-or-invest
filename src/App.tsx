@@ -20,6 +20,8 @@ import ArticlesEs from "./pages/ArticlesEs";
 import ArticleCasaVsBolsa from "./pages/ArticleCasaVsBolsa";
 import ArticleAlquilarOComprar2026 from "./pages/ArticleAlquilarOComprar2026";
 import ArticleGuiaComprarPrimeraVivienda2026 from "./pages/ArticleGuiaComprarPrimeraVivienda2026";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +41,8 @@ const App = () => (
             <Route path="/compare" element={<Compare />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/payment/success" element={<PaymentSuccess />} />
+            <Route path="/payment/cancel" element={<PaymentCancel />} />
             <Route path="/articles" element={<Articles />} />
             <Route path="/articles/house-vs-stocks-what-the-data-really-says" element={<ArticleHouseVsStocks />} />
             <Route path="/articles/rent-vs-buy-2026-data-driven-decision-guide" element={<ArticleRentVsBuy2026 />} />

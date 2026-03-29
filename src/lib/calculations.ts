@@ -19,6 +19,31 @@ function calculatePMT(rate: number, nper: number, pv: number): number {
   );
 }
 
+/**
+ * Remaining loan balance after n months using the closed-form formula:
+ * B(n) = P * [(1+r)^N - (1+r)^n] / [(1+r)^N - 1]
+ */
+function remainingBalance(
+  principal: number,
+  annualRate: number,
+  totalYears: number,
+  monthsPaid: number
+): number {
+  if (annualRate === 0) {
+    const totalMonths = totalYears * 12;
+    return principal * Math.max(0, 1 - monthsPaid / totalMonths);
+  }
+  const r = annualRate / 100 / 12;
+  const N = totalYears * 12;
+  const n = Math.min(monthsPaid, N);
+  if (n >= N) return 0;
+  return (
+    principal *
+    (Math.pow(1 + r, N) - Math.pow(1 + r, n)) /
+    (Math.pow(1 + r, N) - 1)
+  );
+}
+
 export function calculateDerivedValues(inputs: SimulatorInputs): DerivedValues {
   const loanAmount = inputs.propertyPrice - inputs.downPayment;
   const maintenanceYear = inputs.propertyPrice * (inputs.maintenancePercentAnnual / 100);
@@ -43,6 +68,13 @@ export function calculateRentScenario(
   let investmentValue = inputs.downPayment;
   const investmentRate = inputs.investmentReturnAnnual / 100;
 
+  // The renter also doesn't pay closing costs, property tax, or community fees.
+  // The buyer's total annual housing cost = mortgage + maintenance + property tax + community fees.
+  // The renter's total annual housing cost = rent.
+  // Surplus = buyer's annual cost - renter's annual cost (if positive, renter invests the difference).
+  const annualPropertyTax = inputs.propertyTaxAnnual;
+  const annualCommunityFees = inputs.communityFeesMonthly * 12;
+
   for (let year = 0; year <= inputs.timeHorizonYears; year++) {
     if (year === 0) {
       yearlyData.push({
@@ -59,15 +91,24 @@ export function calculateRentScenario(
     const rentThisYear = derived.rentAnnualYear1 * Math.pow(1 + inputs.rentIncreaseAnnual / 100, year - 1);
     totalRentPaid += rentThisYear;
 
-    // Calculate surplus (what renter saves compared to buyer's mortgage payment)
-    const surplus = Math.max(0, derived.annualMortgagePayment - rentThisYear);
+    // Buyer's annual housing cost (mortgage + maintenance + property tax + community fees)
+    const buyerAnnualCost =
+      (year <= inputs.mortgageYears ? derived.annualMortgagePayment : 0) +
+      derived.maintenanceYear +
+      annualPropertyTax +
+      annualCommunityFees;
+
+    // Calculate surplus (what renter saves compared to buyer's total housing cost)
+    const surplus = Math.max(0, buyerAnnualCost - rentThisYear);
 
     // Grow investment: previous value + surplus, then compound
     investmentValue = (investmentValue + surplus) * (1 + investmentRate);
 
+    // Rent net worth = investment portfolio value
+    // (Rent is a living expense — buyer also has housing costs)
     yearlyData.push({
       year,
-      rentNetWorth: investmentValue - totalRentPaid,
+      rentNetWorth: investmentValue,
       buyNetWorth: 0, // Will be filled by buy scenario
       investmentValue,
       rentPaid: totalRentPaid,
@@ -78,7 +119,7 @@ export function calculateRentScenario(
     initialInvestment: inputs.downPayment,
     investmentFinal: investmentValue,
     totalRentPaid,
-    netWorth: investmentValue - totalRentPaid,
+    netWorth: investmentValue,
     yearlyData,
   };
 }
@@ -89,24 +130,35 @@ export function calculateBuyScenario(
 ): ScenarioBuy {
   const yearlyData: YearlyData[] = [];
   const yearsToPayMortgage = Math.min(inputs.mortgageYears, inputs.timeHorizonYears);
-  
+
+  const closingCosts = inputs.propertyPrice * (inputs.closingCostsPercent / 100);
+  const annualPropertyTax = inputs.propertyTaxAnnual;
+  const annualCommunityFees = inputs.communityFeesMonthly * 12;
+
   const mortgageTotalPaid = derived.annualMortgagePayment * yearsToPayMortgage;
-  const mortgageInterest = mortgageTotalPaid - derived.loanAmount;
+
+  // Calculate total interest using proper amortization
+  const finalBalance = remainingBalance(
+    derived.loanAmount,
+    inputs.mortgageRate,
+    inputs.mortgageYears,
+    yearsToPayMortgage * 12
+  );
+  const principalPaid = derived.loanAmount - finalBalance;
+  const mortgageInterest = mortgageTotalPaid - principalPaid;
+
   const maintenanceTotal = derived.maintenanceYear * inputs.timeHorizonYears;
-  
+
   const propertyValueFinal =
     inputs.propertyPrice *
     Math.pow(1 + inputs.propertyAppreciationAnnual / 100, inputs.timeHorizonYears);
-
-  let mortgagePaidSoFar = 0;
-  let maintenancePaidSoFar = 0;
 
   for (let year = 0; year <= inputs.timeHorizonYears; year++) {
     if (year === 0) {
       yearlyData.push({
         year,
         rentNetWorth: 0,
-        buyNetWorth: inputs.downPayment, // Initial equity
+        buyNetWorth: inputs.downPayment - closingCosts, // Initial equity minus closing costs
         propertyValue: inputs.propertyPrice,
         mortgagePaid: 0,
       });
@@ -118,41 +170,49 @@ export function calculateBuyScenario(
       inputs.propertyPrice *
       Math.pow(1 + inputs.propertyAppreciationAnnual / 100, year);
 
-    // Calculate remaining loan balance (simplified - equal principal reduction)
-    const principalPaidPerYear = derived.loanAmount / inputs.mortgageYears;
-    const principalPaidSoFar = Math.min(year * principalPaidPerYear, derived.loanAmount);
-    const remainingLoan = derived.loanAmount - principalPaidSoFar;
+    // Remaining loan balance using proper amortization
+    const monthsPaid = Math.min(year, inputs.mortgageYears) * 12;
+    const loanBalance = remainingBalance(
+      derived.loanAmount,
+      inputs.mortgageRate,
+      inputs.mortgageYears,
+      monthsPaid
+    );
 
-    // Add this year's payments
-    if (year <= inputs.mortgageYears) {
-      mortgagePaidSoFar += derived.annualMortgagePayment;
-    }
-    maintenancePaidSoFar += derived.maintenanceYear;
+    // Equity = Property value - Remaining loan
+    const equity = propertyValue - loanBalance;
 
-    // Equity = Property value - remaining loan
-    const equity = propertyValue - remainingLoan;
-    
-    // Net worth = Equity - total costs paid (interest portion + maintenance)
-    const interestPaidSoFar = mortgagePaidSoFar - principalPaidSoFar;
-    const netWorth = equity - interestPaidSoFar - maintenancePaidSoFar + inputs.downPayment;
+    // Total cash outflows so far: closing costs + maintenance + property tax + community fees
+    const totalMaintenanceSoFar = derived.maintenanceYear * year;
+    const totalPropertyTaxSoFar = annualPropertyTax * year;
+    const totalCommunityFeesSoFar = annualCommunityFees * year;
+    const totalCashOutflows =
+      closingCosts + totalMaintenanceSoFar + totalPropertyTaxSoFar + totalCommunityFeesSoFar;
+
+    // Buy net worth = equity - cash outflows that reduced your wealth
+    const netWorth = equity - totalCashOutflows;
 
     yearlyData.push({
       year,
       rentNetWorth: 0,
       buyNetWorth: netWorth,
       propertyValue,
-      mortgagePaid: mortgagePaidSoFar,
+      mortgagePaid: derived.annualMortgagePayment * Math.min(year, inputs.mortgageYears),
     });
   }
 
-  const netWorth = propertyValueFinal - mortgageInterest - maintenanceTotal;
+  // Final net worth uses the same formula as yearly
+  const totalPropertyTax = annualPropertyTax * inputs.timeHorizonYears;
+  const totalCommunityFees = annualCommunityFees * inputs.timeHorizonYears;
+  const finalEquity = propertyValueFinal - finalBalance;
+  const netWorth = finalEquity - closingCosts - maintenanceTotal - totalPropertyTax - totalCommunityFees;
 
   return {
     mortgageTotalPaid,
     mortgageInterest,
     maintenanceTotal,
     propertyValueFinal,
-    investmentFinal: 0, // MVP v1 = 0
+    investmentFinal: 0,
     netWorth,
     yearlyData,
   };
@@ -163,7 +223,7 @@ export function calculateOutputs(
   buyScenario: ScenarioBuy
 ): SimulatorOutputs {
   const difference = rentScenario.netWorth - buyScenario.netWorth;
-  
+
   let winner: 'rent' | 'buy' | 'tie';
   if (Math.abs(difference) < 1000) {
     winner = 'tie';
@@ -184,7 +244,7 @@ export function calculateOutputs(
   for (let i = 1; i < combinedData.length; i++) {
     const prevDiff = combinedData[i - 1].rentNetWorth - combinedData[i - 1].buyNetWorth;
     const currDiff = combinedData[i].rentNetWorth - combinedData[i].buyNetWorth;
-    
+
     if (prevDiff * currDiff < 0) {
       breakEvenYear = combinedData[i].year;
       break;
