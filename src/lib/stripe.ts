@@ -25,22 +25,9 @@ export async function redirectToReportCheckout(options: {
   reportId: string;
   inputs: Record<string, unknown>;
 }): Promise<void> {
-  const stripe = await getStripe();
-  if (!stripe || !STRIPE_PRICES.report) {
-    throw new Error('Stripe is not configured. Set VITE_STRIPE_PUBLISHABLE_KEY and VITE_STRIPE_REPORT_PRICE_ID.');
-  }
-
-  const { error } = await stripe.redirectToCheckout({
-    lineItems: [{ price: STRIPE_PRICES.report, quantity: 1 }],
-    mode: 'payment',
-    successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&report_id=${options.reportId}`,
-    cancelUrl: `${window.location.origin}/payment/cancel?report_id=${options.reportId}`,
-    customerEmail: options.email,
-  });
-
-  if (error) {
-    throw error;
-  }
+  console.warn('[HomeDecision] Stripe checkout is mocked. A real integration requires a backend to create Checkout Sessions.');
+  // Mock: redirect directly to success URL
+  window.location.href = `${window.location.origin}/payment/success?session_id=mock_session&report_id=${options.reportId}`;
 }
 
 /**
@@ -49,20 +36,7 @@ export async function redirectToReportCheckout(options: {
 export async function redirectToPremiumCheckout(options: {
   email: string;
 }): Promise<void> {
-  const stripe = await getStripe();
-  if (!stripe || !STRIPE_PRICES.premium) {
-    throw new Error('Stripe is not configured. Set VITE_STRIPE_PUBLISHABLE_KEY and VITE_STRIPE_PREMIUM_PRICE_ID.');
-  }
-
-  const { error } = await stripe.redirectToCheckout({
-    lineItems: [{ price: STRIPE_PRICES.premium, quantity: 1 }],
-    mode: 'subscription',
-    successUrl: `${window.location.origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&plan=premium`,
-    cancelUrl: `${window.location.origin}/payment/cancel?plan=premium`,
-    customerEmail: options.email,
-  });
-
-  if (error) {
-    throw error;
-  }
+  console.warn('[HomeDecision] Stripe checkout is mocked. A real integration requires a backend to create Checkout Sessions.');
+  // Mock: redirect directly to success URL
+  window.location.href = `${window.location.origin}/payment/success?session_id=mock_session&plan=premium`;
 }
