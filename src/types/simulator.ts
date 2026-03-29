@@ -6,7 +6,12 @@ export interface SimulatorInputs {
   mortgageYears: number;
   rentMonthly: number;
   rentIncreaseAnnual: number;
-  
+
+  // Buying Costs
+  closingCostsPercent: number;
+  propertyTaxAnnual: number;
+  communityFeesMonthly: number;
+
   // Financial Assumptions
   investmentReturnAnnual: number;
   propertyAppreciationAnnual: number;
@@ -95,6 +100,9 @@ export const COUNTRY_PRESETS: CountryPreset[] = [
       mortgageYears: 30,
       rentMonthly: 1000,
       rentIncreaseAnnual: 3,
+      closingCostsPercent: 10,
+      propertyTaxAnnual: 800,
+      communityFeesMonthly: 50,
       investmentReturnAnnual: 7,
       propertyAppreciationAnnual: 2,
       maintenancePercentAnnual: 1,
@@ -116,6 +124,9 @@ export const DEFAULT_INPUTS: SimulatorInputs = {
   mortgageYears: 30,
   rentMonthly: 1000,
   rentIncreaseAnnual: 3,
+  closingCostsPercent: 10,
+  propertyTaxAnnual: 800,
+  communityFeesMonthly: 50,
   investmentReturnAnnual: 7,
   propertyAppreciationAnnual: 2,
   maintenancePercentAnnual: 1,

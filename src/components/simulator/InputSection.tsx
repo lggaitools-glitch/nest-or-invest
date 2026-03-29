@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { COUNTRY_PRESETS, type SimulatorInputs } from '@/types/simulator';
-import { Home, TrendingUp, Percent, Calendar, Banknote, Building } from 'lucide-react';
+import { Home, TrendingUp, Percent, Calendar, Banknote, Building, Receipt, Landmark, Users } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 interface InputSectionProps {
@@ -173,6 +173,39 @@ export function InputSection({
             step={0.5}
             unit={t.inputs.units.percent}
             icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
+          />
+          <InputField
+            label={t.inputs.housing.closingCosts}
+            value={inputs.closingCostsPercent}
+            onChange={(v) => onInputChange('closingCostsPercent', v)}
+            min={0}
+            max={20}
+            step={0.5}
+            unit={t.inputs.units.percent}
+            hint={t.inputs.housing.closingCostsHint}
+            icon={<Receipt className="h-4 w-4 text-muted-foreground" />}
+          />
+          <InputField
+            label={t.inputs.housing.propertyTax}
+            value={inputs.propertyTaxAnnual}
+            onChange={(v) => onInputChange('propertyTaxAnnual', v)}
+            min={0}
+            max={5000}
+            step={50}
+            unit={currencySymbol}
+            hint={t.inputs.housing.propertyTaxHint}
+            icon={<Landmark className="h-4 w-4 text-muted-foreground" />}
+          />
+          <InputField
+            label={t.inputs.housing.communityFees}
+            value={inputs.communityFeesMonthly}
+            onChange={(v) => onInputChange('communityFeesMonthly', v)}
+            min={0}
+            max={500}
+            step={10}
+            unit={currencySymbol}
+            hint={t.inputs.housing.communityFeesHint}
+            icon={<Users className="h-4 w-4 text-muted-foreground" />}
           />
         </div>
       </div>

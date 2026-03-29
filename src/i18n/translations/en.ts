@@ -23,6 +23,12 @@ export const en: Translations = {
       mortgageTerm: 'Mortgage Term',
       monthlyRent: 'Monthly Rent',
       annualRentIncrease: 'Annual Rent Increase',
+      closingCosts: 'Closing Costs',
+      closingCostsHint: 'Notary, taxes (ITP/IVA), registry, agency',
+      propertyTax: 'Property Tax (IBI)',
+      propertyTaxHint: 'Annual property tax (IBI in Spain)',
+      communityFees: 'Community Fees',
+      communityFeesHint: 'Monthly HOA / community charges',
     },
     financial: {
       title: 'Financial Assumptions',

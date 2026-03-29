@@ -23,6 +23,12 @@ export const es: Translations = {
       mortgageTerm: 'Plazo de Hipoteca',
       monthlyRent: 'Alquiler Mensual',
       annualRentIncrease: 'Aumento Anual del Alquiler',
+      closingCosts: 'Gastos de Compra',
+      closingCostsHint: 'Notaría, impuestos (ITP/IVA), registro, agencia',
+      propertyTax: 'Impuesto de Bienes Inmuebles (IBI)',
+      propertyTaxHint: 'Impuesto anual sobre la propiedad',
+      communityFees: 'Cuota de Comunidad',
+      communityFeesHint: 'Gastos mensuales de comunidad de vecinos',
     },
     financial: {
       title: 'Supuestos Financieros',

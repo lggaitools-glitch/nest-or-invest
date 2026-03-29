@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useUser } from '@/contexts/UserContext';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { Mail, Lock, ArrowRight, Crown } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Crown, CheckCircle } from 'lucide-react';
 
 type AuthMode = 'login' | 'signup';
 
@@ -47,6 +47,8 @@ const Auth = () => {
       premiumBadge: 'Premium Access',
       premiumDesc: 'You\'ll get access to unlimited scenarios, comparisons, and saved history.',
       error: 'Invalid email or password',
+      confirmationTitle: 'Check your email',
+      confirmationDesc: 'We sent a confirmation link to your email. Please verify your email to continue.',
     },
     es: {
       loginTitle: 'Bienvenido de vuelta',
@@ -67,10 +69,14 @@ const Auth = () => {
       premiumBadge: 'Acceso Premium',
       premiumDesc: 'Tendrás acceso a escenarios ilimitados, comparaciones e historial guardado.',
       error: 'Email o contraseña inválidos',
+      confirmationTitle: 'Revisa tu email',
+      confirmationDesc: 'Te enviamos un enlace de confirmación a tu email. Verifica tu email para continuar.',
     },
   };
 
   const c = content[language] || content.en;
+
+  const [confirmationSent, setConfirmationSent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,17 +84,23 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const success = mode === 'login' 
+      const result = mode === 'login'
         ? await login(email, password)
         : await signup(email, password);
 
-      if (success) {
+      if (result.success) {
+        if (mode === 'signup') {
+          // Supabase sends a confirmation email by default
+          setConfirmationSent(true);
+          setIsLoading(false);
+          return;
+        }
         if (requestedPlan === 'premium') {
           upgradeToPremium();
         }
         navigate(redirectTo);
       } else {
-        setError(c.error);
+        setError(result.error || c.error);
       }
     } catch (err) {
       setError(c.error);
@@ -116,6 +128,17 @@ const Auth = () => {
                 <span className="font-semibold text-foreground">{c.premiumBadge}</span>
               </div>
               <p className="text-sm text-muted-foreground">{c.premiumDesc}</p>
+            </div>
+          )}
+
+          {/* Email confirmation notice */}
+          {confirmationSent && (
+            <div className="mb-6 p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800">
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                <span className="font-semibold text-foreground">{c.confirmationTitle}</span>
+              </div>
+              <p className="text-sm text-muted-foreground">{c.confirmationDesc}</p>
             </div>
           )}
 

@@ -155,6 +155,12 @@ export interface Translations {
       mortgageTerm: string;
       monthlyRent: string;
       annualRentIncrease: string;
+      closingCosts: string;
+      closingCostsHint: string;
+      propertyTax: string;
+      propertyTaxHint: string;
+      communityFees: string;
+      communityFeesHint: string;
     };
     financial: {
       title: string;

@@ -1,14 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import type { User, Report, Scenario, UserPlan } from '@/types/monetization';
+import { supabase } from '@/lib/supabase';
+import type { Session, AuthError } from '@supabase/supabase-js';
 
 interface UserContextType {
   user: User | null;
   isLoggedIn: boolean;
   isPremium: boolean;
+  isLoading: boolean;
   reports: Report[];
   scenarios: Scenario[];
-  login: (email: string, password: string) => Promise<boolean>;
-  signup: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signup: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   addReport: (report: Report) => void;
   getReport: (id: string) => Report | null;
@@ -22,56 +25,86 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
-  user: 'homedecision_user',
   reports: 'homedecision_reports',
   scenarios: 'homedecision_scenarios',
+  plan: 'homedecision_plan',
 };
+
+function mapAuthError(error: AuthError): string {
+  const msg = error.message.toLowerCase();
+  if (msg.includes('invalid login credentials') || msg.includes('invalid credentials')) {
+    return 'Invalid email or password.';
+  }
+  if (msg.includes('user already registered') || msg.includes('already been registered')) {
+    return 'An account with this email already exists.';
+  }
+  if (msg.includes('email not confirmed')) {
+    return 'Please confirm your email before signing in.';
+  }
+  if (msg.includes('password') && msg.includes('least')) {
+    return 'Password must be at least 6 characters.';
+  }
+  if (msg.includes('rate limit') || msg.includes('too many')) {
+    return 'Too many attempts. Please try again later.';
+  }
+  return error.message;
+}
+
+function sessionToUser(session: Session): User {
+  const storedPlan = localStorage.getItem(STORAGE_KEYS.plan);
+  return {
+    id: session.user.id,
+    email: session.user.email || '',
+    plan: (storedPlan as UserPlan) || 'free',
+    createdAt: session.user.created_at,
+  };
+}
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [reports, setReports] = useState<Report[]>([]);
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
 
-  // Load from localStorage on mount
+  // Load reports and scenarios from localStorage
   useEffect(() => {
-    const storedUser = localStorage.getItem(STORAGE_KEYS.user);
     const storedReports = localStorage.getItem(STORAGE_KEYS.reports);
     const storedScenarios = localStorage.getItem(STORAGE_KEYS.scenarios);
 
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        console.error('Failed to parse user from localStorage');
-      }
-    }
-
     if (storedReports) {
-      try {
-        setReports(JSON.parse(storedReports));
-      } catch (e) {
-        console.error('Failed to parse reports from localStorage');
-      }
+      try { setReports(JSON.parse(storedReports)); } catch { /* ignore */ }
     }
-
     if (storedScenarios) {
-      try {
-        setScenarios(JSON.parse(storedScenarios));
-      } catch (e) {
-        console.error('Failed to parse scenarios from localStorage');
-      }
+      try { setScenarios(JSON.parse(storedScenarios)); } catch { /* ignore */ }
     }
   }, []);
 
-  // Persist to localStorage on changes
+  // Listen to Supabase auth state changes
   useEffect(() => {
-    if (user) {
-      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
-    } else {
-      localStorage.removeItem(STORAGE_KEYS.user);
-    }
-  }, [user]);
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setUser(sessionToUser(session));
+      }
+      setIsLoading(false);
+    });
 
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setUser(sessionToUser(session));
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  // Persist reports and scenarios to localStorage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.reports, JSON.stringify(reports));
   }, [reports]);
@@ -80,33 +113,27 @@ export function UserProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEYS.scenarios, JSON.stringify(scenarios));
   }, [scenarios]);
 
-  const login = async (email: string, _password: string): Promise<boolean> => {
-    // Mock login - always succeeds for demo
-    const mockUser: User = {
-      id: `usr_${Date.now()}`,
-      email,
-      plan: 'free',
-      createdAt: new Date().toISOString(),
-    };
-    setUser(mockUser);
-    return true;
+  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      return { success: false, error: mapAuthError(error) };
+    }
+    return { success: true };
   };
 
-  const signup = async (email: string, _password: string): Promise<boolean> => {
-    // Mock signup - always succeeds for demo
-    const mockUser: User = {
-      id: `usr_${Date.now()}`,
-      email,
-      plan: 'free',
-      createdAt: new Date().toISOString(),
-    };
-    setUser(mockUser);
-    return true;
+  const signup = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      return { success: false, error: mapAuthError(error) };
+    }
+    return { success: true };
   };
 
   const logout = () => {
+    supabase.auth.signOut();
     setUser(null);
     setScenarios([]);
+    localStorage.removeItem(STORAGE_KEYS.plan);
   };
 
   const addReport = (report: Report) => {
@@ -151,7 +178,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const upgradeToPremium = () => {
     if (user) {
-      setUser({ ...user, plan: 'premium' });
+      const updated = { ...user, plan: 'premium' as UserPlan };
+      setUser(updated);
+      localStorage.setItem(STORAGE_KEYS.plan, 'premium');
     }
   };
 
@@ -164,6 +193,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         user,
         isLoggedIn,
         isPremium,
+        isLoading,
         reports,
         scenarios,
         login,
