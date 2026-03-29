@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { SiteNavigation } from '@/components/SiteNavigation';
@@ -10,8 +10,10 @@ import { TransparencySection } from '@/components/simulator/TransparencySection'
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/contexts/UserContext';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { Lock, Download, Clock, Crown, AlertCircle } from 'lucide-react';
+import { Lock, Download, Clock, Crown, AlertCircle, Loader2 } from 'lucide-react';
 import { isReportExpired, getReportExpirationDays } from '@/types/monetization';
+import { exportReportToPdf } from '@/lib/pdfExport';
+import { toast } from 'sonner';
 import {
   calculateDerivedValues,
   calculateRentScenario,
@@ -23,6 +25,22 @@ const ReportViewer = () => {
   const { id } = useParams<{ id: string }>();
   const { getReport } = useUser();
   const { language } = useLanguage();
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleDownloadPdf = async () => {
+    setIsExporting(true);
+    try {
+      await exportReportToPdf('report-content', 'HomeDecision-Report');
+    } catch {
+      toast.error(
+        language === 'es'
+          ? 'Error al generar el PDF. Inténtalo de nuevo.'
+          : 'Failed to generate PDF. Please try again.'
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const report = id ? getReport(id) : null;
 
@@ -158,14 +176,23 @@ const ReportViewer = () => {
               Your Rent vs Buy Report
             </h1>
           </div>
-          <Button variant="outline" className="gap-2">
-            <Download className="h-4 w-4" />
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={handleDownloadPdf}
+            disabled={isExporting}
+          >
+            {isExporting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
             {c.downloadPdf}
           </Button>
         </div>
 
         {/* Results */}
-        <div className="space-y-6">
+        <div id="report-content" className="space-y-6">
           <div className="animate-slide-up">
             <ResultsDisplay
               outputs={report.outputs}

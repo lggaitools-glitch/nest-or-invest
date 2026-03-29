@@ -44,10 +44,44 @@ function remainingBalance(
   );
 }
 
+/**
+ * For variable-rate mortgages, compute the remaining balance after the initial
+ * fixed period, then recalculate the payment for the remaining term at the
+ * variable rate (euriborForecast + variableSpread).
+ */
 export function calculateDerivedValues(inputs: SimulatorInputs): DerivedValues {
   const loanAmount = inputs.propertyPrice - inputs.downPayment;
   const maintenanceYear = inputs.propertyPrice * (inputs.maintenancePercentAnnual / 100);
   const rentAnnualYear1 = inputs.rentMonthly * 12;
+
+  if (inputs.mortgageType === 'variable') {
+    const fixedMonthly = calculatePMT(inputs.initialFixedRate, inputs.mortgageYears, loanAmount);
+    const annualMortgagePayment = fixedMonthly * 12;
+
+    const effectiveVariableRate = inputs.euriborForecast + inputs.variableSpread;
+    const balanceAtTransition = remainingBalance(
+      loanAmount,
+      inputs.initialFixedRate,
+      inputs.mortgageYears,
+      inputs.initialFixedYears * 12
+    );
+    const remainingYears = inputs.mortgageYears - inputs.initialFixedYears;
+    const variableMonthly =
+      remainingYears > 0
+        ? calculatePMT(effectiveVariableRate, remainingYears, balanceAtTransition)
+        : 0;
+    const annualVariablePayment = variableMonthly * 12;
+
+    return {
+      loanAmount,
+      maintenanceYear,
+      rentAnnualYear1,
+      annualMortgagePayment, // fixed-period annual payment
+      annualVariablePayment,
+      effectiveVariableRate,
+    };
+  }
+
   const monthlyPayment = calculatePMT(inputs.mortgageRate, inputs.mortgageYears, loanAmount);
   const annualMortgagePayment = monthlyPayment * 12;
 
@@ -57,6 +91,64 @@ export function calculateDerivedValues(inputs: SimulatorInputs): DerivedValues {
     rentAnnualYear1,
     annualMortgagePayment,
   };
+}
+
+/**
+ * Returns the annual mortgage payment for a given year, accounting for
+ * fixed vs variable periods when mortgageType === 'variable'.
+ */
+function getAnnualPaymentForYear(
+  year: number,
+  inputs: SimulatorInputs,
+  derived: DerivedValues
+): number {
+  if (year > inputs.mortgageYears) return 0;
+  if (inputs.mortgageType === 'variable' && year > inputs.initialFixedYears) {
+    return derived.annualVariablePayment ?? derived.annualMortgagePayment;
+  }
+  return derived.annualMortgagePayment;
+}
+
+/**
+ * Returns the remaining loan balance at the end of the given year,
+ * handling two-phase variable-rate amortization.
+ */
+function getTwoPhaseBalance(
+  year: number,
+  inputs: SimulatorInputs,
+  derived: DerivedValues
+): number {
+  if (inputs.mortgageType !== 'variable') {
+    return remainingBalance(
+      derived.loanAmount,
+      inputs.mortgageRate,
+      inputs.mortgageYears,
+      Math.min(year, inputs.mortgageYears) * 12
+    );
+  }
+
+  // Fixed phase
+  if (year <= inputs.initialFixedYears) {
+    return remainingBalance(
+      derived.loanAmount,
+      inputs.initialFixedRate,
+      inputs.mortgageYears,
+      year * 12
+    );
+  }
+
+  // Variable phase: balance at transition, then amortize at variable rate
+  const balanceAtTransition = remainingBalance(
+    derived.loanAmount,
+    inputs.initialFixedRate,
+    inputs.mortgageYears,
+    inputs.initialFixedYears * 12
+  );
+  const effectiveRate = derived.effectiveVariableRate ?? inputs.mortgageRate;
+  const remainingTerm = inputs.mortgageYears - inputs.initialFixedYears;
+  const variableMonthsPaid = (year - inputs.initialFixedYears) * 12;
+
+  return remainingBalance(balanceAtTransition, effectiveRate, remainingTerm, variableMonthsPaid);
 }
 
 export function calculateRentScenario(
@@ -93,7 +185,7 @@ export function calculateRentScenario(
 
     // Buyer's annual housing cost (mortgage + maintenance + property tax + community fees)
     const buyerAnnualCost =
-      (year <= inputs.mortgageYears ? derived.annualMortgagePayment : 0) +
+      getAnnualPaymentForYear(year, inputs, derived) +
       derived.maintenanceYear +
       annualPropertyTax +
       annualCommunityFees;
@@ -135,15 +227,14 @@ export function calculateBuyScenario(
   const annualPropertyTax = inputs.propertyTaxAnnual;
   const annualCommunityFees = inputs.communityFeesMonthly * 12;
 
-  const mortgageTotalPaid = derived.annualMortgagePayment * yearsToPayMortgage;
+  // Calculate total mortgage paid across both phases
+  let mortgageTotalPaid = 0;
+  for (let y = 1; y <= yearsToPayMortgage; y++) {
+    mortgageTotalPaid += getAnnualPaymentForYear(y, inputs, derived);
+  }
 
   // Calculate total interest using proper amortization
-  const finalBalance = remainingBalance(
-    derived.loanAmount,
-    inputs.mortgageRate,
-    inputs.mortgageYears,
-    yearsToPayMortgage * 12
-  );
+  const finalBalance = getTwoPhaseBalance(yearsToPayMortgage, inputs, derived);
   const principalPaid = derived.loanAmount - finalBalance;
   const mortgageInterest = mortgageTotalPaid - principalPaid;
 
@@ -170,14 +261,8 @@ export function calculateBuyScenario(
       inputs.propertyPrice *
       Math.pow(1 + inputs.propertyAppreciationAnnual / 100, year);
 
-    // Remaining loan balance using proper amortization
-    const monthsPaid = Math.min(year, inputs.mortgageYears) * 12;
-    const loanBalance = remainingBalance(
-      derived.loanAmount,
-      inputs.mortgageRate,
-      inputs.mortgageYears,
-      monthsPaid
-    );
+    // Remaining loan balance using proper amortization (handles two-phase)
+    const loanBalance = getTwoPhaseBalance(year, inputs, derived);
 
     // Equity = Property value - Remaining loan
     const equity = propertyValue - loanBalance;
@@ -197,7 +282,9 @@ export function calculateBuyScenario(
       rentNetWorth: 0,
       buyNetWorth: netWorth,
       propertyValue,
-      mortgagePaid: derived.annualMortgagePayment * Math.min(year, inputs.mortgageYears),
+      mortgagePaid: Array.from({ length: Math.min(year, inputs.mortgageYears) }, (_, i) =>
+        getAnnualPaymentForYear(i + 1, inputs, derived)
+      ).reduce((a, b) => a + b, 0),
     });
   }
 
@@ -358,6 +445,33 @@ export function generateInsights(
         rent: inputs.rentMonthly,
       },
     });
+  }
+
+  // Variable rate insight
+  if (inputs.mortgageType === 'variable' && derived.effectiveVariableRate !== undefined) {
+    const effectiveRate = derived.effectiveVariableRate;
+    const fixedRate = inputs.initialFixedRate;
+    const paymentShock = effectiveRate - fixedRate;
+
+    if (paymentShock > 1) {
+      insights.push({
+        id: 'variable-rate-shock',
+        type: 'negative',
+        message: `After the ${inputs.initialFixedYears}-year fixed period, your rate jumps from ${fixedRate.toFixed(1)}% to ${effectiveRate.toFixed(1)}%. This ${paymentShock.toFixed(1)}pp increase could significantly raise your monthly payment.`,
+        data: {
+          rate: effectiveRate,
+        },
+      });
+    } else {
+      insights.push({
+        id: 'variable-rate',
+        type: 'neutral',
+        message: `After the ${inputs.initialFixedYears}-year fixed period, your effective variable rate will be ${effectiveRate.toFixed(1)}% (Euribor ${inputs.euriborForecast}% + ${inputs.variableSpread}% spread).`,
+        data: {
+          rate: effectiveRate,
+        },
+      });
+    }
   }
 
   // Long-term horizon insight

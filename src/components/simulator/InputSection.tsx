@@ -9,12 +9,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { COUNTRY_PRESETS, type SimulatorInputs } from '@/types/simulator';
-import { Home, TrendingUp, Percent, Calendar, Banknote, Building, Receipt, Landmark, Users } from 'lucide-react';
+import { Home, TrendingUp, Percent, Calendar, Banknote, Building, Receipt, Landmark, Users, ArrowRightLeft } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { cn } from '@/lib/utils';
 
 interface InputSectionProps {
   inputs: SimulatorInputs;
-  onInputChange: (key: keyof SimulatorInputs, value: number) => void;
+  onInputChange: (key: keyof SimulatorInputs, value: number | string) => void;
   onPresetChange: (presetId: string) => void;
   selectedPreset: string;
 }
@@ -134,16 +135,100 @@ export function InputSection({
             hint={`${((inputs.downPayment / inputs.propertyPrice) * 100).toFixed(0)}% ${t.inputs.housing.downPaymentHint}`}
             icon={<Banknote className="h-4 w-4 text-muted-foreground" />}
           />
-          <InputField
-            label={t.inputs.housing.mortgageRate}
-            value={inputs.mortgageRate}
-            onChange={(v) => onInputChange('mortgageRate', v)}
-            min={0}
-            max={15}
-            step={0.1}
-            unit={t.inputs.units.percent}
-            icon={<Percent className="h-4 w-4 text-muted-foreground" />}
-          />
+          {/* Mortgage Type Toggle */}
+          <div className="space-y-2">
+            <Label className="input-label flex items-center gap-2">
+              <ArrowRightLeft className="h-4 w-4 text-muted-foreground" />
+              {t.inputs.housing.mortgageType}
+            </Label>
+            <div className="flex rounded-lg border border-border overflow-hidden">
+              <button
+                type="button"
+                className={cn(
+                  'flex-1 py-2 px-4 text-sm font-medium transition-colors',
+                  inputs.mortgageType === 'fixed'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-background text-muted-foreground hover:bg-muted'
+                )}
+                onClick={() => onInputChange('mortgageType', 'fixed')}
+              >
+                {t.inputs.housing.mortgageTypeFixed}
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  'flex-1 py-2 px-4 text-sm font-medium transition-colors',
+                  inputs.mortgageType === 'variable'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-background text-muted-foreground hover:bg-muted'
+                )}
+                onClick={() => onInputChange('mortgageType', 'variable')}
+              >
+                {t.inputs.housing.mortgageTypeVariable}
+              </button>
+            </div>
+          </div>
+
+          {inputs.mortgageType === 'fixed' ? (
+            <InputField
+              label={t.inputs.housing.mortgageRate}
+              value={inputs.mortgageRate}
+              onChange={(v) => onInputChange('mortgageRate', v)}
+              min={0}
+              max={15}
+              step={0.1}
+              unit={t.inputs.units.percent}
+              icon={<Percent className="h-4 w-4 text-muted-foreground" />}
+            />
+          ) : (
+            <>
+              <InputField
+                label={t.inputs.housing.initialFixedPeriod}
+                value={inputs.initialFixedYears}
+                onChange={(v) => onInputChange('initialFixedYears', v)}
+                min={1}
+                max={10}
+                step={1}
+                unit={t.inputs.units.years}
+                hint={t.inputs.housing.initialFixedPeriodHint}
+                icon={<Calendar className="h-4 w-4 text-muted-foreground" />}
+              />
+              <InputField
+                label={t.inputs.housing.initialFixedRate}
+                value={inputs.initialFixedRate}
+                onChange={(v) => onInputChange('initialFixedRate', v)}
+                min={0}
+                max={10}
+                step={0.1}
+                unit={t.inputs.units.percent}
+                hint={t.inputs.housing.initialFixedRateHint}
+                icon={<Percent className="h-4 w-4 text-muted-foreground" />}
+              />
+              <InputField
+                label={t.inputs.housing.variableSpread}
+                value={inputs.variableSpread}
+                onChange={(v) => onInputChange('variableSpread', v)}
+                min={0}
+                max={3}
+                step={0.01}
+                unit={t.inputs.units.percent}
+                hint={t.inputs.housing.variableSpreadHint}
+                icon={<Percent className="h-4 w-4 text-muted-foreground" />}
+              />
+              <InputField
+                label={t.inputs.housing.euriborForecast}
+                value={inputs.euriborForecast}
+                onChange={(v) => onInputChange('euriborForecast', v)}
+                min={-1}
+                max={6}
+                step={0.1}
+                unit={t.inputs.units.percent}
+                hint={`${t.inputs.housing.euriborForecastHint} · ${(inputs.euriborForecast + inputs.variableSpread).toFixed(2)}% effective variable rate`}
+                icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
+              />
+            </>
+          )}
+
           <InputField
             label={t.inputs.housing.mortgageTerm}
             value={inputs.mortgageYears}
