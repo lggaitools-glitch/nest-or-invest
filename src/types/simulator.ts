@@ -7,6 +7,13 @@ export interface SimulatorInputs {
   rentMonthly: number;
   rentIncreaseAnnual: number;
 
+  // Mortgage Type
+  mortgageType: 'fixed' | 'variable';
+  initialFixedYears: number;
+  initialFixedRate: number;
+  variableSpread: number;
+  euriborForecast: number;
+
   // Buying Costs
   closingCostsPercent: number;
   propertyTaxAnnual: number;
@@ -24,6 +31,10 @@ export interface DerivedValues {
   maintenanceYear: number;
   rentAnnualYear1: number;
   annualMortgagePayment: number;
+  /** For variable rate: the annual payment during the variable period */
+  annualVariablePayment?: number;
+  /** For variable rate: the effective rate during the variable period */
+  effectiveVariableRate?: number;
 }
 
 export interface ScenarioRent {
@@ -100,6 +111,11 @@ export const COUNTRY_PRESETS: CountryPreset[] = [
       mortgageYears: 30,
       rentMonthly: 1000,
       rentIncreaseAnnual: 3,
+      mortgageType: 'fixed',
+      initialFixedYears: 2,
+      initialFixedRate: 2.5,
+      variableSpread: 0.99,
+      euriborForecast: 2.5,
       closingCostsPercent: 10,
       propertyTaxAnnual: 800,
       communityFeesMonthly: 50,
@@ -124,6 +140,11 @@ export const DEFAULT_INPUTS: SimulatorInputs = {
   mortgageYears: 30,
   rentMonthly: 1000,
   rentIncreaseAnnual: 3,
+  mortgageType: 'fixed',
+  initialFixedYears: 2,
+  initialFixedRate: 2.5,
+  variableSpread: 0.99,
+  euriborForecast: 2.5,
   closingCostsPercent: 10,
   propertyTaxAnnual: 800,
   communityFeesMonthly: 50,

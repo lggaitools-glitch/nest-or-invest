@@ -38,7 +38,7 @@ const Report = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [generatedReportId, setGeneratedReportId] = useState<string | null>(null);
 
-  const handleInputChange = (key: keyof SimulatorInputs, value: number) => {
+  const handleInputChange = (key: keyof SimulatorInputs, value: number | string) => {
     setInputs((prev) => ({ ...prev, [key]: value }));
     setSelectedPreset('custom');
   };

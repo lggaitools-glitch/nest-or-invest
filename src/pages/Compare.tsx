@@ -96,7 +96,7 @@ const Compare = () => {
     setSelectedScenarioId(newScenario.id);
   };
 
-  const handleInputChange = (key: keyof SimulatorInputs, value: number) => {
+  const handleInputChange = (key: keyof SimulatorInputs, value: number | string) => {
     if (!selectedScenario) return;
 
     const newInputs = { ...selectedScenario.inputs, [key]: value };
