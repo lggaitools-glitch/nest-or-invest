@@ -1,123 +1,32 @@
 
 
-# Fix Mobile Header Layout Issues
+# Connect Supabase & Fix Build Errors
 
-## Problems Identified
+## 1. Connect Supabase
 
-1. **Hamburger menu overlapping logo**: The header elements are competing for space on mobile, causing the navigation dropdown to overlap with the logo/branding area.
+To connect Supabase to your Lovable project:
 
-2. **Language selector too wide on mobile**: The `LanguageSelector` component has a fixed `w-[140px]` width, but on mobile the language name is hidden (`hidden sm:inline`), leaving an oversized box showing only a flag emoji.
+1. Click the **Supabase** button in the top-right of the Lovable editor (the green database icon)
+2. Either **create a new Supabase project** directly from Lovable, or **connect an existing one** by providing your project URL and anon key
 
----
+Your project already has the Supabase client code in `src/lib/supabase.ts` and auth integration in `src/contexts/UserContext.tsx` — once connected, the environment variables (`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`) will be automatically injected and everything will work.
 
-## Solution Overview
+## 2. Fix Stripe Build Error
 
-The fix involves:
-1. **Hiding the app title/subtitle on small screens** to make room for navigation
-2. **Making the language selector compact on mobile** (flag-only with auto-width)
-3. **Reducing gaps between header elements on mobile**
-4. **Ensuring proper flex-shrink behavior** to prevent overflow
+The `redirectToCheckout` method was removed in newer versions of `@stripe/stripe-js`. The fix is to replace it with `stripe.redirectToCheckout` → a mock/placeholder pattern since payments are mocked anyway.
 
----
+### File: `src/lib/stripe.ts`
 
-## Technical Changes
-
-### File: `src/components/SiteNavigation.tsx`
+Replace `stripe.redirectToCheckout(...)` calls with the Stripe.js v2+ equivalent: create a Checkout Session server-side and use `stripe.redirectToCheckout({ sessionId })`. Since we don't have a server yet, we'll make both functions mock the payment flow by redirecting directly to the success URL — matching the existing "mock payments first" approach.
 
 **Changes:**
-- Add `min-w-0` and `flex-shrink-0` to logo section for proper flex behavior
-- Hide the title/subtitle text on very small screens (`hidden xs:block` or `hidden sm:block`)
-- Reduce `gap-3` to `gap-1 sm:gap-3` on mobile for nav items
-- Ensure the logo image remains visible but text collapses
-
-**Current (problematic):**
-```tsx
-<Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-  <img src={logo} alt="HomeDecision Logo" className="h-10 w-10" />
-  <div>
-    <h1 className="text-lg font-bold text-foreground font-display">
-      {t.header.title}
-    </h1>
-    <p className="text-xs text-muted-foreground">{t.header.subtitle}</p>
-  </div>
-</Link>
-```
-
-**After fix:**
-```tsx
-<Link to="/" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity min-w-0">
-  <img src={logo} alt="HomeDecision Logo" className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0" />
-  <div className="hidden sm:block min-w-0">
-    <h1 className="text-lg font-bold text-foreground font-display truncate">
-      {t.header.title}
-    </h1>
-    <p className="text-xs text-muted-foreground truncate">{t.header.subtitle}</p>
-  </div>
-</Link>
-```
-
-**Changes to nav container:**
-```tsx
-<div className="flex items-center gap-1 sm:gap-3">
-```
+- Remove `redirectToCheckout` calls
+- Replace with direct `window.location.href` redirects to the success/cancel URLs
+- Add console warnings that real Stripe integration requires a backend
 
 ---
 
-### File: `src/components/simulator/LanguageSelector.tsx`
-
-**Changes:**
-- Replace fixed `w-[140px]` with responsive `w-auto sm:w-[140px]`
-- Adjust padding for mobile with `px-2 sm:px-3`
-
-**Current (problematic):**
-```tsx
-<SelectTrigger className="w-[140px] h-8 text-sm">
-```
-
-**After fix:**
-```tsx
-<SelectTrigger className="w-auto sm:w-[140px] h-8 text-sm px-2 sm:px-3">
-```
-
-This ensures:
-- On mobile: dropdown auto-sizes to fit the flag emoji only (compact)
-- On desktop: dropdown maintains the 140px width with full language name
-
----
-
-## Visual Comparison
-
-### Before (Mobile):
-```
-┌────────────────────────────────────┐
-│ [Logo] HomeDecision  [≡][🇬🇧     ][Sign In] │  ← Cramped, overlapping
-│        Smart Decisions                       │
-└────────────────────────────────────┘
-```
-
-### After (Mobile):
-```
-┌────────────────────────────────────┐
-│ [Logo]     [≡] [🇬🇧] [→]          │  ← Clean, spaced properly
-└────────────────────────────────────┘
-```
-
-### After (Desktop - unchanged):
-```
-┌──────────────────────────────────────────────┐
-│ [Logo] HomeDecision  [≡ Menu ▼][🇬🇧 English][Sign In]│
-│        Smart Decisions                                │
-└──────────────────────────────────────────────┘
-```
-
----
-
-## Summary of File Changes
-
-| File | Changes |
-|------|---------|
-| `src/components/SiteNavigation.tsx` | Hide title/subtitle on mobile, reduce gaps, smaller logo on mobile |
-| `src/components/simulator/LanguageSelector.tsx` | Auto-width on mobile, responsive padding |
-
-**Total: 2 files modified**
+| File | Action |
+|------|--------|
+| `src/lib/stripe.ts` | MODIFY — Replace deprecated `redirectToCheckout` with mock redirects |
 
